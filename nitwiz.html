@@ -2,8 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>NitWiz - Poker Player Intelligence</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0e27">
+
+    <!-- iOS PWA -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="NitWiz">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <!-- Prevent phone number detection -->
+    <meta name="format-detection" content="telephone=no">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@700&family=Allura&display=swap" rel="stylesheet">
     <style>
         * {
@@ -20,6 +34,18 @@
             -ms-text-size-adjust: 100%;
             /* Smooth scrolling */
             scroll-behavior: smooth;
+            /* Prevent elastic bounce in standalone mode */
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            /* Allow body to scroll instead */
+            overflow-y: auto;
+            height: 100%;
+            width: 100%;
         }
 
         :root {
@@ -4820,6 +4846,147 @@
             color: var(--orange-accent);
         }
         }
+        /* ======================================
+           PWA NATIVE-FEEL ENHANCEMENTS
+           ====================================== */
+
+        /* Safe area padding for notch/home indicator */
+        body {
+            padding-top: max(1rem, env(safe-area-inset-top));
+            padding-bottom: max(1rem, env(safe-area-inset-bottom));
+            padding-left: max(1rem, env(safe-area-inset-left));
+            padding-right: max(1rem, env(safe-area-inset-right));
+        }
+
+        /* Prevent text selection on all interactive/UI elements */
+        .dashboard-btn,
+        .tab,
+        .section-title,
+        .exit-btn,
+        .desc-chip,
+        .slider-value-label,
+        .toggle-container,
+        .notecard-tab,
+        button,
+        label,
+        .brief-section-title,
+        .splash-metal-sheet,
+        .drum-item,
+        nav,
+        header {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* Allow selection on actual content areas */
+        input, textarea, .brief-section p, #brief-content, #json-display {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        /* Smooth screen transitions */
+        .tab-content {
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: none;
+            will-change: opacity, transform;
+        }
+
+        .tab-content.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        /* Splash screen transition */
+        #splash-screen {
+            transition: opacity 0.35s ease;
+        }
+
+        #splash-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #main-container {
+            transition: opacity 0.3s ease;
+        }
+
+        #main-container.fade-in {
+            opacity: 1;
+        }
+
+        /* Tap feedback — subtle scale + highlight on all buttons */
+        .dashboard-btn,
+        .exit-btn,
+        .desc-chip,
+        .notecard-tab,
+        button:not(input) {
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .dashboard-btn:active {
+            transform: scale(0.96) !important;
+            transition-duration: 0.06s;
+        }
+
+        .exit-btn:active {
+            transform: translateX(-50%) scale(0.93) !important;
+            transition-duration: 0.06s;
+        }
+
+        /* Faster touch response on all tappable elements */
+        a, button, input, select, textarea, .dashboard-btn, .tab, .desc-chip, .drum-item {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        /* Smooth keyboard appearance */
+        .container {
+            transition: padding-bottom 0.3s ease;
+        }
+
+        /* Input focus ring — native iOS style */
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.25);
+            transition: box-shadow 0.15s ease;
+        }
+
+        /* Momentum scrolling for all scrollable containers */
+        .tab-content,
+        .archetype-list,
+        .container {
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Smoother slider thumb for touch */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            cursor: grab;
+        }
+
+        input[type="range"]:active::-webkit-slider-thumb {
+            cursor: grabbing;
+            transform: scale(1.2);
+        }
+
+        /* Stand-alone mode: extra bottom padding for home indicator */
+        @media all and (display-mode: standalone) {
+            body {
+                padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+            }
+
+            .exit-btn {
+                bottom: max(2rem, calc(env(safe-area-inset-bottom) + 0.5rem));
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -6110,6 +6277,9 @@ Sudden aggression = premium hand"></textarea>
             }
             document.getElementById(tabName).classList.add('active');
             
+            // Scroll to top on tab switch (native behavior)
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            
             updateAllViews();
         }
 
@@ -7278,16 +7448,79 @@ Sudden aggression = premium hand"></textarea>
         function exitApp() {
             // Switch to dashboard tab before exiting
             switchTab('dashboard');
-            // Then show splash screen
-            document.getElementById('main-container').style.display = 'none';
-            document.getElementById('splash-screen').style.display = 'flex';
+            // Fade main out, fade splash in
+            const main = document.getElementById('main-container');
+            const splash = document.getElementById('splash-screen');
+            main.style.opacity = '0';
+            main.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => {
+                main.style.display = 'none';
+                splash.style.display = 'flex';
+                splash.classList.remove('fade-out');
+                splash.style.opacity = '0';
+                requestAnimationFrame(() => {
+                    splash.style.transition = 'opacity 0.35s ease';
+                    splash.style.opacity = '1';
+                });
+            }, 300);
+            haptic('medium');
         }
 
         function hideSplash() {
-            document.getElementById('splash-screen').style.display = 'none';
-            document.getElementById('main-container').style.display = 'block';
-            // Make sure dashboard is active when entering from splash
-            switchTab('dashboard');
+            const splash = document.getElementById('splash-screen');
+            const main = document.getElementById('main-container');
+            splash.classList.add('fade-out');
+            setTimeout(() => {
+                splash.style.display = 'none';
+                main.style.display = 'block';
+                main.style.opacity = '0';
+                requestAnimationFrame(() => {
+                    main.style.transition = 'opacity 0.3s ease';
+                    main.style.opacity = '1';
+                });
+                // Make sure dashboard is active when entering from splash
+                switchTab('dashboard');
+            }, 350);
+            haptic('light');
+        }
+
+        // === HAPTIC FEEDBACK ===
+        function haptic(style) {
+            if (!navigator.vibrate) return;
+            switch(style) {
+                case 'light':   navigator.vibrate(8); break;
+                case 'medium':  navigator.vibrate(15); break;
+                case 'heavy':   navigator.vibrate(25); break;
+                case 'tick':    navigator.vibrate(3); break;
+                default:        navigator.vibrate(10);
+            }
+        }
+
+        // Add haptic feedback to key interactions
+        document.addEventListener('click', function(e) {
+            const el = e.target.closest('.dashboard-btn, .tab, .desc-chip, .notecard-tab, .exit-btn');
+            if (el) haptic('light');
+        });
+
+        // Haptic on slider change (throttled)
+        let _lastSliderHaptic = 0;
+        document.addEventListener('input', function(e) {
+            if (e.target.type === 'range') {
+                const now = Date.now();
+                if (now - _lastSliderHaptic > 60) {
+                    haptic('tick');
+                    _lastSliderHaptic = now;
+                }
+            }
+        });
+
+        // === SERVICE WORKER REGISTRATION ===
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('SW registered:', reg.scope))
+                    .catch(err => console.log('SW registration failed:', err));
+            });
         }
 
         // ===== LIVE SESSION =====
