@@ -2,7 +2,7 @@
   "name": "NitWiz - Poker Player Intelligence",
   "short_name": "NitWiz",
   "description": "Track poker player archetypes, tendencies, and live session notes",
-  "start_url": "/nitwiz.html",
+  "start_url": "nitwiz.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0a0e27",
