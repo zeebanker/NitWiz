@@ -2673,16 +2673,14 @@
             border-bottom: 2px solid rgba(168, 85, 247, 0.4);
             display: flex;
             align-items: center;
+            justify-content: flex-start;
             gap: 0.5rem;
             font-variant: small-caps;
             white-space: nowrap;
         }
 
         .form-subsection-header::before {
-            content: '';
-            width: 24px;
-            height: 2px;
-            background: linear-gradient(90deg, rgba(168, 85, 247, 0.8) 0%, transparent 100%);
+            display: none;
         }
 
         .import-export {
@@ -3859,6 +3857,171 @@
         color: #9333ea;
         }
         .hh-card-inner.readonly .hh-cc-input { display: none; }
+
+        /* ===== CARD ROLLER STYLES ===== */
+        .cc-roller-panel {
+            display: inline-flex;
+            align-items: center;
+            gap: 0;
+            padding: 10px 14px;
+            background:
+                repeating-linear-gradient(90deg, #c8ccd4 0px, #d8dce4 0.5px, #e8ecf4 1px, #d8dce4 1.5px, #c8ccd4 2px),
+                linear-gradient(180deg, #d0d4dc 0%, #d8dce4 20%, #d4d8e0 50%, #c8ccd4 80%, #bfc3cb 100%);
+            border-radius: 10px;
+            border: 2px solid #a0a4ac;
+            box-shadow:
+                0 6px 16px rgba(0,0,0,0.4),
+                0 2px 4px rgba(0,0,0,0.2),
+                inset 0 2px 0 rgba(255,255,255,0.7),
+                inset 0 -2px 0 rgba(0,0,0,0.3),
+                inset 2px 0 0 rgba(255,255,255,0.3),
+                inset -2px 0 0 rgba(0,0,0,0.2);
+            position: relative;
+            margin: 8px 0;
+        }
+        .cc-roller-panel::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, rgba(168,85,247,0.3) 0%, transparent 30%, transparent 70%, rgba(34,211,238,0.3) 100%);
+            border-radius: 11px;
+            z-index: -1;
+            opacity: 0.5;
+        }
+        .cc-roller-pair {
+            display: flex;
+            align-items: center;
+            border-radius: 8px;
+            border: 2px solid #888c94;
+            box-shadow:
+                inset 0 3px 8px rgba(0,0,0,0.4),
+                inset 0 -2px 5px rgba(0,0,0,0.2),
+                inset 3px 0 6px rgba(0,0,0,0.15),
+                inset -3px 0 6px rgba(0,0,0,0.15),
+                0 2px 0 rgba(255,255,255,0.6);
+            background:
+                radial-gradient(ellipse 120% 80% at 50% 50%, #c4c8d0 0%, #b0b4bc 60%, #a0a4ac 100%),
+                linear-gradient(180deg, #a8acb4 0%, #c0c4cc 50%, #a8acb4 100%);
+            padding: 4px 2px;
+            overflow: hidden;
+            position: relative;
+        }
+        .cc-roller-pair::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            box-shadow: inset 0 0 10px rgba(168,85,247,0.1);
+            border-radius: 6px;
+            pointer-events: none;
+        }
+        .cc-roller-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 36px;
+            user-select: none;
+            touch-action: none;
+        }
+        .cc-roller-arrow {
+            cursor: pointer;
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            transition: 0.15s;
+        }
+        .cc-roller-arrow.up {
+            border-bottom: 7px solid #7a7e86;
+            margin-bottom: 3px;
+        }
+        .cc-roller-arrow.up:hover { border-bottom-color: #4a4e56; }
+        .cc-roller-arrow.down {
+            border-top: 7px solid #7a7e86;
+            margin-top: 3px;
+        }
+        .cc-roller-arrow.down:hover { border-top-color: #4a4e56; }
+        .cc-roller-val {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 28px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2a2e36;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.6), 0 -1px 1px rgba(0,0,0,0.3);
+            line-height: 1;
+        }
+        .cc-roller-ridge {
+            width: 2px;
+            height: 28px;
+            flex-shrink: 0;
+            background: linear-gradient(180deg, #909498 0%, #b0b4bc 30%, #c0c4cc 50%, #b0b4bc 70%, #909498 100%);
+            box-shadow: -1px 0 1px rgba(0,0,0,0.25), 1px 0 1px rgba(255,255,255,0.3);
+        }
+        .cc-roller-sep {
+            width: 3px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: 1px;
+            margin: 0 4px;
+            background: linear-gradient(180deg, #b0b4bc 0%, #c8ccd4 30%, #d0d4dc 50%, #c8ccd4 70%, #b0b4bc 100%);
+            box-shadow: -1px 0 2px rgba(0,0,0,0.2), 1px 0 2px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.5);
+        }
+        .cc-roller-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.55rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: transparent;
+            background: linear-gradient(135deg, #6a6e76 0%, #4a4e56 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.3), 0 -1px 1px rgba(0,0,0,0.5);
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+            margin-right: 6px;
+        }
+        .cc-board-labels {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2px;
+            padding: 0 16px;
+            gap: 0;
+        }
+        .cc-board-label-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cc-board-label-line {
+            flex: 1;
+            height: 1.5px;
+            background: linear-gradient(90deg, transparent 0%, rgba(90,94,102,0.5) 15%, rgba(90,94,102,0.5) 85%, transparent 100%);
+        }
+        .cc-board-label-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.55rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-variant: small-caps;
+            color: transparent;
+            background: linear-gradient(135deg, #5a5e66 0%, #3a3e46 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.3), 0 -1px 1px rgba(0,0,0,0.6);
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+            white-space: nowrap;
+            padding: 0 2px;
+        }
+        .cc-board-label-sep {
+            flex-shrink: 0;
+        }
+        #hh-community-board {
+            margin: 8px 0;
+        }
         /* Preflop inline note */
         .hh-pf-note {
         width: 88px;
@@ -4217,41 +4380,38 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1.5rem;
+            gap: 0.75rem;
         }
 
         .btn-blind-nav {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #d8dde5 0%, #c8ccd4 50%, #b8bdc5 100%);
-            border: 2px solid #a8acb4;
-            box-shadow: 
-                0 3px 8px rgba(0, 0, 0, 0.3),
-                inset 0 1px 2px rgba(255, 255, 255, 0.5),
-                inset 0 -1px 2px rgba(0, 0, 0, 0.2);
+            background: none;
+            border: none;
+            padding: 0;
             cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-blind-nav svg {
-            width: 12px;
-            height: 12px;
-            color: #5a5e66;
-            filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.4))
-                    drop-shadow(0 -1px 1px rgba(0, 0, 0, 0.4));
+            font-family: 'Inter', sans-serif;
+            font-size: 3rem;
+            font-weight: 200;
+            color: transparent;
+            background: linear-gradient(135deg, #5a5e66 0%, #3a3e46 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 
+                0 1px 0 rgba(255, 255, 255, 0.4),
+                0 -1px 1px rgba(0, 0, 0, 0.6);
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+            transition: all 0.15s ease;
+            line-height: 1;
         }
 
         .btn-blind-nav:hover {
-            transform: translateY(-1px);
+            filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
         }
 
         .btn-blind-nav:active {
-            transform: translateY(0);
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            filter: drop-shadow(0 0px 1px rgba(0, 0, 0, 0.3));
         }
 
         .blind-level-info {
@@ -5988,11 +6148,7 @@ Sudden aggression = premium hand"></textarea>
                         <div class="table-setup-label">Blind Level</div>
                         <div class="blind-tracker">
                             <div class="blind-display">
-                                <button class="btn-metallic btn-blind-nav" onclick="prevBlindLevel()" title="Previous Level">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="15 18 9 12 15 6"></polyline>
-                                    </svg>
-                                </button>
+                                <button class="btn-blind-nav" onclick="prevBlindLevel()" title="Previous Level">‹</button>
                                 <div class="blind-level-info">
                                     <div class="blind-level-number" id="blind-level-num">Level 1</div>
                                     <div class="blind-level-values" id="blind-level-values-display" onclick="editBlindLevel()">25 / 50 / 0 ante</div>
@@ -6005,11 +6161,7 @@ Sudden aggression = premium hand"></textarea>
                                     </div>
                                     <div class="blind-level-ante" id="blind-level-ante">Ante: 50</div>
                                 </div>
-                                <button class="btn-metallic btn-blind-nav" onclick="nextBlindLevel()" title="Next Level">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="9 18 15 12 9 6"></polyline>
-                                    </svg>
-                                </button>
+                                <button class="btn-blind-nav" onclick="nextBlindLevel()" title="Next Level">›</button>
                             </div>
                         </div>
                     </div>
@@ -6066,6 +6218,12 @@ Sudden aggression = premium hand"></textarea>
                             </div>
                         </div>
                         
+                        <!-- Community Board — all 5 cards -->
+                        <div id="hh-community-board" style="display: none;">
+                            <div class="cc-board-labels" id="cc-board-labels"></div>
+                            <div class="cc-roller-panel" id="cc-roller-panel"></div>
+                        </div>
+                        
                         <!-- Street Actions Card -->
                         <div class="hh-street-card" id="hh-street-card" style="display: none;">
                             <div class="hh-street-header">
@@ -6074,8 +6232,6 @@ Sudden aggression = premium hand"></textarea>
                                     <span class="hh-actor-name" id="hh-actor-display"></span>
                                 </div>
                             </div>
-                            
-                            <input type="text" class="hh-cards-input" id="hh-community-cards" placeholder="Community Cards" autocapitalize="off" style="display: none;">
                             
                             <div class="hh-action-grid" id="hh-action-buttons"></div>
                             
@@ -6098,10 +6254,21 @@ Sudden aggression = premium hand"></textarea>
                             <div id="hh-hand-summary"></div>
                             
                             <div style="margin-top: 12px;">
-                                <label style="display: block; font-size: 11px; font-weight: 600; color: #8a8e96; margin-bottom: 4px;">Cards (if shown)</label>
-                                <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-                                    <input type="text" class="hh-cards-input" id="hh-hero-cards" placeholder="Hero: e.g., AsKh" autocapitalize="off" style="flex: 1;">
-                                    <input type="text" class="hh-cards-input" id="hh-villain-cards" placeholder="Villain: e.g., QdQc" autocapitalize="off" style="flex: 1;">
+                                <label style="display: block; font-size: 11px; font-weight: 600; color: #8a8e96; margin-bottom: 8px;">Cards (if shown)</label>
+                                <!-- Hidden inputs for compatibility with save/load -->
+                                <input type="hidden" id="hh-hero-cards">
+                                <input type="hidden" id="hh-villain-cards">
+                                <div style="display: flex; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; justify-content: center;">
+                                    <!-- Hero cards -->
+                                    <div style="display: flex; flex-direction: column; align-items: center;">
+                                        <span id="hh-hero-cards-label" class="cc-board-label-text" style="margin-bottom: 4px; color: #4db8a8; background: none; -webkit-background-clip: unset; text-shadow: none; filter: none;">Hero</span>
+                                        <div class="cc-roller-panel" id="hh-hero-roller-panel" style="margin: 0; padding: 8px 10px;"></div>
+                                    </div>
+                                    <!-- Villain cards -->
+                                    <div style="display: flex; flex-direction: column; align-items: center;">
+                                        <span id="hh-villain-cards-label" class="cc-board-label-text" style="margin-bottom: 4px; color: #ffa726; background: none; -webkit-background-clip: unset; text-shadow: none; filter: none;">Villain</span>
+                                        <div class="cc-roller-panel" id="hh-villain-roller-panel" style="margin: 0; padding: 8px 10px;"></div>
+                                    </div>
                                 </div>
                                 
                                 <label style="display: block; font-size: 11px; font-weight: 600; color: #8a8e96; margin-bottom: 4px;">Winner</label>
@@ -8906,11 +9073,7 @@ Sudden aggression = premium hand"></textarea>
                     seat:hhSelectedSeat,
                     pos:hhSelectedPos,
                     streets:JSON.parse(JSON.stringify(hhStreetActions)),
-                    communityCards:{
-                        flop:document.getElementById('cc-flop')?document.getElementById('cc-flop').value.trim():'',
-                        turn:document.getElementById('cc-turn')?document.getElementById('cc-turn').value.trim():'',
-                        river:document.getElementById('cc-river')?document.getElementById('cc-river').value.trim():''
-                    },
+                    communityCards:JSON.parse(JSON.stringify(hhTrackerCommunityCards)),
                     outcome:outcome,
                     notes:notes
                 }
@@ -9360,20 +9523,362 @@ Sudden aggression = premium hand"></textarea>
             document.getElementById('hh-street-card').style.display = 'block';
         }
         
+        /* ===== CARD ROLLER ENGINE ===== */
+        var CC_RANKS = ['A','K','Q','J','10','9','8','7','6','5','4','3','2'];
+        var CC_SUITS = ['\u2660','\u2665','\u2666','\u2663']; // ♠♥♦♣
+        var CC_SUIT_CODES = ['s','h','d','c'];
+
+        function ccWrap(i, len) { return ((i % len) + len) % len; }
+
+        function ccBuildAllRollers() {
+            var panel = document.getElementById('cc-roller-panel');
+            panel.innerHTML = '';
+
+            // Build 5 card rollers: flop(3) + turn(1) + river(1)
+            var streets = [
+                {street:'flop', idx:0}, {street:'flop', idx:1}, {street:'flop', idx:2},
+                {street:'turn', idx:0},
+                {street:'river', idx:0}
+            ];
+
+            for (var c = 0; c < 5; c++) {
+                if (c === 3 || c === 4) {
+                    // Separator before turn and river
+                    var sep = document.createElement('div');
+                    sep.className = 'cc-roller-sep';
+                    panel.appendChild(sep);
+                } else if (c > 0 && c < 3) {
+                    // Small separator between flop cards
+                    var sep2 = document.createElement('div');
+                    sep2.className = 'cc-roller-sep';
+                    sep2.style.height = '30px';
+                    sep2.style.opacity = '0.5';
+                    panel.appendChild(sep2);
+                }
+
+                var info = streets[c];
+                var existing = ccParseCards(hhTrackerCommunityCards[info.street] || '');
+
+                var pair = document.createElement('div');
+                pair.className = 'cc-roller-pair';
+                pair.dataset.street = info.street;
+                pair.dataset.cardIdx = String(info.idx);
+
+                var rankIdx = existing[info.idx] ? CC_RANKS.indexOf(existing[info.idx].rank) : 0;
+                if (rankIdx < 0) rankIdx = 0;
+                pair.appendChild(ccBuildCol(CC_RANKS, rankIdx, false, info.street, info.idx, 'rank'));
+
+                var ridge = document.createElement('div');
+                ridge.className = 'cc-roller-ridge';
+                pair.appendChild(ridge);
+
+                var suitIdx = existing[info.idx] ? CC_SUITS.indexOf(existing[info.idx].suit) : 0;
+                if (suitIdx < 0) suitIdx = 0;
+                pair.appendChild(ccBuildCol(CC_SUITS, suitIdx, true, info.street, info.idx, 'suit'));
+
+                panel.appendChild(pair);
+            }
+        }
+
+        function ccSyncAllValues() {
+            // Sync all 5 rollers back to hhTrackerCommunityCards
+            var panel = document.getElementById('cc-roller-panel');
+            var pairs = panel.querySelectorAll('.cc-roller-pair');
+            var vals = {flop:'', turn:'', river:''};
+            for (var p = 0; p < pairs.length; p++) {
+                var st = pairs[p].dataset.street;
+                var cols = pairs[p].querySelectorAll('.cc-roller-col');
+                var rIdx = parseInt(cols[0].dataset.index);
+                var sIdx = parseInt(cols[1].dataset.index);
+                vals[st] += CC_RANKS[rIdx] + CC_SUIT_CODES[sIdx];
+            }
+            hhTrackerCommunityCards.flop = vals.flop;
+            hhTrackerCommunityCards.turn = vals.turn;
+            hhTrackerCommunityCards.river = vals.river;
+        }
+
+        function ccShowBoard() {
+            var board = document.getElementById('hh-community-board');
+            board.style.display = 'block';
+            ccBuildLabels();
+            ccBuildAllRollers();
+        }
+
+        function ccBuildLabels() {
+            // We'll build labels after rollers render, measuring actual widths
+            // For now, use requestAnimationFrame to let rollers lay out first
+            requestAnimationFrame(function() {
+                var labels = document.getElementById('cc-board-labels');
+                labels.innerHTML = '';
+                var panel = document.getElementById('cc-roller-panel');
+                var children = panel.children; // pairs and seps in order
+
+                // Map each panel child to a label element
+                var pairIdx = 0;
+                for (var i = 0; i < children.length; i++) {
+                    var child = children[i];
+                    var w = child.offsetWidth;
+                    var ml = parseFloat(getComputedStyle(child).marginLeft) || 0;
+                    var mr = parseFloat(getComputedStyle(child).marginRight) || 0;
+                    var totalW = w + ml + mr;
+
+                    if (child.classList.contains('cc-roller-sep')) {
+                        // Separator spacer
+                        var spacer = document.createElement('div');
+                        spacer.style.width = totalW + 'px';
+                        spacer.style.flexShrink = '0';
+                        labels.appendChild(spacer);
+                    } else if (child.classList.contains('cc-roller-pair')) {
+                        pairIdx++;
+                        var cell = document.createElement('div');
+                        cell.className = 'cc-board-label-cell';
+                        cell.style.width = totalW + 'px';
+                        cell.style.flexShrink = '0';
+
+                        if (pairIdx <= 3) {
+                            // Flop cells (pairs 1, 2, 3)
+                            if (pairIdx === 2) {
+                                // Center flop pair — just the text
+                                var txt = document.createElement('span');
+                                txt.className = 'cc-board-label-text';
+                                txt.textContent = 'Flop';
+                                cell.appendChild(txt);
+                            }
+                            // Pairs 1 and 3 are empty spacers
+                        } else if (pairIdx === 4) {
+                            var t = document.createElement('span');
+                            t.className = 'cc-board-label-text';
+                            t.textContent = 'Turn';
+                            cell.appendChild(t);
+                        } else if (pairIdx === 5) {
+                            var r = document.createElement('span');
+                            r.className = 'cc-board-label-text';
+                            r.textContent = 'River';
+                            cell.appendChild(r);
+                        }
+
+                        labels.appendChild(cell);
+                    }
+                }
+            });
+        }
+
+        function ccHideBoard() {
+            document.getElementById('hh-community-board').style.display = 'none';
+        }
+
+        /* ===== SHOWDOWN CARD ROLLERS (hero/villain hole cards) ===== */
+        function hhBuildHoleCardRollers() {
+            hhBuildHoleRollerPair('hh-hero-roller-panel', 'hh-hero-cards');
+            hhBuildHoleRollerPair('hh-villain-roller-panel', 'hh-villain-cards');
+            // Set labels to player first names
+            var heroLabel = document.getElementById('hh-hero-cards-label');
+            var villainLabel = document.getElementById('hh-villain-cards-label');
+            if (heroLabel) heroLabel.textContent = hhTrackerHeroFirstName || 'Hero';
+            if (villainLabel) villainLabel.textContent = hhTrackerVillainFirstName || 'Villain';
+        }
+
+        function hhBuildHoleRollerPair(panelId, hiddenInputId) {
+            var panel = document.getElementById(panelId);
+            panel.innerHTML = '';
+            var existing = ccParseCards(document.getElementById(hiddenInputId).value || '');
+
+            for (var c = 0; c < 2; c++) {
+                if (c > 0) {
+                    var sep = document.createElement('div');
+                    sep.className = 'cc-roller-sep';
+                    sep.style.height = '30px';
+                    sep.style.margin = '0 3px';
+                    panel.appendChild(sep);
+                }
+
+                var pair = document.createElement('div');
+                pair.className = 'cc-roller-pair';
+
+                var rankIdx = existing[c] ? CC_RANKS.indexOf(existing[c].rank) : 0;
+                if (rankIdx < 0) rankIdx = 0;
+                pair.appendChild(hhBuildHoleCol(CC_RANKS, rankIdx, false, panelId, hiddenInputId));
+
+                var ridge = document.createElement('div');
+                ridge.className = 'cc-roller-ridge';
+                pair.appendChild(ridge);
+
+                var suitIdx = existing[c] ? CC_SUITS.indexOf(existing[c].suit) : 0;
+                if (suitIdx < 0) suitIdx = 0;
+                pair.appendChild(hhBuildHoleCol(CC_SUITS, suitIdx, true, panelId, hiddenInputId));
+
+                panel.appendChild(pair);
+            }
+        }
+
+        function hhBuildHoleCol(items, startIdx, isSuit, panelId, hiddenInputId) {
+            var col = document.createElement('div');
+            col.className = 'cc-roller-col';
+            col.dataset.index = String(startIdx);
+
+            var up = document.createElement('div');
+            up.className = 'cc-roller-arrow up';
+            up.addEventListener('click', function() {
+                var i = ccWrap(parseInt(col.dataset.index) - 1, items.length);
+                col.dataset.index = String(i);
+                val.textContent = items[i];
+                hhSyncHoleCards(panelId, hiddenInputId);
+            });
+            col.appendChild(up);
+
+            var val = document.createElement('div');
+            val.className = 'cc-roller-val';
+            val.textContent = items[startIdx];
+            if (isSuit) val.style.fontSize = '1.3rem';
+            col.appendChild(val);
+
+            var dn = document.createElement('div');
+            dn.className = 'cc-roller-arrow down';
+            dn.addEventListener('click', function() {
+                var i = ccWrap(parseInt(col.dataset.index) + 1, items.length);
+                col.dataset.index = String(i);
+                val.textContent = items[i];
+                hhSyncHoleCards(panelId, hiddenInputId);
+            });
+            col.appendChild(dn);
+
+            // Swipe
+            var touchY = 0;
+            col.addEventListener('touchstart', function(e) { touchY = e.touches[0].clientY; }, {passive: true});
+            col.addEventListener('touchmove', function(e) {
+                var dy = touchY - e.touches[0].clientY;
+                if (Math.abs(dy) > 25) {
+                    e.preventDefault();
+                    var dir = dy > 0 ? 1 : -1;
+                    var i = ccWrap(parseInt(col.dataset.index) + dir, items.length);
+                    col.dataset.index = String(i);
+                    val.textContent = items[i];
+                    touchY = e.touches[0].clientY;
+                    hhSyncHoleCards(panelId, hiddenInputId);
+                }
+            }, {passive: false});
+
+            // Scroll
+            col.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                var dir = e.deltaY > 0 ? 1 : -1;
+                var i = ccWrap(parseInt(col.dataset.index) + dir, items.length);
+                col.dataset.index = String(i);
+                val.textContent = items[i];
+                hhSyncHoleCards(panelId, hiddenInputId);
+            }, {passive: false});
+
+            return col;
+        }
+
+        function hhSyncHoleCards(panelId, hiddenInputId) {
+            var panel = document.getElementById(panelId);
+            var pairs = panel.querySelectorAll('.cc-roller-pair');
+            var result = '';
+            for (var p = 0; p < pairs.length; p++) {
+                var cols = pairs[p].querySelectorAll('.cc-roller-col');
+                var rIdx = parseInt(cols[0].dataset.index);
+                var sIdx = parseInt(cols[1].dataset.index);
+                result += CC_RANKS[rIdx] + CC_SUIT_CODES[sIdx];
+            }
+            document.getElementById(hiddenInputId).value = result;
+        }
+
+        function ccBuildCol(items, startIdx, isSuit, street, cardIdx, type) {
+            var col = document.createElement('div');
+            col.className = 'cc-roller-col';
+            col.dataset.index = String(startIdx);
+            col.dataset.type = type;
+            col.dataset.cardIdx = String(cardIdx);
+            col.dataset.street = street;
+            col.dataset.count = isSuit ? '4' : '13';
+
+            // Up arrow
+            var up = document.createElement('div');
+            up.className = 'cc-roller-arrow up';
+            up.addEventListener('click', function() {
+                var i = ccWrap(parseInt(col.dataset.index) - 1, items.length);
+                col.dataset.index = String(i);
+                val.textContent = items[i];
+                ccSyncAllValues();
+            });
+            col.appendChild(up);
+
+            // Value
+            var val = document.createElement('div');
+            val.className = 'cc-roller-val';
+            val.textContent = items[startIdx];
+            if (isSuit) val.style.fontSize = '1.3rem';
+            col.appendChild(val);
+
+            // Down arrow
+            var dn = document.createElement('div');
+            dn.className = 'cc-roller-arrow down';
+            dn.addEventListener('click', function() {
+                var i = ccWrap(parseInt(col.dataset.index) + 1, items.length);
+                col.dataset.index = String(i);
+                val.textContent = items[i];
+                ccSyncAllValues();
+            });
+            col.appendChild(dn);
+
+            // Swipe support
+            var touchY = 0;
+            col.addEventListener('touchstart', function(e) { touchY = e.touches[0].clientY; }, {passive: true});
+            col.addEventListener('touchmove', function(e) {
+                var dy = touchY - e.touches[0].clientY;
+                if (Math.abs(dy) > 25) {
+                    e.preventDefault();
+                    var dir = dy > 0 ? 1 : -1;
+                    var i = ccWrap(parseInt(col.dataset.index) + dir, items.length);
+                    col.dataset.index = String(i);
+                    val.textContent = items[i];
+                    touchY = e.touches[0].clientY;
+                    ccSyncAllValues();
+                }
+            }, {passive: false});
+
+            // Scroll support
+            col.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                var dir = e.deltaY > 0 ? 1 : -1;
+                var i = ccWrap(parseInt(col.dataset.index) + dir, items.length);
+                col.dataset.index = String(i);
+                val.textContent = items[i];
+                ccSyncAllValues();
+            }, {passive: false});
+
+            return col;
+        }
+
+        function ccParseCards(str) {
+            // Parse "AsKh10d" into [{rank:'A',suit:'♠'}, {rank:'K',suit:'♥'}, {rank:'10',suit:'♦'}]
+            var cards = [];
+            var i = 0;
+            while (i < str.length) {
+                var rank = '';
+                if (str.substr(i, 2) === '10') { rank = '10'; i += 2; }
+                else { rank = str[i]; i++; }
+                if (i < str.length) {
+                    var sc = str[i].toLowerCase(); i++;
+                    var suitMap = {s:'\u2660', h:'\u2665', d:'\u2666', c:'\u2663'};
+                    cards.push({rank: rank.toUpperCase(), suit: suitMap[sc] || '\u2660'});
+                }
+            }
+            return cards;
+        }
+
         function hhShowStreet(street) {
             hhTrackerCurrentStreet = street;
             
             const streetNames = { preflop: 'PreFlop', flop: 'Flop', turn: 'Turn', river: 'River' };
             document.getElementById('hh-street-name').textContent = streetNames[street];
             
-            const cardsInput = document.getElementById('hh-community-cards');
+            // Show the 5-card community board once we leave preflop
             if (street !== 'preflop') {
-                cardsInput.style.display = 'block';
-                cardsInput.placeholder = street === 'flop' ? 'Flop cards' : (street === 'turn' ? 'Turn card' : 'River card');
-                cardsInput.value = hhTrackerCommunityCards[street] || '';
-                cardsInput.oninput = function() { hhTrackerCommunityCards[street] = this.value; };
+                ccShowBoard();
             } else {
-                cardsInput.style.display = 'none';
+                ccHideBoard();
             }
             
             if (street !== 'preflop') {
@@ -9645,6 +10150,7 @@ Sudden aggression = premium hand"></textarea>
             summary += '</div>';
             summaryDiv.innerHTML = summary;
             resultsCard.style.display = 'block';
+            hhBuildHoleCardRollers();
             
             // Update winner button text to show player names
             const heroBtn = document.getElementById('hh-winner-btn-hero');
@@ -9693,7 +10199,7 @@ Sudden aggression = premium hand"></textarea>
             hhTrackerPositionType = null;
             hhTrackerCurrentStreet = 'preflop';
             hhTrackerStreetActions = { preflop: [], flop: [], turn: [], river: [] };
-            hhTrackerCommunityCards = { flop: '', turn: '', river: '' };
+            hhTrackerCommunityCards = { flop: '', turn: '', river: '' }; ccHideBoard();
             hhTrackerPendingAction = null;
             hhTrackerNextActor = null;
             hhTrackerWinner = null;
@@ -9749,7 +10255,7 @@ Sudden aggression = premium hand"></textarea>
             hhTrackerPositionType = null;
             hhTrackerCurrentStreet = 'preflop';
             hhTrackerStreetActions = { preflop: [], flop: [], turn: [], river: [] };
-            hhTrackerCommunityCards = { flop: '', turn: '', river: '' };
+            hhTrackerCommunityCards = { flop: '', turn: '', river: '' }; ccHideBoard();
             hhTrackerPendingAction = null;
             hhTrackerNextActor = null;
             hhTrackerWinner = null;
@@ -9826,7 +10332,7 @@ Sudden aggression = premium hand"></textarea>
             hhTrackerPositionType = null;
             hhTrackerCurrentStreet = 'preflop';
             hhTrackerStreetActions = { preflop: [], flop: [], turn: [], river: [] };
-            hhTrackerCommunityCards = { flop: '', turn: '', river: '' };
+            hhTrackerCommunityCards = { flop: '', turn: '', river: '' }; ccHideBoard();
             hhTrackerPendingAction = null;
             hhTrackerNextActor = null;
             hhTrackerWinner = null;
@@ -10005,6 +10511,10 @@ Sudden aggression = premium hand"></textarea>
             document.getElementById('hh-hero-cards').value = hand.heroCards;
             document.getElementById('hh-villain-cards').value = hand.villainCards;
             document.getElementById('hh-hand-notes').value = hand.notes || '';
+            // Rebuild hole card rollers with restored values
+            if (!hand.inProgress || hand.winner) {
+                hhBuildHoleCardRollers();
+            }
             
             // Update viewing state
             if (!isCurrentHand) {
