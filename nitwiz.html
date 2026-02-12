@@ -44,6 +44,7 @@
         body {
             /* Allow body to scroll instead */
             overflow-y: auto;
+            overflow-x: hidden;
             height: 100%;
             width: 100%;
         }
@@ -662,6 +663,9 @@
             border-radius: 12px;
             padding: 2rem;
             margin-bottom: 2rem;
+            box-sizing: border-box;
+            overflow: hidden;
+            max-width: 100%;
             /* Laser-cut edge with beveled metal look */
             border: 2px solid #a8acb4;
             box-shadow: 
@@ -1078,6 +1082,11 @@
             .section {
                 padding: 1rem;
                 margin-bottom: 1rem;
+                overflow: hidden;
+            }
+
+            .form-subsection {
+                padding: 0.75rem;
             }
 
             .section-title {
@@ -2627,6 +2636,9 @@
         .form-subsection {
             margin: 1.5rem 0;
             padding: 1.5rem;
+            box-sizing: border-box;
+            overflow: hidden;
+            max-width: 100%;
             background: 
                 /* Brushed nickel */
                 repeating-linear-gradient(
@@ -4372,21 +4384,35 @@
         /* Responsive: Hand navigation row */
         @media (max-width: 420px) {
             .hh-nav-row {
-                flex-wrap: wrap !important;
-                gap: 6px !important;
+                gap: 5px !important;
             }
             .hh-nav-row .hh-new-hand-btn {
                 flex: 1 1 0 !important;
                 min-width: 0 !important;
-                padding: 0.5rem 0.25rem !important;
+                padding: 0.5rem 0.2rem !important;
+                overflow: hidden;
             }
             .hh-nav-row .hh-new-hand-btn span {
-                font-size: 0.72rem !important;
+                font-size: 0.7rem !important;
+                white-space: nowrap;
             }
             .hh-nav-row .hh-nav-btn {
-                width: 40px !important;
-                height: 40px !important;
-                padding: 0.5rem !important;
+                width: 36px !important;
+                height: 36px !important;
+                min-width: 36px !important;
+                padding: 0.4rem !important;
+                flex-shrink: 0;
+            }
+        }
+        @media (max-width: 360px) {
+            .hh-nav-row .hh-new-hand-btn span {
+                font-size: 0.65rem !important;
+            }
+            .hh-nav-row .hh-nav-btn {
+                width: 32px !important;
+                height: 32px !important;
+                min-width: 32px !important;
+                padding: 0.3rem !important;
             }
         }
         .hh-nav-counter {
