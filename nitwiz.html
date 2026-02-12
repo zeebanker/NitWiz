@@ -4022,6 +4022,72 @@
         #hh-community-board {
             margin: 8px 0;
         }
+        /* Responsive: shrink community card rollers on small screens */
+        @media (max-width: 420px) {
+            .cc-roller-panel {
+                padding: 8px 8px;
+            }
+            .cc-roller-col {
+                width: 26px;
+            }
+            .cc-roller-val {
+                font-size: 0.9rem;
+                height: 24px;
+            }
+            .cc-roller-ridge {
+                height: 24px;
+            }
+            .cc-roller-sep {
+                width: 2px;
+                height: 34px;
+                margin: 0 2px;
+            }
+            .cc-roller-pair {
+                padding: 3px 1px;
+            }
+            .cc-roller-arrow {
+                border-left-width: 5px;
+                border-right-width: 5px;
+            }
+            .cc-roller-arrow.up {
+                border-bottom-width: 6px;
+                margin-bottom: 2px;
+            }
+            .cc-roller-arrow.down {
+                border-top-width: 6px;
+                margin-top: 2px;
+            }
+            .cc-board-labels {
+                padding: 0 10px;
+            }
+        }
+        @media (max-width: 360px) {
+            .cc-roller-panel {
+                padding: 6px 5px;
+            }
+            .cc-roller-col {
+                width: 22px;
+            }
+            .cc-roller-val {
+                font-size: 0.8rem;
+                height: 22px;
+            }
+            .cc-roller-ridge {
+                height: 22px;
+            }
+            .cc-roller-sep {
+                width: 2px;
+                height: 30px;
+                margin: 0 1px;
+            }
+            .cc-roller-pair {
+                padding: 2px 1px;
+                border-width: 1.5px;
+            }
+            .cc-board-labels {
+                padding: 0 7px;
+            }
+        }
         /* Preflop inline note */
         .hh-pf-note {
         width: 88px;
