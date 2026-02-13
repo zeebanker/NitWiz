@@ -951,6 +951,524 @@
             background: rgba(255, 154, 0, 0.1);
         }
 
+        /* Persona cards in archetype list */
+        .list-item.persona-item {
+            border-left: 4px solid #a8acb4;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    #c8ccd4 0px,
+                    #d8dce4 0.5px,
+                    #e8ecf4 1px,
+                    #d8dce4 1.5px,
+                    #c8ccd4 2px
+                ),
+                linear-gradient(180deg, #bfc3cb 0%, #d4d8e0 50%, #bfc3cb 100%);
+            border-radius: 10px;
+            border: 2px solid #a8acb4;
+            box-shadow: 
+                0 8px 24px rgba(0, 0, 0, 0.4),
+                inset 0 2px 0 rgba(255, 255, 255, 0.6),
+                inset 0 -2px 0 rgba(0, 0, 0, 0.3),
+                inset 2px 0 0 rgba(255, 255, 255, 0.3),
+                inset -2px 0 0 rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .list-item.persona-item:hover {
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    #cdd1d9 0px,
+                    #dde1e9 0.5px,
+                    #edf1f9 1px,
+                    #dde1e9 1.5px,
+                    #cdd1d9 2px
+                ),
+                linear-gradient(180deg, #c4c8d0 0%, #d9dde5 50%, #c4c8d0 100%);
+            border-color: #b0b4bc;
+        }
+        .persona-badge {
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.55rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: transparent;
+            background: linear-gradient(135deg, #5a5e66 0%, #3a3e46 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 
+                0 1px 0 rgba(255, 255, 255, 0.3),
+                0 -1px 1px rgba(0, 0, 0, 0.5);
+            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+            margin-left: 10px;
+            vertical-align: middle;
+            border: 1px solid rgba(0,0,0,0.15);
+            padding: 2px 7px;
+            border-radius: 4px;
+            background-color: rgba(0,0,0,0.06);
+        }
+        .persona-item .list-item-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: transparent;
+            background: linear-gradient(135deg, #3a3e46 0%, #2a2e36 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 
+                0 1px 0 rgba(255, 255, 255, 0.4),
+                0 -1px 1px rgba(0, 0, 0, 0.7),
+                1px 0 0 rgba(255, 255, 255, 0.2),
+                -1px 0 1px rgba(0, 0, 0, 0.5);
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
+            font-variant: small-caps;
+            letter-spacing: 1.2px;
+        }
+        .persona-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-style: italic;
+            margin-top: 4px;
+            color: transparent;
+            background: linear-gradient(135deg, #6a6e76 0%, #4a4e56 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.25), 0 -1px 1px rgba(0,0,0,0.4);
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+        }
+        .persona-detail {
+            display: none;
+            margin-top: 1rem;
+        }
+        .persona-detail.open {
+            display: block;
+        }
+        .persona-street {
+            margin-bottom: 0.75rem;
+        }
+        .persona-street-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-variant: small-caps;
+            color: transparent;
+            background: linear-gradient(135deg, #5a5e66 0%, #3a3e46 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 
+                0 1px 0 rgba(255,255,255,0.3),
+                0 -1px 1px rgba(0,0,0,0.6);
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+            margin-bottom: 0.5rem;
+            padding-bottom: 4px;
+            cursor: pointer;
+            display: flex;
+            justify-content: flex-start;
+            gap: 6px;
+            align-items: center;
+        }
+        .persona-street-title::after {
+            content: '▸';
+            font-size: 0.7rem;
+            color: #6a6e76;
+            transition: transform 0.2s;
+            filter: none;
+            text-shadow: none;
+        }
+        .persona-street-title.open::after {
+            transform: rotate(90deg);
+        }
+        .persona-street-body {
+            display: none;
+            padding: 0.4rem 0;
+        }
+        .persona-street-body.open {
+            display: block;
+        }
+        .persona-do-dont {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-top: 0.4rem;
+        }
+        @media (max-width: 420px) {
+            .persona-do-dont {
+                grid-template-columns: 1fr;
+            }
+        }
+        .persona-do, .persona-dont {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            line-height: 1.5;
+        }
+        .persona-do-label, .persona-dont-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-variant: small-caps;
+            margin-bottom: 4px;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 
+                0 1px 0 rgba(255,255,255,0.3),
+                0 -1px 1px rgba(0,0,0,0.6);
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.25));
+        }
+        .persona-do-label {
+            background: linear-gradient(135deg, #3a6b3a 0%, #2a4a2a 100%);
+        }
+        .persona-dont-label {
+            background: linear-gradient(135deg, #7a3a3a 0%, #5a2a2a 100%);
+        }
+        .persona-do li, .persona-dont li {
+            list-style: none;
+            padding: 2px 0;
+            font-weight: 600;
+            color: transparent;
+            background: linear-gradient(135deg, #6a6e76 0%, #4a4e56 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.25), 0 -1px 1px rgba(0,0,0,0.35);
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+        }
+        .persona-do li::before {
+            content: '✓ ';
+            color: #3a6b3a;
+            font-weight: 800;
+            filter: none;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+        }
+        .persona-dont li::before {
+            content: '✗ ';
+            color: #7a3a3a;
+            font-weight: 800;
+            filter: none;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+        }
+        .persona-table {
+            width: 100%;
+            font-size: 0.75rem;
+            border-collapse: collapse;
+            margin-top: 0.5rem;
+        }
+        .persona-table th, .persona-table td {
+            padding: 5px 8px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            font-weight: 600;
+            color: transparent;
+            background: linear-gradient(135deg, #6a6e76 0%, #4a4e56 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.25), 0 -1px 1px rgba(0,0,0,0.35);
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+        }
+        .persona-table th {
+            font-weight: 800;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-variant: small-caps;
+            color: transparent;
+            background: linear-gradient(135deg, #5a5e66 0%, #3a3e46 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.3), 0 -1px 1px rgba(0,0,0,0.6);
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+        }
+        .persona-quote {
+            font-family: 'Inter', sans-serif;
+            font-style: italic;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            padding: 0.5rem 0.75rem;
+            border-left: 3px solid rgba(0,0,0,0.2);
+            color: transparent;
+            background: linear-gradient(135deg, #6a6e76 0%, #4a4e56 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.25), 0 -1px 1px rgba(0,0,0,0.4);
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+        }
+        .persona-section-divider {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-variant: small-caps;
+            color: transparent;
+            background: linear-gradient(135deg, #4a4e56 0%, #2a2e36 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 
+                0 1px 0 rgba(255,255,255,0.4),
+                0 -1px 1px rgba(0,0,0,0.7);
+            filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
+            margin: 1.2rem 0 0.6rem;
+            padding-top: 0.85rem;
+            padding-bottom: 0.3rem;
+        }
+        .persona-section-divider.collapsible {
+            cursor: pointer;
+            display: flex;
+            justify-content: flex-start;
+            gap: 6px;
+            background: linear-gradient(135deg, #7b3fad 0%, #5a2d82 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 
+                0 1px 0 rgba(255,255,255,0.25),
+                0 -1px 1px rgba(60,20,100,0.7);
+            filter: drop-shadow(0 1px 3px rgba(100,40,160,0.4));
+            align-items: center;
+        }
+        .persona-section-divider.collapsible::after {
+            content: '▾';
+            font-size: 0.75rem;
+            color: #8b5cc2;
+            transition: transform 0.2s;
+            filter: none;
+            text-shadow: none;
+        }
+        .persona-section-divider.collapsible.collapsed::after {
+            content: '▸';
+            color: #8b5cc2;
+        }
+        .persona-section-body {
+            display: block;
+        }
+        .persona-section-body.collapsed {
+            display: none;
+        }
+        /* Metallic body text for inline persona detail elements */
+        .persona-detail-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: transparent;
+            background: linear-gradient(135deg, #6a6e76 0%, #4a4e56 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.25), 0 -1px 1px rgba(0,0,0,0.4);
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+        }
+        .persona-meta-label {
+            font-weight: 800;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-variant: small-caps;
+            color: transparent;
+            background: linear-gradient(135deg, #5a5e66 0%, #3a3e46 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.3), 0 -1px 1px rgba(0,0,0,0.6);
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+        }
+        .persona-strengths-leaks {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: transparent;
+            background: linear-gradient(135deg, #6a6e76 0%, #4a4e56 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.25), 0 -1px 1px rgba(0,0,0,0.35);
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+        }
+        .persona-strengths-label {
+            font-weight: 800;
+            color: transparent;
+            background: linear-gradient(135deg, #3a6b3a 0%, #2a4a2a 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
+        }
+        .persona-leaks-label {
+            font-weight: 800;
+            color: transparent;
+            background: linear-gradient(135deg, #7a3a3a 0%, #5a2a2a 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
+        }
+        .persona-quick-id {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.75rem;
+            padding: 6px 10px;
+            background: rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 6px;
+            color: transparent;
+            background-color: rgba(0,0,0,0.05);
+            /* text gradient applied inline */
+        }
+        @media (max-width: 420px) {
+            .list-item.persona-item {
+                padding: 1rem;
+            }
+            .persona-strengths-leaks {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Persona dimension displays (read-only slider/chip mirrors) */
+        .persona-dim-section {
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+        }
+        .persona-dim-section-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-variant: small-caps;
+            color: transparent;
+            background: linear-gradient(135deg, #5a5e66 0%, #3a3e46 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.3), 0 -1px 1px rgba(0,0,0,0.6);
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.35rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .persona-dim-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.35rem;
+            gap: 0.5rem;
+        }
+        .persona-dim-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: transparent;
+            background: linear-gradient(135deg, #6a6e76 0%, #4a4e56 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.25), 0 -1px 1px rgba(0,0,0,0.4);
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-width: 0;
+        }
+        .persona-dim-chips {
+            display: flex;
+            gap: 3px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .persona-dim-chip {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.6rem;
+            font-weight: 600;
+            padding: 3px 7px;
+            border-radius: 5px;
+            border: 1px solid rgba(0,0,0,0.15);
+            background: linear-gradient(180deg, rgba(180,180,190,0.25) 0%, rgba(120,120,130,0.15) 100%);
+            color: rgba(130,130,140,0.85);
+            text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+            white-space: nowrap;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -1px 0 rgba(0,0,0,0.08);
+            transition: all 0.2s ease;
+        }
+        .persona-dim-chip.active {
+            border: 1px solid rgba(80,30,140,0.6);
+            background: linear-gradient(180deg, 
+                rgba(100,50,160,0.5) 0%, 
+                rgba(70,30,140,0.65) 40%, 
+                rgba(50,15,110,0.75) 100%);
+            color: #e8d5ff;
+            font-weight: 800;
+            text-shadow: 
+                0 0 6px rgba(168,85,247,0.6),
+                0 1px 0 rgba(0,0,0,0.5),
+                0 -1px 0 rgba(255,255,255,0.15);
+            box-shadow: 
+                inset 0 1px 0 rgba(255,255,255,0.2),
+                inset 0 -1px 1px rgba(0,0,0,0.4),
+                0 0 8px rgba(168,85,247,0.3),
+                0 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 0.02em;
+        }
+        /* Interactive player chips */
+        .player-dim-chip {
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            transition: all 0.2s ease;
+        }
+        .player-dim-chip:active {
+            transform: scale(0.93);
+        }
+        /* Toggle chips (multi-select) */
+        .player-toggle-chip {
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            transition: all 0.2s ease;
+        }
+        .player-toggle-chip:active {
+            transform: scale(0.93);
+        }
+        .player-toggle-chip.active {
+            border: 1px solid rgba(80,30,140,0.6);
+            background: linear-gradient(180deg, 
+                rgba(100,50,160,0.5) 0%, 
+                rgba(70,30,140,0.65) 40%, 
+                rgba(50,15,110,0.75) 100%);
+            color: #e8d5ff;
+            font-weight: 800;
+            text-shadow: 
+                0 0 6px rgba(168,85,247,0.6),
+                0 1px 0 rgba(0,0,0,0.5),
+                0 -1px 0 rgba(255,255,255,0.15);
+            box-shadow: 
+                inset 0 1px 0 rgba(255,255,255,0.2),
+                inset 0 -1px 1px rgba(0,0,0,0.4),
+                0 0 8px rgba(168,85,247,0.3),
+                0 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 0.02em;
+        }
+        .persona-toggle-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 0.35rem;
+        }
+        @media (max-width: 360px) {
+            .persona-dim-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2px;
+            }
+            .persona-dim-chips {
+                justify-content: flex-start;
+            }
+            .persona-dim-chip {
+                font-size: 0.55rem;
+                padding: 2px 5px;
+            }
+        }
+
         .list-item-header {
             display: flex;
             justify-content: space-between;
@@ -2612,15 +3130,24 @@
         }
 
         .form-section-header {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.5rem;
-            color: #1a1f3a;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-variant: small-caps;
+            color: transparent;
+            background: linear-gradient(135deg, #7b3fad 0%, #5a2d82 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 
+                0 1px 0 rgba(255,255,255,0.25),
+                0 -1px 1px rgba(60,20,100,0.7);
+            filter: drop-shadow(0 1px 3px rgba(100,40,160,0.4));
             margin: 0;
-            letter-spacing: -0.5px;
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
         }
 
         .form-section-header::before {
@@ -5428,338 +5955,49 @@
                         <textarea id="builder-description" placeholder="Brief description of this player type..."></textarea>
                     </div>
 
-                    <!-- Play Style Attributes -->
-                    <div class="form-section-divider">
-                        <div class="form-section-header">Play Style Attributes</div>
-                    </div>
-
-                    <div class="form-subsection">
-                        <h4 class="form-subsection-header">Pre-flop</h4>
-                        
-                        <div class="form-group slider-layout">
-                            <label>VPIP</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="vpip" data-value="0">Low</span>
-                                    <span class="slider-value-label" data-slider="vpip" data-value="1">Med</span>
-                                    <span class="slider-value-label" data-slider="vpip" data-value="2">High</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="vpip" name="vpip">
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Pre-flop Aggression</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="pfr-aggression" data-value="0">Low</span>
-                                    <span class="slider-value-label" data-slider="pfr-aggression" data-value="1">Med</span>
-                                    <span class="slider-value-label" data-slider="pfr-aggression" data-value="2">High</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="pfr-aggression" name="pfr-aggression">
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Defense vs 3-bet</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label" data-slider="fold3bet" data-value="0">Rarely</span>
-                                    <span class="slider-value-label" data-slider="fold3bet" data-value="1">Sometimes</span>
-                                    <span class="slider-value-label active" data-slider="fold3bet" data-value="2">Often</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="2" step="1" class="range-slider" id="fold3bet" name="fold3bet">
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Cold Call Freq</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="coldcall" data-value="0">Low</span>
-                                    <span class="slider-value-label" data-slider="coldcall" data-value="1">Med</span>
-                                    <span class="slider-value-label" data-slider="coldcall" data-value="2">High</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="coldcall" name="coldcall">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-subsection">
-                        <h4 class="form-subsection-header">Post-flop</h4>
-                        
-                        <div class="form-group slider-layout">
-                            <label>Post-flop Aggression</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label" data-slider="postflop-aggression" data-value="0">Low</span>
-                                    <span class="slider-value-label" data-slider="postflop-aggression" data-value="1">Med</span>
-                                    <span class="slider-value-label active" data-slider="postflop-aggression" data-value="2">High</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="2" step="1" class="range-slider" id="postflop-aggression" name="postflop-aggression">
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Folds to C-bet</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label" data-slider="foldcbet" data-value="0">Never</span>
-                                    <span class="slider-value-label" data-slider="foldcbet" data-value="1">Sometimes</span>
-                                    <span class="slider-value-label active" data-slider="foldcbet" data-value="2">Often</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="2" step="1" class="range-slider" id="foldcbet" name="foldcbet">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-subsection">
-                        <h4 class="form-subsection-header">Overall Style</h4>
-                        
-                        <div class="checkbox-group" style="background: transparent; border: none; padding: 0.5rem 0;">
-                            <label for="builder-chases-draws" class="toggle-label">Chases draws</label>
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="builder-chases-draws">
-                                    <span class="toggle-slider">
-                                        <span class="toggle-knob"></span>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="checkbox-group" style="background: transparent; border: none; padding: 0.5rem 0;">
-                            <label for="builder-any-two" class="toggle-label">Limps/cold calls with any two cards</label>
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="builder-any-two">
-                                    <span class="toggle-slider">
-                                        <span class="toggle-knob"></span>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="checkbox-group" style="background: transparent; border: none; padding: 0.5rem 0;">
-                            <label for="builder-loves-faces" class="toggle-label">Loves face cards / any ace</label>
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="builder-loves-faces">
-                                    <span class="toggle-slider">
-                                        <span class="toggle-knob"></span>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="checkbox-group" style="background: transparent; border: none; padding: 0.5rem 0;">
-                            <label for="builder-cheap-river" class="toggle-label">Wants to get to river cheap</label>
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="builder-cheap-river">
-                                    <span class="toggle-slider">
-                                        <span class="toggle-knob"></span>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="checkbox-group" style="background: transparent; border: none; padding: 0.5rem 0;">
-                            <label for="builder-limp-jam" class="toggle-label">Limp/jams with AK, AQ, any pair 88+</label>
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="builder-limp-jam">
-                                    <span class="toggle-slider">
-                                        <span class="toggle-knob"></span>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="checkbox-group" style="background: transparent; border: none; padding: 0.5rem 0;">
-                            <label for="builder-no-river" class="toggle-label">Unable/unwilling to play out to river</label>
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="builder-no-river">
-                                    <span class="toggle-slider">
-                                        <span class="toggle-knob"></span>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Personality Attributes -->
-                    <div class="form-section-divider">
-                        <div class="form-section-header">Personality Attributes</div>
-                    </div>
-
-                    <div class="form-subsection">
-                        <h4 class="form-subsection-header">Psychological</h4>
-                        
-                        <div class="checkbox-group" style="background: transparent; border: none; padding: 0.5rem 0;">
-                            <label for="builder-tilt-prone" class="toggle-label">Tilt prone</label>
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="builder-tilt-prone">
-                                    <span class="toggle-slider">
-                                        <span class="toggle-knob"></span>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="checkbox-group" style="background: transparent; border: none; padding: 0.5rem 0;">
-                            <label for="builder-scared-money" class="toggle-label">Scared money</label>
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="builder-scared-money">
-                                    <span class="toggle-slider">
-                                        <span class="toggle-knob"></span>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="checkbox-group" style="background: transparent; border: none; padding: 0.5rem 0;">
-                            <label for="builder-ego-driven" class="toggle-label">Ego-driven</label>
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="builder-ego-driven">
-                                    <span class="toggle-slider">
-                                        <span class="toggle-knob"></span>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="checkbox-group" style="background: transparent; border: none; padding: 0.5rem 0;">
-                            <label for="builder-result-oriented" class="toggle-label">Result-oriented</label>
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="builder-result-oriented">
-                                    <span class="toggle-slider">
-                                        <span class="toggle-knob"></span>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="checkbox-group" style="background: transparent; border: none; padding: 0.5rem 0;">
-                            <label for="builder-reckless" class="toggle-label">Reckless under pressure</label>
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="builder-reckless">
-                                    <span class="toggle-slider">
-                                        <span class="toggle-knob"></span>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-subsection">
-                        <h4 class="form-subsection-header">Player Dynamics</h4>
-                        
-                        <div class="form-group slider-layout">
-                            <label>Table Presence</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="table-talk" data-value="0">Quiet</span>
-                                    <span class="slider-value-label" data-slider="table-talk" data-value="1">Engaged</span>
-                                    <span class="slider-value-label" data-slider="table-talk" data-value="2">Talkative</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="table-talk" name="table-talk">
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Focus Level</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label" data-slider="attention" data-value="0">Low</span>
-                                    <span class="slider-value-label active" data-slider="attention" data-value="1">Med</span>
-                                    <span class="slider-value-label" data-slider="attention" data-value="2">High</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="1" step="1" class="range-slider" id="attention" name="attention">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-subsection">
-                        <h4 class="form-subsection-header">Game Awareness</h4>
-                        
-                        <div class="form-group slider-layout">
-                            <label>Stack Protection</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label" data-slider="stack-protection" data-value="0">Low</span>
-                                    <span class="slider-value-label" data-slider="stack-protection" data-value="1">Med</span>
-                                    <span class="slider-value-label active" data-slider="stack-protection" data-value="2">High</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="2" step="1" class="range-slider" id="stack-protection" name="stack-protection">
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Skill Level</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="skill-level" data-value="0">Beginner</span>
-                                    <span class="slider-value-label" data-slider="skill-level" data-value="1">Intermediate</span>
-                                    <span class="slider-value-label" data-slider="skill-level" data-value="2">Advanced</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="skill-level" name="skill-level">
-                            </div>
+                    <!-- Persona Attributes -->
+                    <div class="persona-section-divider collapsible" onclick="togglePersonaSection(this)">Persona Attributes</div>
+                    <div class="persona-section-body">
+                        <div id="builder-chip-dimensions">
+                            <!-- Rendered by JS: renderBuilderDimensions() -->
                         </div>
                     </div>
 
                     <!-- Exploits -->
-                    <div class="form-section-divider">
-                        <div class="form-section-header">Exploitation Strategy</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Pre-flop Exploits (one per line)</label>
-                        <textarea id="builder-exploits-preflop" placeholder="Steal blinds relentlessly - they fold 90%+
+                    <div class="persona-section-divider collapsible" onclick="togglePersonaSection(this)">Exploitation Strategy</div>
+                    <div class="persona-section-body">
+                        <div class="form-group">
+                            <label>Pre-flop Exploits (one per line)</label>
+                            <textarea id="builder-exploits-preflop" placeholder="Steal blinds relentlessly - they fold 90%+
 3-bet their rare raises for fold equity
 Never cold call their raises without premium hands"></textarea>
-                    </div>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Post-flop Exploits (one per line)</label>
-                        <textarea id="builder-exploits-postflop" placeholder="C-bet 100% on all boards - they fold without connection
+                        <div class="form-group">
+                            <label>Post-flop Exploits (one per line)</label>
+                            <textarea id="builder-exploits-postflop" placeholder="C-bet 100% on all boards - they fold without connection
 Double barrel if they call flop
 Don't bluff river - if they called flop/turn they have something"></textarea>
-                    </div>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Bubble Exploits (one per line)</label>
-                        <textarea id="builder-exploits-bubble" placeholder="Apply maximum ICM pressure - they're paralyzed
+                        <div class="form-group">
+                            <label>Bubble Exploits (one per line)</label>
+                            <textarea id="builder-exploits-bubble" placeholder="Apply maximum ICM pressure - they're paralyzed
 Shove any two cards in late position vs their blinds
 They'll fold medium pairs to avoid elimination"></textarea>
-                    </div>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Warnings / Red Flags (one per line)</label>
-                        <textarea id="builder-warnings" placeholder="If they limp then call a raise - trap with premium hand
+                        <div class="form-group">
+                            <label>Warnings / Red Flags (one per line)</label>
+                            <textarea id="builder-warnings" placeholder="If they limp then call a raise - trap with premium hand
 If they lead out betting - strong hand, not bluffing
 If they check-raise - nuts or very strong"></textarea>
-                    </div>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Additional Notes</label>
-                        <textarea id="builder-notes" placeholder="Any other observations about this archetype..."></textarea>
+                        <div class="form-group">
+                            <label>Additional Notes</label>
+                            <textarea id="builder-notes" placeholder="Any other observations about this archetype..."></textarea>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary">💾 Save Archetype</button>
@@ -5865,190 +6103,8 @@ Sudden aggression = premium hand"></textarea>
                     <!-- Hidden field to store player name -->
                     <input type="hidden" id="player-name" required>
 
-                    <div class="form-subsection">
-                        <h4 class="form-subsection-header">Pre-flop</h4>
-                        
-                        <div class="form-group slider-layout">
-                            <label>VPIP</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="player-vpip" data-value="0">Low</span>
-                                    <span class="slider-value-label" data-slider="player-vpip" data-value="1">Med</span>
-                                    <span class="slider-value-label" data-slider="player-vpip" data-value="2">High</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="player-vpip" name="player-vpip">
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Pre-flop Aggression</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="player-pfr-aggression" data-value="0">Low</span>
-                                    <span class="slider-value-label" data-slider="player-pfr-aggression" data-value="1">Med</span>
-                                    <span class="slider-value-label" data-slider="player-pfr-aggression" data-value="2">High</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="player-pfr-aggression" name="player-pfr-aggression">
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Defense vs 3-bet</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="player-fold3bet" data-value="0">Rarely</span>
-                                    <span class="slider-value-label" data-slider="player-fold3bet" data-value="1">Sometimes</span>
-                                    <span class="slider-value-label" data-slider="player-fold3bet" data-value="2">Often</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="player-fold3bet" name="player-fold3bet">
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Cold Call Freq</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="player-coldcall" data-value="0">Low</span>
-                                    <span class="slider-value-label" data-slider="player-coldcall" data-value="1">Med</span>
-                                    <span class="slider-value-label" data-slider="player-coldcall" data-value="2">High</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="player-coldcall" name="player-coldcall">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-subsection">
-                        <h4 class="form-subsection-header">Post-flop</h4>
-                        
-                        <div class="form-group slider-layout">
-                            <label>Post-flop Aggression</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="player-postflop-aggression" data-value="0">Low</span>
-                                    <span class="slider-value-label" data-slider="player-postflop-aggression" data-value="1">Med</span>
-                                    <span class="slider-value-label" data-slider="player-postflop-aggression" data-value="2">High</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="player-postflop-aggression" name="player-postflop-aggression">
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Folds to C-bet</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="player-foldcbet" data-value="0">Never</span>
-                                    <span class="slider-value-label" data-slider="player-foldcbet" data-value="1">Sometimes</span>
-                                    <span class="slider-value-label" data-slider="player-foldcbet" data-value="2">Often</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="player-foldcbet" name="player-foldcbet">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-subsection">
-                        <h4 class="form-subsection-header">Player Dynamics</h4>
-                        
-                        <div class="form-group slider-layout">
-                            <label>Table Presence</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="player-table-talk" data-value="0">Quiet</span>
-                                    <span class="slider-value-label" data-slider="player-table-talk" data-value="1">Engaged</span>
-                                    <span class="slider-value-label" data-slider="player-table-talk" data-value="2">Talkative</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="player-table-talk" name="player-table-talk">
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Focus Level</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="player-attention" data-value="0">Low</span>
-                                    <span class="slider-value-label" data-slider="player-attention" data-value="1">Med</span>
-                                    <span class="slider-value-label" data-slider="player-attention" data-value="2">High</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="player-attention" name="player-attention">
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Style</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="player-style" data-value="0">Weak-Tight</span>
-                                    <span class="slider-value-label" data-slider="player-style" data-value="1">Strong-Tight</span>
-                                    <span class="slider-value-label" data-slider="player-style" data-value="2">Weak-Loose</span>
-                                    <span class="slider-value-label" data-slider="player-style" data-value="3">Strong-Loose</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="3" value="0" step="1" class="range-slider" id="player-style" name="player-style">
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Cunning</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="player-cunning" data-value="0">Low</span>
-                                    <span class="slider-value-label" data-slider="player-cunning" data-value="1">Med</span>
-                                    <span class="slider-value-label" data-slider="player-cunning" data-value="2">High</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="player-cunning" name="player-cunning">
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Thinking</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="player-thinking" data-value="0">Automaton</span>
-                                    <span class="slider-value-label" data-slider="player-thinking" data-value="1">Average</span>
-                                    <span class="slider-value-label" data-slider="player-thinking" data-value="2">Thinking</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="player-thinking" name="player-thinking">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-subsection">
-                        <h4 class="form-subsection-header">Game Awareness</h4>
-                        
-                        <div class="form-group slider-layout">
-                            <label>Stack Protection</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="player-stack-protection" data-value="0">Low</span>
-                                    <span class="slider-value-label" data-slider="player-stack-protection" data-value="1">Med</span>
-                                    <span class="slider-value-label" data-slider="player-stack-protection" data-value="2">High</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="player-stack-protection" name="player-stack-protection">
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Skill Level</label>
-                            <div class="slider-control-group">
-                                <div class="slider-value-labels">
-                                    <span class="slider-value-label active" data-slider="player-skill-level" data-value="0">Beginner</span>
-                                    <span class="slider-value-label" data-slider="player-skill-level" data-value="1">Intermediate</span>
-                                    <span class="slider-value-label" data-slider="player-skill-level" data-value="2">Advanced</span>
-                                </div>
-                                <div class="slider-etched-line"></div>
-                                <input type="range" min="0" max="2" value="0" step="1" class="range-slider" id="player-skill-level" name="player-skill-level">
-                            </div>
-                        </div>
+                    <div id="player-chip-dimensions">
+                        <!-- Rendered by JS: renderPlayerDimensions() -->
                     </div>
 
                     <!-- Key Weaknesses -->
@@ -6098,61 +6154,14 @@ Sudden aggression = premium hand"></textarea>
                         <input type="hidden" id="player-observations" />
                     </div>
 
-                    <!-- Player Description -->
-                    <div class="form-subsection">
-                        <h4 class="form-subsection-header">Player Description</h4>
-                        
-                        <div class="form-group slider-layout">
-                            <label>Gender</label>
-                            <div class="desc-selector" data-field="player-gender">
-                                <button type="button" class="desc-chip active" data-value="0">Male</button>
-                                <button type="button" class="desc-chip" data-value="1">Female</button>
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Age Range</label>
-                            <div class="desc-selector" data-field="player-age">
-                                <button type="button" class="desc-chip active" data-value="0">Young Stud</button>
-                                <button type="button" class="desc-chip" data-value="1">Young</button>
-                                <button type="button" class="desc-chip" data-value="2">Middle</button>
-                                <button type="button" class="desc-chip" data-value="3">Old</button>
-                                <button type="button" class="desc-chip" data-value="4">Ancient</button>
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Ethnicity</label>
-                            <div class="desc-selector" data-field="player-ethnicity">
-                                <button type="button" class="desc-chip active" data-value="0">White</button>
-                                <button type="button" class="desc-chip" data-value="1">Black</button>
-                                <button type="button" class="desc-chip" data-value="2">E Asian</button>
-                                <button type="button" class="desc-chip" data-value="3">S Asian</button>
-                                <button type="button" class="desc-chip" data-value="4">ME</button>
-                                <button type="button" class="desc-chip" data-value="5">Hispanic</button>
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Education</label>
-                            <div class="desc-selector" data-field="player-education">
-                                <button type="button" class="desc-chip active" data-value="0">Some</button>
-                                <button type="button" class="desc-chip" data-value="1">College</button>
-                                <button type="button" class="desc-chip" data-value="2">Graduate</button>
-                                <button type="button" class="desc-chip" data-value="3">Unknown</button>
-                            </div>
-                        </div>
-
-                        <div class="form-group slider-layout">
-                            <label>Profession</label>
-                            <div class="desc-selector" data-field="player-profession">
-                                <button type="button" class="desc-chip active" data-value="0">Trades</button>
-                                <button type="button" class="desc-chip" data-value="1">Home</button>
-                                <button type="button" class="desc-chip" data-value="2">Technical</button>
-                                <button type="button" class="desc-chip" data-value="3">Prof. Svcs.</button>
-                                <button type="button" class="desc-chip" data-value="4">Poker Player</button>
-                                <button type="button" class="desc-chip" data-value="5">Business Owner</button>
-                                <button type="button" class="desc-chip" data-value="6">Retired</button>
+                    <!-- Hand History -->
+                    <div class="form-subsection notecard-section" id="player-hand-history-section">
+                        <h4 class="form-subsection-header">Hand History</h4>
+                        <div class="notecard-layout">
+                            <div class="notecard-display">
+                                <div class="notecard-entries" id="player-hand-history-list">
+                                    <div class="notecard-empty">No hands recorded for this player</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -6555,24 +6564,14 @@ Sudden aggression = premium hand"></textarea>
 
                 // Load default database with players
                 database = {
-                    archetypes: [{
-                        id: 'scared-money',
-                        name: 'Scared Money',
-                        description: 'Risk-averse player terrified of losing chips',
-                        playStyle: {
-                            preflop: { vpip: 'Low (<25%)', pfr: 'Low (<25%)' }
-                        },
-                        exploits: {
-                            preflop: ['Steal blinds relentlessly - they fold 90%+', '3-bet their rare raises for fold equity'],
-                            warnings: ['If they limp then call a raise - trap with premium hand', 'If they lead out betting - strong hand']
-                        }
-                    }],
+                    archetypes: [],
                     realPlayers: players
                 };
                 
                 // Save to localStorage
                 saveDatabase();
             }
+            seedPersonas();
             updateAllViews();
         }
 
@@ -6601,6 +6600,9 @@ Sudden aggression = premium hand"></textarea>
 
         // Tab switching
         function switchTab(tabName) {
+            // Save session state before switching
+            if (!_isRestoring) saveHandHistory();
+            
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
@@ -6633,17 +6635,589 @@ Sudden aggression = premium hand"></textarea>
         // Archetypes
         let currentArchetypeId = null;
 
+        // === BUILT-IN PERSONAS (from NitWiz Field Guide) ===
+        const BUILTIN_PERSONAS = [
+            {
+                id: 'persona-momentum-mayor',
+                name: 'The Momentum Mayor',
+                isPersona: true,
+                description: 'Passive OOP • Limp-Heavy • Price-Sensitive River Regular',
+                persona: {
+                    subtitle: '$100-$250 daily regular. VPIP ~70-80%. Builds early stacks via volume + variance. Rarely converts consistently.',
+                    coreProfile: 'Limp-heavy all positions. Raises only big Ax / pocket pairs. Check-calls OOP (rarely stabs). Over-calls turn. River = price sensitive.',
+                    // Dimension values matching Player section selectors
+                    dimensions: {
+                        preflop: { vpip: 2, limpBehavior: 1, coldcall: 2, openEP: 2, openLP: 2, pfrAggression: 0, threeBetProfile: 0, fold3bet: 0 },
+                        postflop: { flopStrategy: 3, foldcbet: 0, postflopAggression: 0, turnBehavior: 3, riverBehavior: 0 },
+                        stackpressure: { shortStack: 2, midStack: 3, deepStack: 2 },
+                        dynamics: { tableTalk: 1, attention: 1, cunning: 2, thinking: 0, tiltProfile: 2, afterLoss: 1, tanking: 0, physicalConfidence: 0 },
+                        awareness: { stackProtection: 0, bubbleBehavior: 2, finalTableAdj: 2, payJumpAwareness: 2, skillLevel: 0 },
+                        styleToggles: { tglChasesDraws: 1, tglLimpAny: 1, tglFaceCards: 1, tglRiverCheap: 1, tglLimpCall: 1, tglNoStackDepth: 1 },
+                        psychToggles: { tglResultOriented: 1 }
+                    },
+                    streets: {
+                        preflop: {
+                            dos: ['Iso large (4-6x)', 'Value 3-bet linear', 'Attack his blinds relentlessly', 'Play hands that dominate limp range'],
+                            donts: ['Overlimp behind weak holdings', 'Slowplay premiums', 'Flat too much OOP', 'Assume his raise range is balanced'],
+                            note: 'His raise range is strong and narrow.'
+                        },
+                        flop: {
+                            dos: ['C-bet frequently', 'Value bet thin', 'Barrel strong draws', 'Bet normal sizing (he calls anyway)'],
+                            donts: ['Over-check back marginal value', 'Expect folds from small stabs', 'Bluff multi-way without equity'],
+                            note: 'Key Leak: Over-Calling. He is elastic here.'
+                        },
+                        turn: {
+                            dos: ['Barrel aggressively', 'Semi-bluff confidently', 'Increase pressure on scare cards', 'Start polarizing ranges'],
+                            donts: ['Shut down too early', 'Assume his call means strength', 'Play pot-control too much'],
+                            note: 'HIGHEST EV NODE. His turn call is often automatic, not strong.'
+                        },
+                        river: {
+                            dos: ['Use two distinct sizings', 'Polarize large bets', 'Extract thin value small'],
+                            donts: ['Use medium "confused" sizing', 'Try fancy thin bluff-catching', 'Overestimate his river aggression'],
+                            note: 'He folds to big bets. He calls small bets with pairs. He raises 2P+.'
+                        }
+                    },
+                    stackMatrix: [
+                        { stack: '60-100bb', adjust: 'Barrel turns heavily' },
+                        { stack: '30-50bb', adjust: 'Increase isolation frequency' },
+                        { stack: '15-25bb', adjust: 'Rejam wider vs opens' },
+                        { stack: '<15bb', adjust: 'Jam linear vs limps; call tight' }
+                    ],
+                    riverSizing: [
+                        { holding: 'Marginal value', strategy: 'Bet small (30-40%)' },
+                        { holding: 'Air', strategy: 'Bet large (70%+)' },
+                        { holding: 'Strong value', strategy: 'Medium-large' },
+                        { holding: 'Bluff catcher', strategy: 'Usually fold vs big bet' }
+                    ],
+                    postCooler: 'Minor change — same exploit applies.',
+                    ftDanger: 'Low — structural leaks persist.',
+                    quote: 'Build pots early, apply pressure on turns, polarize rivers, and never pay off strength.',
+                    leakType: 'Structural',
+                    shortcut: 'Over-calls early streets, folds big rivers → Momentum Mayor'
+                },
+                playStyle: { preflop: { vpip: 'High (>50%)', pfr: 'Low (<25%)' } },
+                exploits: {
+                    preflop: ['Iso large (4-6x)', 'Value 3-bet linear', 'Attack blinds relentlessly'],
+                    warnings: ['His raise range is strong and narrow', 'He raises 2P+ on river — respect it', 'Don\'t slowplay premiums against him']
+                }
+            },
+            {
+                id: 'persona-campaigner',
+                name: 'The Campaigner',
+                isPersona: true,
+                description: 'Volatility-Tolerant Accumulator • Selective Discipline • Aggression-First',
+                persona: {
+                    subtitle: 'Finance background. Fires 5-7 bullets per Day 1. Frequently top 20%. Often makes Day 2.',
+                    coreProfile: 'Limp/call wide — including iso raises. Escalates with strength. Folds misses on flop. Polar turn bets. Ego-triggered volatility. AK/AQ stack-off at any depth.',
+                    dimensions: {
+                        preflop: { vpip: 2, limpBehavior: 0, coldcall: 2, openEP: 1, openLP: 2, pfrAggression: 1, threeBetProfile: 1, fold3bet: 3 },
+                        postflop: { flopStrategy: 1, foldcbet: 2, postflopAggression: 1, turnBehavior: 1, riverBehavior: 0 },
+                        stackpressure: { shortStack: 0, midStack: 2, deepStack: 0 },
+                        dynamics: { tableTalk: 2, attention: 1, cunning: 1, thinking: 1, tiltProfile: 1, afterLoss: 1, tanking: 1, physicalConfidence: 0 },
+                        awareness: { stackProtection: 1, bubbleBehavior: 1, finalTableAdj: 1, payJumpAwareness: 1, skillLevel: 1 },
+                        styleToggles: { tglChasesDraws: 1 },
+                        psychToggles: { tglEgoDriven: 1, tglRecklessPressure: 1 }
+                    },
+                    streets: {
+                        preflop: {
+                            dos: ['Raise larger over limps (expect calls)', 'C-bet very high frequency', 'Print one-and-done pots', 'Fold marginal hands to huge turn bets'],
+                            donts: ['Play ego pots', '4-bet bluff light', 'Assume limp = weak', 'Triple barrel air (he folds flop, not river)'],
+                            note: 'He is preflop curious, not postflop sticky.'
+                        },
+                        flop: {
+                            dos: ['C-bet high frequency', 'Print one-and-done pots', 'Value bet when checked to'],
+                            donts: ['Run multi-street bluffs', 'Expect sticky calls on misses', 'Bluff into his strength'],
+                            note: 'Folds when he whiffs. Not a sticky floater.'
+                        },
+                        turn: {
+                            dos: ['Fold marginal to massive overbets', 'Recognize huge upsize = 2P+', 'Value bet confidently'],
+                            donts: ['Hero-call huge turn sizing', 'Assume polar turn bet is balanced', 'Ignore his sizing tells'],
+                            note: 'His turn sizing is transparent. Huge upsize = 2P+.'
+                        },
+                        river: {
+                            dos: ['Value bet confidently (he hero-calls)', 'Let him escalate ego pots when you\'re strong'],
+                            donts: ['Big pure bluffs (he hero-calls large)', 'Triple barrel air', 'Engage in pride wars'],
+                            note: 'Hero-calls large bets. Capable of selective bluffs. Pride spots matter.'
+                        }
+                    },
+                    modes: [
+                        { name: 'Accumulation (Default)', desc: 'Limp/call wide, escalates with strength, folds misses, ego-triggered volatility' },
+                        { name: 'Capital Protection (Big Stack)', desc: 'Fewer marginal calls, less ego escalation, more pot control, selective aggression' },
+                        { name: 'Stabilized (Rare / FT)', desc: 'Reduces ego involvement, controls pot size, respects ICM. Observe first 2 orbits.' }
+                    ],
+                    stackMatrix: [
+                        { stack: 'Early', adjust: 'Very exploitable via flop c-bets' },
+                        { stack: 'Mid', adjust: 'Polar turn bets still reliable strength indicator' },
+                        { stack: 'FT (Volatile)', adjust: 'Self-eliminating — low danger' },
+                        { stack: 'FT (Stabilized)', adjust: 'Medium-High danger — treat closer to Accountant' }
+                    ],
+                    postCooler: 'Aggression spike — let him overextend. Short-term tilt, can torch stack.',
+                    ftDanger: 'Medium — ego can disrupt. If stabilized, Medium-High.',
+                    quote: 'A volatility-tolerant accumulator who defaults to aggression but can temporarily stabilize under high-leverage conditions.',
+                    leakType: 'Emotional (Ego)',
+                    shortcut: 'Folds flop misses, polarizes turn, hero-calls rivers → The Campaigner'
+                },
+                playStyle: { preflop: { vpip: 'High (>50%)', pfr: 'Med (25-50%)' } },
+                exploits: {
+                    preflop: ['C-bet very high frequency', 'Print one-and-done pots', 'Fold to huge turn overbets'],
+                    warnings: ['AK/AQ = no fear stacking at any depth', 'Huge turn sizing = 2P+ (transparent)', 'Hero-calls large river bets — don\'t bluff big']
+                }
+            },
+            {
+                id: 'persona-banker',
+                name: 'The Banker',
+                isPersona: true,
+                description: 'Technically Competent • Ego-Triggered Aggressor • Capital Allocator',
+                persona: {
+                    subtitle: 'Former investment banker. Financially secure. Plays poker like capital markets. Allocates risk. Escalates when challenged.',
+                    coreProfile: 'Opens suited connectors IP. Raises premiums standard. 4-bet bluffs selectively. Open jams rationally short. Takes marginal flips when +EV. Not splashy — structured.',
+                    dimensions: {
+                        preflop: { vpip: 1, limpBehavior: 0, coldcall: 1, openEP: 0, openLP: 1, pfrAggression: 1, threeBetProfile: 0, fold3bet: 2 },
+                        postflop: { flopStrategy: 0, foldcbet: 0, postflopAggression: 2, turnBehavior: 1, riverBehavior: 0 },
+                        stackpressure: { shortStack: 0, midStack: 0, deepStack: 0 },
+                        dynamics: { tableTalk: 1, attention: 2, cunning: 1, thinking: 2, tiltProfile: 0, afterLoss: 3, tanking: 0, physicalConfidence: 0 },
+                        awareness: { stackProtection: 2, bubbleBehavior: 1, finalTableAdj: 1, payJumpAwareness: 1, skillLevel: 2 },
+                        styleToggles: {},
+                        psychToggles: {}
+                    },
+                    streets: {
+                        preflop: {
+                            dos: ['Tighten dominated Ax', 'Let him escalate without matching', 'Value 3-bet premiums', '3-bet wider IP (he under-defends)'],
+                            donts: ['Light 4-bet bluff', 'Enter ego battles', 'Stack off Ax dominated'],
+                            note: 'Structured preflop. Not splashy.'
+                        },
+                        flop: {
+                            dos: ['Recognize trap frequency', 'Check back marginal hands', 'Bet for value on dry boards'],
+                            donts: ['Bluff mindlessly into his range', 'Ignore check-raise potential', 'Over-cbet wet boards'],
+                            note: 'Can trap. Can under-represent. Range-aware.'
+                        },
+                        turn: {
+                            dos: ['Charge draws on turn', 'Polarize credible lines', 'Apply pressure after coolers'],
+                            donts: ['Thin triple barrels without blockers', 'Large pure bluffs', 'Ignore his draw stickiness'],
+                            note: 'Sticky with strong draws. Semi-bluffs selectively. Capable of pressure.'
+                        },
+                        river: {
+                            dos: ['Value bet confidently (hero-call bias)', 'Fold when polarization credible', 'Selective big bluffs with blockers'],
+                            donts: ['Large pure bluffs on river', 'Hero-call his big bets without reads', 'Over-level'],
+                            note: 'Strongest river player of the personas. Hero-calls light. Thinks in polarization.'
+                        }
+                    },
+                    challengeTrigger: 'Will call off full stack when: feels disrespected, targeted repeatedly, perceives someone testing him. Ego activation layered onto competence.',
+                    stackMatrix: [
+                        { stack: 'Early', adjust: 'Aggressive probing' },
+                        { stack: 'After Rebuy', adjust: 'Accelerates' },
+                        { stack: 'Big Stack', adjust: 'Steady, controlled' },
+                        { stack: 'Short Stack', adjust: 'Rational jams + marginal flips' }
+                    ],
+                    postCooler: 'RECOVERY FAILURE — biggest exploit window. VPIP increases, aggression spikes, marginal spots taken. Apply max pressure 10-20 min after big loss.',
+                    postCoolerProtocol: [
+                        'Phase 1: Immediate Freeze — no voluntary VPIP for one orbit',
+                        'Phase 2: Stack Recalibration — "I now have X BB"',
+                        'Phase 3: Flip Filter — decline marginal flips 30 min',
+                        'Phase 4: Tempo Control — slow breathing, no table talk 10 min',
+                        'Phase 5: Population Re-Anchor — live pools under-bluff large spots'
+                    ],
+                    ftDanger: 'Highest — #1 danger ranking if stable. Highest technical ceiling.',
+                    quote: 'A capital allocator who plays technically sound poker but will deploy his entire stack to defend perceived status.',
+                    leakType: 'Recovery (Post-Cooler)',
+                    shortcut: 'Thinks deeply + ego spikes → Banker',
+                    strengths: ['Situational awareness', 'Technical competence', 'Stack leverage understanding', 'Late-stage conversion ability'],
+                    leaks: ['Ego-triggered stack-offs', 'Hero-call bias', 'Post-bad-beat aggression spike', 'Slight draw stickiness']
+                },
+                playStyle: { preflop: { vpip: 'Med (25-50%)', pfr: 'Med (25-50%)' } },
+                exploits: {
+                    preflop: ['3-bet wider IP — he under-defends', 'Value bet thinner (hero-call bias)', 'Apply pressure after coolers'],
+                    warnings: ['When silent → very strong', 'Ego trigger: will call off stack if feels disrespected', 'Strongest river player — don\'t pure bluff big']
+                }
+            },
+            {
+                id: 'persona-accountant',
+                name: 'The Accountant',
+                isPersona: true,
+                description: 'Variance-Controlled Tournament Optimizer • Late-Reg Specialist • Push/Fold Precision',
+                persona: {
+                    subtitle: '30s. Rarely multi-bullets. Often late-registers at 20-30bb. Low VPIP. Push/fold competent. Cash rate: 20-30%.',
+                    coreProfile: 'Bypasses deep-stack play entirely. Open jams 88+, any Ax, KTo-type hands. Minimizes postflop complexity. Avoids thin spots. He doesn\'t gamble — he allocates.',
+                    dimensions: {
+                        preflop: { vpip: 0, limpBehavior: 0, coldcall: 0, openEP: 0, openLP: 1, pfrAggression: 1, threeBetProfile: 0, fold3bet: 0 },
+                        postflop: { flopStrategy: 2, foldcbet: 2, postflopAggression: 0, turnBehavior: 0, riverBehavior: 3 },
+                        stackpressure: { shortStack: 0, midStack: 0, deepStack: 1 },
+                        dynamics: { tableTalk: 0, attention: 2, cunning: 2, thinking: 2, tiltProfile: 0, afterLoss: 0, tanking: 0, physicalConfidence: 1 },
+                        awareness: { stackProtection: 2, bubbleBehavior: 0, finalTableAdj: 0, payJumpAwareness: 0, skillLevel: 1 },
+                        styleToggles: { tglSetMines: 1, tglAfraidBust: 1, tglNoLight3bet: 1, tglOverfolds: 1, tglNeverBluffRiver: 1 },
+                        psychToggles: { tglScaredMoney: 1 }
+                    },
+                    streets: {
+                        preflop: {
+                            dos: ['Attack late-reg stack before double', 'Widen reshove range vs his jams (KTo reveals width)', 'Isolate aggressively', 'Apply immediate pressure'],
+                            donts: ['Fold to all his jams', 'Assume tight = only premiums', 'Let him double cheaply'],
+                            note: 'Late-reg at 20-30bb. "Double early or bust cheaply."'
+                        },
+                        flop: {
+                            dos: ['Barrel coordinated boards', 'Thin value bet more often', 'Bluff rivers selectively', 'Exploit his fold frequency'],
+                            donts: ['Check back too often', 'Assume he\'s trapping', 'Over-respect his tight image'],
+                            note: 'Avoids coordinated board fights. Rare hero calls.'
+                        },
+                        turn: {
+                            dos: ['Increase aggression on scare cards', 'Pressure with draws', 'Size up on blank turns'],
+                            donts: ['Give free cards', 'Expect thin value bets from him', 'Slow down unnecessarily'],
+                            note: 'Over-folds vs pressure. Avoids marginal edges.'
+                        },
+                        river: {
+                            dos: ['Polarize selectively', 'Bluff rivers more than usual', 'Value bet thin'],
+                            donts: ['Expect him to hero-call', 'Use tiny sizing (rare thin value from him)', 'Over-respect tightness'],
+                            note: 'Over-folds. Low river bluffing. Low thin value.'
+                        }
+                    },
+                    phases: [
+                        { name: 'Late-Reg (20-30bb)', desc: 'Open jams 88+, Ax, KTo. Minimizes postflop. "Double early or bust cheaply."' },
+                        { name: 'Stabilization (40-60bb)', desc: 'VPIP increases slightly. Still disciplined. Rarely thin value bets.' },
+                        { name: 'Bubble', desc: 'Tightens noticeably. Protects min-cash equity. Does not apply max ICM pressure.' },
+                        { name: 'Final Table', desc: 'Most dangerous phase. Push/fold heavy. Strong payout awareness. Thrives in compressed structures.' }
+                    ],
+                    stackMatrix: [
+                        { stack: 'vs Late-Reg Stack', adjust: 'Attack before he doubles' },
+                        { stack: 'Postflop', adjust: 'Barrel coordinated boards, exploit fold frequency' },
+                        { stack: 'Bubble', adjust: 'Apply ICM pressure, steal blinds relentlessly' },
+                        { stack: 'Final Table', adjust: 'Push off marginal reshoves. Respect high-leverage shove windows.' }
+                    ],
+                    postCooler: 'No change — no adjustment needed. Emotionally stable.',
+                    ftDanger: '2nd — structure dependent. Thrives in compressed stacks.',
+                    quote: 'A disciplined, late-registering, variance-minimizing tactician who converts structured tournaments through push-fold precision and payout discipline.',
+                    leakType: 'Variance Cap',
+                    shortcut: 'Late-reg push/fold + ladder discipline → Accountant',
+                    strengths: ['Emotional Stability (Very High)', 'Variance Discipline (Very High)', 'Push/Fold (Strong)', 'ICM (Moderate-Strong)'],
+                    leaks: ['Avoids thin value bets', 'Over-tightens on bubble', 'Late-reg caps overall edge', 'Rare multi-bullet reduces ceiling']
+                },
+                playStyle: { preflop: { vpip: 'Low (<25%)', pfr: 'Low (<25%)' } },
+                exploits: {
+                    preflop: ['Attack late-reg stack early', 'Widen reshove vs Ax/KTo jams', 'Steal heavily on bubble'],
+                    warnings: ['KTo in his jam range — not only premiums', 'Final table is his strongest phase', 'Don\'t get into flip wars with him']
+                }
+            }
+        ];
+
+        function seedPersonas() {
+            let changed = false;
+            // Remove legacy 'scared-money' archetype if present
+            var smIdx = database.archetypes.findIndex(a => a.id === 'scared-money');
+            if (smIdx !== -1) { database.archetypes.splice(smIdx, 1); changed = true; }
+            BUILTIN_PERSONAS.forEach(p => {
+                var existing = database.archetypes.find(a => a.id === p.id);
+                if (!existing) {
+                    database.archetypes.push(JSON.parse(JSON.stringify(p)));
+                    changed = true;
+                } else {
+                    // Always sync persona data from built-in definitions
+                    // (preserves any user-added archetypes, but keeps personas current)
+                    existing.persona = JSON.parse(JSON.stringify(p.persona));
+                    existing.description = p.description;
+                    changed = true;
+                }
+            });
+            if (changed) saveDatabase();
+        }
+
+        function renderPersonaDimensions(dims) {
+            if (!dims) return '';
+            var html = '';
+            
+            // Label maps matching the Player form exactly (excluding Player Description)
+            var sliderDefs = {
+                preflop: [
+                    { key: 'vpip', label: 'VPIP', labels: ['Low','Med','High'] },
+                    { key: 'limpBehavior', label: 'Limp Behavior', labels: ['Never','Weak Limper','Trap Limper','Limp-Call Station'] },
+                    { key: 'coldcall', label: 'Cold Call Freq', labels: ['Low','Med','High'] },
+                    { key: 'openEP', label: 'Open Discipline (EP)', labels: ['Tight','Reasonable','Too Loose'] },
+                    { key: 'openLP', label: 'Open Discipline (LP)', labels: ['Passive','Competent','Wide-Steal'] },
+                    { key: 'pfrAggression', label: 'Pre-flop Aggression', labels: ['Low','Med','High'] },
+                    { key: 'threeBetProfile', label: '3-Bet Profile', labels: ['Value-Heavy','Can Light 3-Bet','Over-Bluffs'] },
+                    { key: 'fold3bet', label: 'Defense vs 3-Bet', labels: ['Overfolds','Set-Mines Only','Defends Correctly','Sticky'] }
+                ],
+                postflop: [
+                    { key: 'flopStrategy', label: 'Flop Strategy', labels: ['Honest','Auto C-Bets','Fit-or-Fold','Sticky'] },
+                    { key: 'foldcbet', label: 'Folds to C-bet', labels: ['Never','Sometimes','Often'] },
+                    { key: 'postflopAggression', label: 'Post-flop Aggression', labels: ['Low','Med','High'] },
+                    { key: 'turnBehavior', label: 'Turn Behavior <span style="color:#a855f7">★</span>', labels: ['Shuts Down','Barrel Capable','Over-Folds','Calls Too Much'] },
+                    { key: 'riverBehavior', label: 'River Behavior', labels: ['Under-Bluffs','Hero Calls','Can\'t Fold Big Pairs','Scared Money'] }
+                ],
+                stackpressure: [
+                    { key: 'shortStack', label: 'Short Stack (≤20bb)', labels: ['Shoves Correctly','Over-Folds','Calls Off Light','Min-Raises Too Much'] },
+                    { key: 'midStack', label: 'Mid Stack (20–40bb)', labels: ['Avoids Marginal','Plays Scared','Understands Resteals','Calls Opens Wide'] },
+                    { key: 'deepStack', label: 'Deep Stack (60bb+)', labels: ['Comfortable','Avoids Big Pots','Overplays Top Pair','Overvalues Draws'] }
+                ],
+                dynamics: [
+                    { key: 'tableTalk', label: 'Table Presence', labels: ['Quiet','Engaged','Talkative'] },
+                    { key: 'attention', label: 'Focus Level', labels: ['Low','Med','High'] },
+                    { key: 'cunning', label: 'Cunning', labels: ['Cute','High','WYSIWYG'] },
+                    { key: 'thinking', label: 'Thinking', labels: ['Automaton','Average','Thinking'] },
+                    { key: 'tiltProfile', label: 'Tilt Profile', labels: ['Stable','Slow Burn','Snap-Tilt','Ego Tilt'] },
+                    { key: 'afterLoss', label: 'After Losing Big Pot', labels: ['Tightens','Spews','Leaves Table','Re-Centers'] },
+                    { key: 'tanking', label: 'Tanking Behavior', labels: ['Genuine','Fake','When Weak','When Strong'] },
+                    { key: 'physicalConfidence', label: 'Physical Confidence', labels: ['Comfortable','Hesitant','Watches Reactions','Avoids Eye Contact'] }
+                ],
+                awareness: [
+                    { key: 'stackProtection', label: 'Stack Protection', labels: ['Low','Med','High'] },
+                    { key: 'bubbleBehavior', label: 'Bubble Behavior', labels: ['Freezes Up','Attacks','Oblivious'] },
+                    { key: 'finalTableAdj', label: 'Final Table Adjustment', labels: ['Ladder-Focused','Win-Focused','Clueless'] },
+                    { key: 'payJumpAwareness', label: 'Pay Jump Awareness', labels: ['Over-Folds','Balanced','Clueless'] },
+                    { key: 'skillLevel', label: 'Skill Level', labels: ['Beginner','Intermediate','Advanced'] }
+                ]
+            };
+
+            // Toggle definitions matching PLAYER_DIM_DEFS.toggleSections
+            var toggleDefs = {
+                styleToggles: { title: 'Overall Style Toggles', toggles: [
+                    { key: 'tglChasesDraws', label: 'Chases draws' },
+                    { key: 'tglLimpAny', label: 'Limps/cold calls any two' },
+                    { key: 'tglFaceCards', label: 'Loves face cards / any ace' },
+                    { key: 'tglRiverCheap', label: 'Wants to get to river cheap' },
+                    { key: 'tglLimpJam', label: 'Limp/jams AK, AQ, 88+' },
+                    { key: 'tglCantRiver', label: 'Unable to play out to river' },
+                    { key: 'tglOverfolds', label: 'Over-folds to pressure' },
+                    { key: 'tglNeverBluffRiver', label: 'Never bluffs river' },
+                    { key: 'tglLimpCall', label: 'Limp/call heavy' },
+                    { key: 'tglSetMines', label: 'Set-mines only' },
+                    { key: 'tglAfraidBust', label: 'Afraid of busting' },
+                    { key: 'tglNoLight3bet', label: "Doesn't 3-bet light" },
+                    { key: 'tglNoStackDepth', label: "Doesn't understand stack depth" }
+                ]},
+                psychToggles: { title: 'Psychological Toggles', toggles: [
+                    { key: 'tglTiltProne', label: 'Tilt prone' },
+                    { key: 'tglScaredMoney', label: 'Scared money' },
+                    { key: 'tglEgoDriven', label: 'Ego-driven' },
+                    { key: 'tglResultOriented', label: 'Result-oriented' },
+                    { key: 'tglRecklessPressure', label: 'Reckless under pressure' }
+                ]}
+            };
+            
+            var sectionNames = {
+                preflop: 'Pre-flop',
+                postflop: 'Post-flop',
+                stackpressure: 'Stack & Pressure <span style="color:#a855f7">★</span>',
+                dynamics: 'Player Dynamics',
+                awareness: 'Game Awareness'
+            };
+            
+            // Render chip sections
+            ['preflop','postflop','stackpressure','dynamics','awareness'].forEach(function(section) {
+                if (!dims[section]) return;
+                html += '<div class="persona-dim-section">';
+                html += '<div class="persona-dim-section-title">' + sectionNames[section] + '</div>';
+                sliderDefs[section].forEach(function(def) {
+                    var val = dims[section][def.key];
+                    if (val === null || val === undefined) return;
+                    html += '<div class="persona-dim-row">';
+                    html += '<span class="persona-dim-label">' + def.label + '</span>';
+                    html += '<span class="persona-dim-chips">';
+                    html += '<span class="persona-dim-chip active">' + def.labels[val] + '</span>';
+                    html += '</span></div>';
+                });
+                html += '</div>';
+            });
+
+            // Render toggle sections
+            ['styleToggles','psychToggles'].forEach(function(sectionKey) {
+                if (!dims[sectionKey]) return;
+                var section = toggleDefs[sectionKey];
+                var hasActive = section.toggles.some(function(t) { return dims[sectionKey][t.key]; });
+                if (!hasActive) return;
+                html += '<div class="persona-dim-section">';
+                html += '<div class="persona-dim-section-title">' + section.title + '</div>';
+                html += '<div class="persona-toggle-row">';
+                section.toggles.forEach(function(t) {
+                    var isOn = dims[sectionKey][t.key] ? true : false;
+                    if (isOn) {
+                        html += '<span class="persona-dim-chip active">' + t.label + '</span>';
+                    }
+                });
+                html += '</div></div>';
+            });
+            
+            return html;
+        }
+
+        function renderPersonaDetail(arch) {
+            const p = arch.persona;
+            if (!p) return '';
+            
+            let html = '<div class="persona-detail" id="pd-' + arch.id + '" onclick="event.stopPropagation()">';
+            
+            // Core profile — always open by default
+            html += '<div class="persona-section-divider collapsible" onclick="togglePersonaSection(this)">Core Profile</div>';
+            html += '<div class="persona-section-body">';
+            html += '<div class="persona-detail-text" style="margin-bottom:0.5rem;">' + p.coreProfile + '</div>';
+            html += '</div>';
+
+            // Dimensions (slider/chip displays)
+            if (p.dimensions) {
+                html += '<div class="persona-section-divider collapsible" onclick="togglePersonaSection(this)">Profile Dimensions</div>';
+                html += '<div class="persona-section-body">';
+                html += renderPersonaDimensions(p.dimensions);
+                html += '</div>';
+            }
+            
+            // Modes (Campaigner) or Phases (Accountant)
+            if (p.modes) {
+                html += '<div class="persona-section-divider collapsible collapsed" onclick="togglePersonaSection(this)">Play Modes</div>';
+                html += '<div class="persona-section-body collapsed">';
+                p.modes.forEach(m => {
+                    html += '<div style="margin-bottom:0.4rem;"><span class="persona-meta-label">' + m.name + '</span><br><span class="persona-detail-text" style="font-size:0.75rem;">' + m.desc + '</span></div>';
+                });
+                html += '</div>';
+            }
+            if (p.phases) {
+                html += '<div class="persona-section-divider collapsible collapsed" onclick="togglePersonaSection(this)">Tournament Phases</div>';
+                html += '<div class="persona-section-body collapsed">';
+                p.phases.forEach(m => {
+                    html += '<div style="margin-bottom:0.4rem;"><span class="persona-meta-label">' + m.name + '</span><br><span class="persona-detail-text" style="font-size:0.75rem;">' + m.desc + '</span></div>';
+                });
+                html += '</div>';
+            }
+            
+            // Challenge Trigger (Banker)
+            if (p.challengeTrigger) {
+                html += '<div class="persona-section-divider collapsible collapsed" onclick="togglePersonaSection(this)">⚠ Challenge Trigger</div>';
+                html += '<div class="persona-section-body collapsed">';
+                html += '<div class="persona-detail-text">' + p.challengeTrigger + '</div>';
+                html += '</div>';
+            }
+            
+            // Street-by-street exploits
+            html += '<div class="persona-section-divider collapsible collapsed" onclick="togglePersonaSection(this)">Street-by-Street Exploit</div>';
+            html += '<div class="persona-section-body collapsed">';
+            var streetNames = { preflop: 'Preflop', flop: 'Flop', turn: 'Turn', river: 'River' };
+            Object.keys(p.streets).forEach(street => {
+                var s = p.streets[street];
+                html += '<div class="persona-street">';
+                html += '<div class="persona-street-title" onclick="togglePersonaStreet(this)">' + streetNames[street];
+                if (street === 'turn') html += ' <span style="font-size:0.6rem;letter-spacing:1px;margin-left:6px;">★ HIGH EV</span>';
+                html += '</div>';
+                html += '<div class="persona-street-body">';
+                if (s.note) html += '<div class="persona-detail-text" style="font-size:0.73rem;font-style:italic;margin-bottom:0.5rem;">' + s.note + '</div>';
+                html += '<div class="persona-do-dont">';
+                html += '<div class="persona-do"><div class="persona-do-label">Do</div><ul>' + s.dos.map(d => '<li>' + d + '</li>').join('') + '</ul></div>';
+                html += '<div class="persona-dont"><div class="persona-dont-label">Don\'t</div><ul>' + s.donts.map(d => '<li>' + d + '</li>').join('') + '</ul></div>';
+                html += '</div></div></div>';
+            });
+            html += '</div>'; // close street-by-street body
+            
+            // River sizing table (Mayor)
+            if (p.riverSizing) {
+                html += '<div class="persona-section-divider collapsible collapsed" onclick="togglePersonaSection(this)">River Sizing Map</div>';
+                html += '<div class="persona-section-body collapsed">';
+                html += '<table class="persona-table"><tr><th>You Hold</th><th>Strategy</th></tr>';
+                p.riverSizing.forEach(r => {
+                    html += '<tr><td>' + r.holding + '</td><td>' + r.strategy + '</td></tr>';
+                });
+                html += '</table>';
+                html += '</div>';
+            }
+            
+            // Stack matrix
+            html += '<div class="persona-section-divider collapsible collapsed" onclick="togglePersonaSection(this)">Stack / Phase Adjustments</div>';
+            html += '<div class="persona-section-body collapsed">';
+            html += '<table class="persona-table"><tr><th>Phase</th><th>Adjustment</th></tr>';
+            p.stackMatrix.forEach(r => {
+                html += '<tr><td>' + r.stack + '</td><td>' + r.adjust + '</td></tr>';
+            });
+            html += '</table>';
+            html += '</div>';
+            
+            // Post-cooler
+            html += '<div class="persona-section-divider collapsible collapsed" onclick="togglePersonaSection(this)">Post-Cooler Window</div>';
+            html += '<div class="persona-section-body collapsed">';
+            html += '<div class="persona-detail-text">' + p.postCooler + '</div>';
+            if (p.postCoolerProtocol) {
+                html += '<div class="persona-detail-text" style="font-size:0.7rem;margin-top:0.4rem;">';
+                p.postCoolerProtocol.forEach(step => { html += '• ' + step + '<br>'; });
+                html += '</div>';
+            }
+            html += '</div>';
+            
+            // Strengths & Leaks
+            if (p.strengths) {
+                html += '<div class="persona-section-divider collapsible collapsed" onclick="togglePersonaSection(this)">Strengths & Leaks</div>';
+                html += '<div class="persona-section-body collapsed">';
+                html += '<div class="persona-strengths-leaks">';
+                html += '<div><span class="persona-strengths-label">Strengths</span><br>' + p.strengths.join('<br>') + '</div>';
+                html += '<div><span class="persona-leaks-label">Leaks</span><br>' + p.leaks.join('<br>') + '</div>';
+                html += '</div>';
+                html += '</div>';
+            }
+            
+            // FT danger + leak type + Quick ID (always visible)
+            html += '<div style="display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap;">';
+            html += '<div class="persona-detail-text" style="font-size:0.7rem;"><span class="persona-meta-label">FT Danger:</span> ' + p.ftDanger + '</div>';
+            html += '<div class="persona-detail-text" style="font-size:0.7rem;"><span class="persona-meta-label">Leak Type:</span> ' + p.leakType + '</div>';
+            html += '</div>';
+            
+            // Quick ID shortcut
+            html += '<div class="persona-quick-id"><span class="persona-detail-text"><span class="persona-meta-label">Quick ID:</span> ' + p.shortcut + '</span></div>';
+            
+            // Quote
+            html += '<div class="persona-quote">"' + p.quote + '"</div>';
+            
+            html += '</div>';
+            return html;
+        }
+
+        function togglePersonaDetail(id) {
+            var el = document.getElementById('pd-' + id);
+            if (el) el.classList.toggle('open');
+        }
+
+        function togglePersonaSection(titleEl) {
+            event.stopPropagation();
+            titleEl.classList.toggle('collapsed');
+            var body = titleEl.nextElementSibling;
+            if (body) body.classList.toggle('collapsed');
+        }
+
+        function togglePersonaStreet(titleEl) {
+            event.stopPropagation();
+            titleEl.classList.toggle('open');
+            var body = titleEl.nextElementSibling;
+            if (body) body.classList.toggle('open');
+        }
+
         function updateArchetypeList() {
             const list = document.getElementById('archetype-list');
-            const html = database.archetypes.map(arch => `
-                <div class="list-item" onclick="editArchetype('${arch.id}')">
-                    <div class="list-item-header">
-                        <div class="list-item-title">${arch.name}</div>
-                        <div class="list-item-meta">VPIP: ${arch.playStyle.preflop.vpip} | PFR: ${arch.playStyle.preflop.pfr}</div>
-                    </div>
-                    <div class="list-item-meta">${arch.description || ''}</div>
-                </div>
-            `).join('');
+            
+            // Separate personas from user archetypes
+            const personas = database.archetypes.filter(a => a.isPersona);
+            const userArchs = database.archetypes.filter(a => !a.isPersona);
+            
+            let html = '';
+            
+            // Render personas first
+            if (personas.length > 0) {
+                personas.forEach(arch => {
+                    html += '<div class="list-item persona-item" onclick="togglePersonaDetail(\'' + arch.id + '\')">';
+                    html += '<div class="list-item-header">';
+                    html += '<div class="list-item-title">' + arch.name + '<span class="persona-badge">Persona</span></div>';
+                    html += '</div>';
+                    html += '<div class="persona-subtitle">' + arch.description + '</div>';
+                    html += renderPersonaDetail(arch);
+                    html += '</div>';
+                });
+            }
+            
+            // Render user archetypes
+            if (userArchs.length > 0) {
+                userArchs.forEach(arch => {
+                    html += '<div class="list-item" onclick="editArchetype(\'' + arch.id + '\')">';
+                    html += '<div class="list-item-header">';
+                    html += '<div class="list-item-title">' + arch.name + '</div>';
+                    var vpipLabel = arch.playStyle ? arch.playStyle.preflop.vpip : (arch.dimensions ? ['Low','Med','High'][arch.dimensions.preflop.vpip] || 'Low' : 'N/A');
+                    var pfrLabel = arch.playStyle ? arch.playStyle.preflop.pfr : (arch.dimensions ? ['Low','Med','High'][arch.dimensions.preflop.pfrAggression] || 'Low' : 'N/A');
+                    html += '<div class="list-item-meta">VPIP: ' + vpipLabel + ' | PFR: ' + pfrLabel + '</div>';
+                    html += '</div>';
+                    html += '<div class="list-item-meta">' + (arch.description || '') + '</div>';
+                    html += '</div>';
+                });
+            }
+            
             list.innerHTML = html || '<p style="opacity: 0.5;">No archetypes yet</p>';
         }
 
@@ -6737,51 +7311,11 @@ Sudden aggression = premium hand"></textarea>
                 id: id,
                 name: name,
                 description: document.getElementById('builder-description').value,
+                dimensions: getBuilderDimensions(),
                 playStyle: {
                     preflop: {
-                        openingRange: document.querySelector('input[name="opening-range"]:checked').value,
-                        vpip: document.querySelector('input[name="vpip"]:checked').value,
-                        pfr: document.querySelector('input[name="pfr"]:checked').value,
-                        threeBet: document.querySelector('input[name="3bet"]:checked').value,
-                        foldTo3Bet: document.querySelector('input[name="fold3bet"]:checked').value,
-                        coldCall: document.querySelector('input[name="coldcall"]:checked').value
-                    },
-                    postflop: {
-                        aggressionFrequency: document.querySelector('input[name="aggression"]:checked').value,
-                        foldToCBet: document.querySelector('input[name="foldcbet"]:checked').value,
-                        bluffFrequency: document.querySelector('input[name="bluff"]:checked').value
-                    },
-                    overallStyle: {
-                        chasesDraws: document.getElementById('builder-chases-draws').checked,
-                        anyTwoCards: document.getElementById('builder-any-two').checked,
-                        lovesFaces: document.getElementById('builder-loves-faces').checked,
-                        cheapRiver: document.getElementById('builder-cheap-river').checked,
-                        limpJam: document.getElementById('builder-limp-jam').checked,
-                        noRiver: document.getElementById('builder-no-river').checked
-                    }
-                },
-                personality: {
-                    psychological: {
-                        tiltProne: document.getElementById('builder-tilt-prone').checked,
-                        scaredMoney: document.getElementById('builder-scared-money').checked,
-                        egoDriven: document.getElementById('builder-ego-driven').checked,
-                        resultOriented: document.getElementById('builder-result-oriented').checked,
-                        reckless: document.getElementById('builder-reckless').checked
-                    },
-                    tableDynamics: {
-                        tableTalk: document.querySelector('input[name="table-talk"]:checked').value,
-                        attention: document.querySelector('input[name="attention"]:checked').value
-                    },
-                    stackProtection: {
-                        early: document.querySelector('input[name="stack-early"]:checked').value,
-                        middle: document.querySelector('input[name="stack-middle"]:checked').value,
-                        bubble: document.querySelector('input[name="stack-bubble"]:checked').value,
-                        late: document.querySelector('input[name="stack-late"]:checked').value
-                    },
-                    skillIndicators: {
-                        handReading: document.querySelector('input[name="hand-reading"]:checked').value,
-                        gtoAwareness: document.querySelector('input[name="gto"]:checked').value,
-                        exploitability: document.querySelector('input[name="exploitability"]:checked').value
+                        vpip: ['Low','Med','High'][getBuilderDimensions().preflop.vpip] || 'Low',
+                        pfr: ['Low','Med','High'][getBuilderDimensions().preflop.pfrAggression] || 'Low'
                     }
                 },
                 exploits: {
@@ -6802,6 +7336,7 @@ Sudden aggression = premium hand"></textarea>
 
         function resetBuilderForm() {
             document.getElementById('full-archetype-form').reset();
+            resetBuilderDimensions();
         }
 
         // Players
@@ -7226,24 +7761,66 @@ Sudden aggression = premium hand"></textarea>
                     name: name,
                     observationsList: [],
                     weaknesses: [],
+                    // Pre-flop
                     vpip: 0,
-                    pfrAggression: 0,
-                    fold3bet: 0,
+                    limpBehavior: 0,
                     coldcall: 0,
-                    postflopAggression: 0,
+                    openEP: 0,
+                    openLP: 0,
+                    pfrAggression: 0,
+                    threeBetProfile: 0,
+                    fold3bet: 0,
+                    // Post-flop
+                    flopStrategy: 0,
                     foldcbet: 0,
+                    postflopAggression: 0,
+                    turnBehavior: 0,
+                    riverBehavior: 0,
+                    // Stack & Pressure
+                    shortStack: 0,
+                    midStack: 0,
+                    deepStack: 0,
+                    // Player Dynamics
                     tableTalk: 0,
                     attention: 0,
-                    style: 0,
                     cunning: 0,
                     thinking: 0,
+                    tiltProfile: 0,
+                    afterLoss: 0,
+                    tanking: 0,
+                    physicalConfidence: 0,
+                    // Game Awareness
                     stackProtection: 0,
+                    bubbleBehavior: 0,
+                    finalTableAdj: 0,
+                    payJumpAwareness: 0,
                     skillLevel: 0,
+                    // Player Description
                     gender: 0,
                     age: 0,
                     ethnicity: 0,
                     education: 0,
-                    profession: 0
+                    profession: 0,
+                    // Overall Style Toggles
+                    tglChasesDraws: 0,
+                    tglLimpAny: 0,
+                    tglFaceCards: 0,
+                    tglRiverCheap: 0,
+                    tglLimpJam: 0,
+                    tglCantRiver: 0,
+                    tglOverfolds: 0,
+                    tglNeverBluffRiver: 0,
+                    tglLimpCall: 0,
+                    tglSetMines: 0,
+                    tglAfraidBust: 0,
+                    tglNoLight3bet: 0,
+                    tglNoStackDepth: 0,
+                    // Psychological Toggles
+                    tglTiltProne: 0,
+                    tglScaredMoney: 0,
+                    tglEgoDriven: 0,
+                    tglResultOriented: 0,
+                    tglRecklessPressure: 0
                 };
 
                 database.realPlayers.push(newPlayer);
@@ -7313,20 +7890,21 @@ Sudden aggression = premium hand"></textarea>
             
             document.getElementById('player-name').value = player.name;
             
-            // Load all slider values
-            document.getElementById('player-vpip').value = player.vpip || 0;
-            document.getElementById('player-pfr-aggression').value = player.pfrAggression || 0;
-            document.getElementById('player-fold3bet').value = player.fold3bet || 0;
-            document.getElementById('player-coldcall').value = player.coldcall || 0;
-            document.getElementById('player-postflop-aggression').value = player.postflopAggression || 0;
-            document.getElementById('player-foldcbet').value = player.foldcbet || 0;
-            document.getElementById('player-table-talk').value = player.tableTalk || 0;
-            document.getElementById('player-attention').value = player.attention || 0;
-            document.getElementById('player-style').value = player.style || 0;
-            document.getElementById('player-cunning').value = player.cunning || 0;
-            document.getElementById('player-thinking').value = player.thinking || 0;
-            document.getElementById('player-stack-protection').value = player.stackProtection || 0;
-            document.getElementById('player-skill-level').value = player.skillLevel || 0;
+            // Load all dimension chip values
+            PLAYER_DIM_DEFS.sections.forEach(function(section) {
+                section.fields.forEach(function(f) {
+                    setPlayerChipValue(f.id, player[f.dbKey] || 0);
+                });
+            });
+
+            // Load toggle values
+            if (PLAYER_DIM_DEFS.toggleSections) {
+                PLAYER_DIM_DEFS.toggleSections.forEach(function(section) {
+                    section.toggles.forEach(function(t) {
+                        setPlayerToggleValue(t.dbKey, player[t.dbKey] || 0);
+                    });
+                });
+            }
             
             // Load weaknesses
             renderWeaknessPlates(player.weaknesses || []);
@@ -7337,16 +7915,88 @@ Sudden aggression = premium hand"></textarea>
                 obsList = player.observations.split('\n').filter(x => x.trim());
             }
             renderObservationPlates(obsList);
+            
+            // Load hand history for this player
+            renderPlayerHandHistory(name);
+        }
 
-            // Load description chips
-            setDescChip('player-gender', player.gender || 0);
-            setDescChip('player-age', player.age || 0);
-            setDescChip('player-ethnicity', player.ethnicity || 0);
-            setDescChip('player-education', player.education || 0);
-            setDescChip('player-profession', player.profession || 0);
-
-            // Update slider label highlighting
-            updatePlayerSliders();
+        function renderPlayerHandHistory(playerName) {
+            const list = document.getElementById('player-hand-history-list');
+            if (!list) return;
+            
+            // Find hands where this player is hero or villain (case-insensitive, trimmed)
+            const pn = (playerName || '').trim().toLowerCase();
+            const hands = hhStoredHands.filter(function(h) {
+                var hero = (h.hero || '').trim().toLowerCase();
+                var villain = (h.villainName || '').trim().toLowerCase();
+                return hero === pn || villain === pn;
+            });
+            
+            if (hands.length === 0) {
+                list.innerHTML = '<div class="notecard-empty">No hands recorded for this player</div>';
+                return;
+            }
+            
+            list.innerHTML = '';
+            
+            hands.forEach(function(hand) {
+                const isHero = hand.hero === playerName;
+                const role = isHero ? 'Hero' : 'Villain';
+                const pos = isHero ? hand.heroPosition : hand.villainPosition;
+                const opponent = isHero ? (hand.villainFirstName || hand.villainName || 'Villain') : (hand.heroFirstName || hand.hero || 'Hero');
+                const opponentPos = isHero ? hand.villainPosition : hand.heroPosition;
+                
+                // Build street summary
+                var streets = hand.streetActions || {};
+                var stNames = ['preflop', 'flop', 'turn', 'river'];
+                var stLabels = {preflop: 'PF', flop: 'F', turn: 'T', river: 'R'};
+                var parts = [];
+                
+                stNames.forEach(function(st) {
+                    var acts = (streets[st] || []).filter(function(a) { return a && a.action; });
+                    if (!acts.length) return;
+                    var cc = '';
+                    if (st !== 'preflop' && hand.communityCards) {
+                        cc = hand.communityCards[st] || '';
+                    }
+                    var chain = acts.map(function(a) {
+                        var who = a.actor === 'villain' ? (hand.villainFirstName || 'V') : (hand.heroFirstName || 'H');
+                        var amt = a.amount ? ' ' + parseInt(a.amount).toLocaleString() : '';
+                        return who + ':' + a.action + amt;
+                    }).join(' \u2192 ');
+                    var label = stLabels[st];
+                    if (cc) chain = '[' + cc + '] ' + chain;
+                    parts.push(label + ': ' + chain);
+                });
+                
+                // Winner
+                if (hand.winner) {
+                    var winnerName = hand.winner === 'hero' ? (hand.heroFirstName || 'Hero') : (hand.villainFirstName || 'Villain');
+                    parts.push('\u2714 ' + winnerName);
+                }
+                
+                // Hole cards
+                var cards = [];
+                if (hand.heroCards) cards.push((hand.heroFirstName || 'H') + ': ' + hand.heroCards);
+                if (hand.villainCards) cards.push((hand.villainFirstName || 'V') + ': ' + hand.villainCards);
+                
+                var entry = document.createElement('div');
+                entry.className = 'notecard-entry';
+                entry.style.cursor = 'default';
+                
+                var textSpan = document.createElement('span');
+                textSpan.className = 'notecard-entry-text';
+                
+                // Build display text
+                var header = '#' + hand.handNumber + '  ' + role + ' (' + pos + ') vs ' + opponent + ' (' + opponentPos + ')';
+                var detail = parts.join(' | ');
+                if (cards.length) detail += (detail ? ' | ' : '') + cards.join(', ');
+                if (hand.notes) detail += ' \u2014 "' + hand.notes + '"';
+                
+                textSpan.textContent = header + (detail ? ' \u2014 ' + detail : '');
+                entry.appendChild(textSpan);
+                list.appendChild(entry);
+            });
         }
 
         // === INLINE NAME EDITING ON CARD TITLE ===
@@ -7622,19 +8272,298 @@ Sudden aggression = premium hand"></textarea>
             });
         });
 
-        function setDescChip(field, value) {
-            const selector = document.querySelector(`.desc-selector[data-field="${field}"]`);
-            if (!selector) return;
-            selector.querySelectorAll('.desc-chip').forEach(c => {
+        // === PLAYER CHIP DIMENSION DEFINITIONS ===
+        var PLAYER_DIM_DEFS = {
+            sections: [
+                { key: 'preflop', title: 'Pre-flop', fields: [
+                    { id: 'player-vpip', dbKey: 'vpip', label: 'VPIP', labels: ['Low','Med','High'] },
+                    { id: 'player-limp-behavior', dbKey: 'limpBehavior', label: 'Limp Behavior', labels: ['Never','Weak Limper','Trap Limper','Limp-Call Station'] },
+                    { id: 'player-coldcall', dbKey: 'coldcall', label: 'Cold Call Freq', labels: ['Low','Med','High'] },
+                    { id: 'player-open-ep', dbKey: 'openEP', label: 'Open Discipline (EP)', labels: ['Tight','Reasonable','Too Loose'] },
+                    { id: 'player-open-lp', dbKey: 'openLP', label: 'Open Discipline (LP)', labels: ['Passive','Competent','Wide-Steal'] },
+                    { id: 'player-pfr-aggression', dbKey: 'pfrAggression', label: 'Pre-flop Aggression', labels: ['Low','Med','High'] },
+                    { id: 'player-3bet-profile', dbKey: 'threeBetProfile', label: '3-Bet Profile', labels: ['Value-Heavy','Can Light 3-Bet','Over-Bluffs'] },
+                    { id: 'player-fold3bet', dbKey: 'fold3bet', label: 'Defense vs 3-Bet', labels: ['Overfolds','Set-Mines Only','Defends Correctly','Sticky'] }
+                ]},
+                { key: 'postflop', title: 'Post-flop', fields: [
+                    { id: 'player-flop-strategy', dbKey: 'flopStrategy', label: 'Flop Strategy', labels: ['Honest','Auto C-Bets','Fit-or-Fold','Sticky'] },
+                    { id: 'player-foldcbet', dbKey: 'foldcbet', label: 'Folds to C-bet', labels: ['Never','Sometimes','Often'] },
+                    { id: 'player-postflop-aggression', dbKey: 'postflopAggression', label: 'Post-flop Aggression', labels: ['Low','Med','High'] },
+                    { id: 'player-turn-behavior', dbKey: 'turnBehavior', label: 'Turn Behavior <span style="color:#a855f7">★</span>', labels: ['Shuts Down','Barrel Capable','Over-Folds','Calls Too Much'] },
+                    { id: 'player-river-behavior', dbKey: 'riverBehavior', label: 'River Behavior', labels: ['Under-Bluffs','Hero Calls','Can\'t Fold Big Pairs','Scared Money'] }
+                ]},
+                { key: 'stackpressure', title: 'Stack & Pressure <span style="color:#a855f7">★</span>', fields: [
+                    { id: 'player-short-stack', dbKey: 'shortStack', label: 'Short Stack (≤20bb)', labels: ['Shoves Correctly','Over-Folds','Calls Off Light','Min-Raises Too Much'] },
+                    { id: 'player-mid-stack', dbKey: 'midStack', label: 'Mid Stack (20–40bb)', labels: ['Avoids Marginal','Plays Scared','Understands Resteals','Calls Opens Wide'] },
+                    { id: 'player-deep-stack', dbKey: 'deepStack', label: 'Deep Stack (60bb+)', labels: ['Comfortable','Avoids Big Pots','Overplays Top Pair','Overvalues Draws'] }
+                ]},
+                { key: 'dynamics', title: 'Player Dynamics', fields: [
+                    { id: 'player-table-talk', dbKey: 'tableTalk', label: 'Table Presence', labels: ['Quiet','Engaged','Talkative'] },
+                    { id: 'player-attention', dbKey: 'attention', label: 'Focus Level', labels: ['Low','Med','High'] },
+                    { id: 'player-cunning', dbKey: 'cunning', label: 'Cunning', labels: ['Cute','High','WYSIWYG'] },
+                    { id: 'player-thinking', dbKey: 'thinking', label: 'Thinking', labels: ['Automaton','Average','Thinking'] },
+                    { id: 'player-tilt-profile', dbKey: 'tiltProfile', label: 'Tilt Profile', labels: ['Stable','Slow Burn','Snap-Tilt','Ego Tilt'] },
+                    { id: 'player-after-loss', dbKey: 'afterLoss', label: 'After Losing Big Pot', labels: ['Tightens','Spews','Leaves Table','Re-Centers'] },
+                    { id: 'player-tanking', dbKey: 'tanking', label: 'Tanking Behavior', labels: ['Genuine','Fake','When Weak','When Strong'] },
+                    { id: 'player-physical', dbKey: 'physicalConfidence', label: 'Physical Confidence', labels: ['Comfortable','Hesitant','Watches Reactions','Avoids Eye Contact'] }
+                ]},
+                { key: 'awareness', title: 'Game Awareness', fields: [
+                    { id: 'player-stack-protection', dbKey: 'stackProtection', label: 'Stack Protection', labels: ['Low','Med','High'] },
+                    { id: 'player-bubble', dbKey: 'bubbleBehavior', label: 'Bubble Behavior', labels: ['Freezes Up','Attacks','Oblivious'] },
+                    { id: 'player-final-table', dbKey: 'finalTableAdj', label: 'Final Table Adjustment', labels: ['Ladder-Focused','Win-Focused','Clueless'] },
+                    { id: 'player-pay-jump', dbKey: 'payJumpAwareness', label: 'Pay Jump Awareness', labels: ['Over-Folds','Balanced','Clueless'] },
+                    { id: 'player-skill-level', dbKey: 'skillLevel', label: 'Skill Level', labels: ['Beginner','Intermediate','Advanced'] }
+                ]},
+                { key: 'description', title: 'Player Description', fields: [
+                    { id: 'player-gender', dbKey: 'gender', label: 'Gender', labels: ['Male','Female'] },
+                    { id: 'player-age', dbKey: 'age', label: 'Age Range', labels: ['Young Stud','Young','Middle','Old','Ancient'] },
+                    { id: 'player-ethnicity', dbKey: 'ethnicity', label: 'Ethnicity', labels: ['White','Black','E Asian','S Asian','ME','Hispanic','Other'] },
+                    { id: 'player-education', dbKey: 'education', label: 'Education', labels: ['Some','College','Graduate','Unknown'] },
+                    { id: 'player-profession', dbKey: 'profession', label: 'Profession', labels: ['White Collar','Blue Collar','Poker Pro','Retired','Other'] }
+                ]}
+            ],
+            toggleSections: [
+                { key: 'styleToggles', title: 'Overall Style Toggles', toggles: [
+                    { id: 'toggle-chases-draws', dbKey: 'tglChasesDraws', label: 'Chases draws' },
+                    { id: 'toggle-limp-any', dbKey: 'tglLimpAny', label: 'Limps/cold calls any two' },
+                    { id: 'toggle-face-cards', dbKey: 'tglFaceCards', label: 'Loves face cards / any ace' },
+                    { id: 'toggle-river-cheap', dbKey: 'tglRiverCheap', label: 'Wants to get to river cheap' },
+                    { id: 'toggle-limp-jam', dbKey: 'tglLimpJam', label: 'Limp/jams AK, AQ, 88+' },
+                    { id: 'toggle-cant-river', dbKey: 'tglCantRiver', label: 'Unable to play out to river' },
+                    { id: 'toggle-overfolds', dbKey: 'tglOverfolds', label: 'Over-folds to pressure' },
+                    { id: 'toggle-never-bluff-river', dbKey: 'tglNeverBluffRiver', label: 'Never bluffs river' },
+                    { id: 'toggle-limp-call', dbKey: 'tglLimpCall', label: 'Limp/call heavy' },
+                    { id: 'toggle-set-mines', dbKey: 'tglSetMines', label: 'Set-mines only' },
+                    { id: 'toggle-afraid-bust', dbKey: 'tglAfraidBust', label: 'Afraid of busting' },
+                    { id: 'toggle-no-light-3bet', dbKey: 'tglNoLight3bet', label: "Doesn't 3-bet light" },
+                    { id: 'toggle-no-stack-depth', dbKey: 'tglNoStackDepth', label: "Doesn't understand stack depth" }
+                ]},
+                { key: 'psychToggles', title: 'Psychological Toggles', toggles: [
+                    { id: 'toggle-tilt-prone', dbKey: 'tglTiltProne', label: 'Tilt prone' },
+                    { id: 'toggle-scared-money', dbKey: 'tglScaredMoney', label: 'Scared money' },
+                    { id: 'toggle-ego-driven', dbKey: 'tglEgoDriven', label: 'Ego-driven' },
+                    { id: 'toggle-result-oriented', dbKey: 'tglResultOriented', label: 'Result-oriented' },
+                    { id: 'toggle-reckless-pressure', dbKey: 'tglRecklessPressure', label: 'Reckless under pressure' }
+                ]}
+            ]
+        };
+
+        function renderPlayerDimensions() {
+            var container = document.getElementById('player-chip-dimensions');
+            if (!container) return;
+            var html = '';
+            PLAYER_DIM_DEFS.sections.forEach(function(section) {
+                html += '<div class="persona-dim-section">';
+                html += '<div class="persona-dim-section-title">' + section.title + '</div>';
+                section.fields.forEach(function(f) {
+                    html += '<div class="persona-dim-row">';
+                    html += '<span class="persona-dim-label">' + f.label + '</span>';
+                    html += '<span class="persona-dim-chips" data-player-field="' + f.id + '">';
+                    f.labels.forEach(function(lbl, i) {
+                        html += '<span class="persona-dim-chip player-dim-chip' + (i === 0 ? ' active' : '') + '" data-value="' + i + '" onclick="tapPlayerChip(this)">' + lbl + '</span>';
+                    });
+                    html += '</span></div>';
+                });
+                html += '</div>';
+            });
+            // Render toggle sections
+            if (PLAYER_DIM_DEFS.toggleSections) {
+                PLAYER_DIM_DEFS.toggleSections.forEach(function(section) {
+                    html += '<div class="persona-dim-section">';
+                    html += '<div class="persona-dim-section-title">' + section.title + '</div>';
+                    html += '<div class="persona-toggle-row">';
+                    section.toggles.forEach(function(t) {
+                        html += '<span class="persona-dim-chip player-toggle-chip" data-toggle-id="' + t.id + '" data-dbkey="' + t.dbKey + '" onclick="tapPlayerToggle(this)">' + t.label + '</span>';
+                    });
+                    html += '</div></div>';
+                });
+            }
+            container.innerHTML = html;
+        }
+
+        function tapPlayerChip(el) {
+            // Deactivate siblings, activate this one
+            var parent = el.parentElement;
+            parent.querySelectorAll('.player-dim-chip').forEach(function(c) { c.classList.remove('active'); });
+            el.classList.add('active');
+            // Auto-save
+            autoSavePlayer();
+        }
+
+        function tapPlayerToggle(el) {
+            // Toggle on/off (multi-select)
+            el.classList.toggle('active');
+            autoSavePlayer();
+        }
+
+        function getPlayerChipValue(fieldId) {
+            var container = document.querySelector('[data-player-field="' + fieldId + '"]');
+            if (!container) return 0;
+            var active = container.querySelector('.player-dim-chip.active');
+            return active ? parseInt(active.dataset.value) : 0;
+        }
+
+        function getPlayerToggleValue(dbKey) {
+            var el = document.querySelector('[data-dbkey="' + dbKey + '"]');
+            return el ? (el.classList.contains('active') ? 1 : 0) : 0;
+        }
+
+        function setPlayerToggleValue(dbKey, value) {
+            var el = document.querySelector('[data-dbkey="' + dbKey + '"]');
+            if (el) el.classList.toggle('active', !!value);
+        }
+
+        function setPlayerChipValue(fieldId, value) {
+            var container = document.querySelector('[data-player-field="' + fieldId + '"]');
+            if (!container) return;
+            container.querySelectorAll('.player-dim-chip').forEach(function(c) {
                 c.classList.toggle('active', parseInt(c.dataset.value) === value);
             });
         }
 
-        function getDescChipValue(field) {
-            const selector = document.querySelector(`.desc-selector[data-field="${field}"]`);
-            if (!selector) return 0;
-            const active = selector.querySelector('.desc-chip.active');
+        // Render the chip layout once at startup
+        renderPlayerDimensions();
+
+        // Render builder dimensions (same as player, excluding Player Description)
+        function renderBuilderDimensions() {
+            var container = document.getElementById('builder-chip-dimensions');
+            if (!container) return;
+            var html = '';
+            // Use all PLAYER_DIM_DEFS sections except 'description'
+            PLAYER_DIM_DEFS.sections.forEach(function(section) {
+                if (section.key === 'description') return;
+                html += '<div class="persona-dim-section">';
+                html += '<div class="persona-dim-section-title">' + section.title + '</div>';
+                section.fields.forEach(function(f) {
+                    var builderId = 'builder-' + f.id;
+                    html += '<div class="persona-dim-row">';
+                    html += '<span class="persona-dim-label">' + f.label + '</span>';
+                    html += '<span class="persona-dim-chips" data-builder-field="' + builderId + '">';
+                    f.labels.forEach(function(lbl, i) {
+                        html += '<span class="persona-dim-chip player-dim-chip' + (i === 0 ? ' active' : '') + '" data-value="' + i + '" onclick="tapBuilderChip(this)">' + lbl + '</span>';
+                    });
+                    html += '</span></div>';
+                });
+                html += '</div>';
+            });
+            // Toggle sections
+            if (PLAYER_DIM_DEFS.toggleSections) {
+                PLAYER_DIM_DEFS.toggleSections.forEach(function(section) {
+                    html += '<div class="persona-dim-section">';
+                    html += '<div class="persona-dim-section-title">' + section.title + '</div>';
+                    html += '<div class="persona-toggle-row">';
+                    section.toggles.forEach(function(t) {
+                        var builderId = 'builder-' + t.id;
+                        html += '<span class="persona-dim-chip player-toggle-chip" data-builder-toggle="' + builderId + '" data-dbkey="' + t.dbKey + '" onclick="tapBuilderToggle(this)">' + t.label + '</span>';
+                    });
+                    html += '</div></div>';
+                });
+            }
+            container.innerHTML = html;
+        }
+
+        function tapBuilderChip(el) {
+            var parent = el.parentElement;
+            parent.querySelectorAll('.player-dim-chip').forEach(function(c) { c.classList.remove('active'); });
+            el.classList.add('active');
+        }
+
+        function tapBuilderToggle(el) {
+            el.classList.toggle('active');
+        }
+
+        function getBuilderChipValue(builderId) {
+            var container = document.querySelector('[data-builder-field="' + builderId + '"]');
+            if (!container) return 0;
+            var active = container.querySelector('.player-dim-chip.active');
             return active ? parseInt(active.dataset.value) : 0;
+        }
+
+        function setBuilderChipValue(builderId, value) {
+            var container = document.querySelector('[data-builder-field="' + builderId + '"]');
+            if (!container) return;
+            container.querySelectorAll('.player-dim-chip').forEach(function(c) {
+                c.classList.toggle('active', parseInt(c.dataset.value) === value);
+            });
+        }
+
+        function getBuilderToggleValue(builderId) {
+            var el = document.querySelector('[data-builder-toggle="' + builderId + '"]');
+            return el ? (el.classList.contains('active') ? 1 : 0) : 0;
+        }
+
+        function setBuilderToggleValue(builderId, value) {
+            var el = document.querySelector('[data-builder-toggle="' + builderId + '"]');
+            if (el) el.classList.toggle('active', !!value);
+        }
+
+        function getBuilderDimensions() {
+            var dims = {};
+            PLAYER_DIM_DEFS.sections.forEach(function(section) {
+                if (section.key === 'description') return;
+                dims[section.key] = {};
+                section.fields.forEach(function(f) {
+                    dims[section.key][f.dbKey] = getBuilderChipValue('builder-' + f.id);
+                });
+            });
+            if (PLAYER_DIM_DEFS.toggleSections) {
+                PLAYER_DIM_DEFS.toggleSections.forEach(function(section) {
+                    dims[section.key] = {};
+                    section.toggles.forEach(function(t) {
+                        dims[section.key][t.dbKey] = getBuilderToggleValue('builder-' + t.id);
+                    });
+                });
+            }
+            return dims;
+        }
+
+        function setBuilderDimensions(dims) {
+            if (!dims) return;
+            PLAYER_DIM_DEFS.sections.forEach(function(section) {
+                if (section.key === 'description') return;
+                if (!dims[section.key]) return;
+                section.fields.forEach(function(f) {
+                    var val = dims[section.key][f.dbKey];
+                    if (val !== null && val !== undefined) {
+                        setBuilderChipValue('builder-' + f.id, val);
+                    }
+                });
+            });
+            if (PLAYER_DIM_DEFS.toggleSections) {
+                PLAYER_DIM_DEFS.toggleSections.forEach(function(section) {
+                    if (!dims[section.key]) return;
+                    section.toggles.forEach(function(t) {
+                        setBuilderToggleValue('builder-' + t.id, dims[section.key][t.dbKey] || 0);
+                    });
+                });
+            }
+        }
+
+        function resetBuilderDimensions() {
+            PLAYER_DIM_DEFS.sections.forEach(function(section) {
+                if (section.key === 'description') return;
+                section.fields.forEach(function(f) {
+                    setBuilderChipValue('builder-' + f.id, 0);
+                });
+            });
+            if (PLAYER_DIM_DEFS.toggleSections) {
+                PLAYER_DIM_DEFS.toggleSections.forEach(function(section) {
+                    section.toggles.forEach(function(t) {
+                        setBuilderToggleValue('builder-' + t.id, 0);
+                    });
+                });
+            }
+        }
+
+        renderBuilderDimensions();
+
+        function setDescChip(field, value) {
+            // Now maps to the new chip system
+            setPlayerChipValue(field, value);
+        }
+
+        function getDescChipValue(field) {
+            return getPlayerChipValue(field);
         }
 
         function deletePlayer() {
@@ -7653,26 +8582,24 @@ Sudden aggression = premium hand"></textarea>
             const player = {
                 name: name,
                 observationsList: getObservationsFromUI(),
-                weaknesses: getWeaknessesFromUI(),
-                vpip: parseInt(document.getElementById('player-vpip').value),
-                pfrAggression: parseInt(document.getElementById('player-pfr-aggression').value),
-                fold3bet: parseInt(document.getElementById('player-fold3bet').value),
-                coldcall: parseInt(document.getElementById('player-coldcall').value),
-                postflopAggression: parseInt(document.getElementById('player-postflop-aggression').value),
-                foldcbet: parseInt(document.getElementById('player-foldcbet').value),
-                tableTalk: parseInt(document.getElementById('player-table-talk').value),
-                attention: parseInt(document.getElementById('player-attention').value),
-                style: parseInt(document.getElementById('player-style').value),
-                cunning: parseInt(document.getElementById('player-cunning').value),
-                thinking: parseInt(document.getElementById('player-thinking').value),
-                stackProtection: parseInt(document.getElementById('player-stack-protection').value),
-                skillLevel: parseInt(document.getElementById('player-skill-level').value),
-                gender: getDescChipValue('player-gender'),
-                age: getDescChipValue('player-age'),
-                ethnicity: getDescChipValue('player-ethnicity'),
-                education: getDescChipValue('player-education'),
-                profession: getDescChipValue('player-profession')
+                weaknesses: getWeaknessesFromUI()
             };
+            
+            // Read all dimension values from chips
+            PLAYER_DIM_DEFS.sections.forEach(function(section) {
+                section.fields.forEach(function(f) {
+                    player[f.dbKey] = getPlayerChipValue(f.id);
+                });
+            });
+
+            // Read all toggle values
+            if (PLAYER_DIM_DEFS.toggleSections) {
+                PLAYER_DIM_DEFS.toggleSections.forEach(function(section) {
+                    section.toggles.forEach(function(t) {
+                        player[t.dbKey] = getPlayerToggleValue(t.dbKey);
+                    });
+                });
+            }
             
             if (currentPlayerName) {
                 const index = database.realPlayers.findIndex(p => p.name === currentPlayerName);
@@ -7687,6 +8614,34 @@ Sudden aggression = premium hand"></textarea>
         });
 
         // Brief
+
+        // === AUTO-SAVE PLAYER ON EVERY CHANGE ===
+        function autoSavePlayer() {
+            if (!currentPlayerName) return;
+            const player = database.realPlayers.find(p => p.name === currentPlayerName);
+            if (!player) return;
+            
+            // Read all values from chip dimensions
+            PLAYER_DIM_DEFS.sections.forEach(function(section) {
+                section.fields.forEach(function(f) {
+                    player[f.dbKey] = getPlayerChipValue(f.id);
+                });
+            });
+
+            // Read all toggle values
+            if (PLAYER_DIM_DEFS.toggleSections) {
+                PLAYER_DIM_DEFS.toggleSections.forEach(function(section) {
+                    section.toggles.forEach(function(t) {
+                        player[t.dbKey] = getPlayerToggleValue(t.dbKey);
+                    });
+                });
+            }
+            
+            saveDatabase();
+        }
+
+        // Auto-save on chip clicks is handled by tapPlayerChip() calling autoSavePlayer()
+
         function updateBriefPlayerSelection() {
             const container = document.getElementById('brief-player-selection');
             const html = database.realPlayers.map(player => `
@@ -7949,6 +8904,7 @@ Sudden aggression = premium hand"></textarea>
 
             // Update display
             updateBlindDisplay();
+            saveHandHistory();
         }
 
         function prevBlindLevel() {
@@ -7956,6 +8912,7 @@ Sudden aggression = premium hand"></textarea>
                 currentBlindLevel--;
                 updateBlindDisplay();
                 resetBlindCountdown();
+                saveHandHistory();
             }
         }
 
@@ -7964,6 +8921,7 @@ Sudden aggression = premium hand"></textarea>
                 currentBlindLevel++;
                 updateBlindDisplay();
                 resetBlindCountdown();
+                saveHandHistory();
             }
         }
 
@@ -8031,6 +8989,7 @@ Sudden aggression = premium hand"></textarea>
                 
                 sessionTimerInterval = setInterval(updateSessionClock, 1000);
                 updateSessionClock();
+                saveHandHistory();
             }
         }
 
@@ -8050,6 +9009,7 @@ Sudden aggression = premium hand"></textarea>
             document.getElementById('session-notes-section').style.display = 'none';
             document.getElementById('session-notes-feed').innerHTML = '';
             sessionNotes = [];
+            saveHandHistory();
         }
 
         function updateSessionClock() {
@@ -8084,12 +9044,14 @@ Sudden aggression = premium hand"></textarea>
             sessionNotes.unshift(note);
             input.value = '';
             renderSessionNotes();
+            saveHandHistory();
             input.focus();
         }
 
         function deleteSessionNote(id) {
             sessionNotes = sessionNotes.filter(n => n.id !== id);
             renderSessionNotes();
+            saveHandHistory();
         }
 
         function renderSessionNotes() {
@@ -8149,6 +9111,7 @@ Sudden aggression = premium hand"></textarea>
             const id = Date.now() + Math.random();
             sessionPlayers.push({ id, name: '', position: '', tracked: false });
             renderSessionPlayers();
+            saveHandHistory();
             // Focus the new input
             setTimeout(() => {
                 const inputs = document.querySelectorAll('.session-player-input');
@@ -8161,16 +9124,17 @@ Sudden aggression = premium hand"></textarea>
             sessionPlayers = sessionPlayers.filter(p => p.id !== id);
             renderSessionPlayers();
             hhSyncSeats();
+            saveHandHistory();
         }
 
         function setPlayerName(id, name) {
             const player = sessionPlayers.find(p => p.id === id);
-            if (player) player.name = name;
+            if (player) { player.name = name; saveHandHistory(); }
         }
 
         function setPlayerPosition(id, position) {
             const player = sessionPlayers.find(p => p.id === id);
-            if (player) player.position = position;
+            if (player) { player.position = position; saveHandHistory(); }
         }
 
         function togglePlayerTracking(id, checked) {
@@ -8188,6 +9152,7 @@ Sudden aggression = premium hand"></textarea>
 
             player.tracked = checked;
             renderSessionPlayers();
+            saveHandHistory();
         }
 
         function renderSessionPlayers() {
@@ -9543,6 +10508,169 @@ Sudden aggression = premium hand"></textarea>
         let hhCurrentHandNumber = 1;
         let hhViewingHandNumber = null; // null means current live hand
         
+        // Load persisted hand history and session
+        (function loadHandHistory() {
+            try {
+                const saved = localStorage.getItem('nitwiz_handHistory');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    hhStoredHands = parsed.hands || [];
+                    hhCurrentHandNumber = parsed.nextHandNumber || (hhStoredHands.length + 1);
+                }
+                const savedSession = localStorage.getItem('nitwiz_sessionData');
+                if (savedSession) {
+                    const sess = JSON.parse(savedSession);
+                    window._pendingSessionRestore = sess;
+                }
+            } catch(e) { console.warn('Failed to load hand history:', e); }
+        })();
+        
+        function getSessionSnapshot() {
+            // Tournament Info — prefer dataset.rawValue (set after commit) over .value
+            function getFieldVal(id) {
+                var el = document.getElementById(id);
+                if (!el) return '';
+                return el.dataset.rawValue || el.value || '';
+            }
+            
+            const buyin = getFieldVal('session-buyin');
+            const blindMin = getFieldVal('session-blind-minutes');
+            const stack = getFieldVal('session-stack');
+            const venue = getFieldVal('session-venue');
+            const tournotes = getFieldVal('session-tournotes');
+            const formatSel = document.querySelector('#session-format-selector .desc-chip.active');
+            const format = formatSel ? parseInt(formatSel.dataset.value) : 0;
+            
+            return {
+                // Tournament info
+                buyin: buyin,
+                blindMinutes: blindMin,
+                startingStack: stack,
+                venue: venue,
+                tournotes: tournotes,
+                format: format,
+                // Table setup
+                blindLevel: currentBlindLevel,
+                blindStructure: JSON.parse(JSON.stringify(blindStructure)),
+                // Players at the table
+                sessionPlayers: JSON.parse(JSON.stringify(sessionPlayers)),
+                // Live session state
+                sessionActive: sessionActive,
+                sessionStartTime: sessionStartTime,
+                sessionNotes: JSON.parse(JSON.stringify(sessionNotes))
+            };
+        }
+        
+        var _isRestoring = false;
+        
+        function restoreSessionSnapshot(sess) {
+            if (!sess) return;
+            _isRestoring = true;
+            try {
+                // Tournament info — set both value and rawValue for each field
+                var fieldMap = {
+                    'session-buyin': sess.buyin,
+                    'session-blind-minutes': sess.blindMinutes,
+                    'session-stack': sess.startingStack,
+                    'session-venue': sess.venue,
+                    'session-tournotes': sess.tournotes
+                };
+                var commitFields = ['buyin', 'blindmin', 'stack', 'venue', 'tournotes'];
+                
+                Object.keys(fieldMap).forEach(function(id) {
+                    var val = fieldMap[id];
+                    if (val) {
+                        var el = document.getElementById(id);
+                        if (el) {
+                            el.value = val;
+                            el.dataset.rawValue = val;
+                        }
+                    }
+                });
+                
+                // Commit each field to trigger display formatting
+                if (typeof commitSessionField === 'function') {
+                    commitFields.forEach(function(f) {
+                        try { commitSessionField(f); } catch(e) {}
+                    });
+                }
+                
+                if (sess.format !== undefined) {
+                    var selector = document.getElementById('session-format-selector');
+                    if (selector) {
+                        selector.querySelectorAll('.desc-chip').forEach(function(c) {
+                            c.classList.toggle('active', parseInt(c.dataset.value) === sess.format);
+                        });
+                    }
+                }
+                // Blind structure & level
+                if (sess.blindStructure) {
+                    for (var i = 0; i < sess.blindStructure.length && i < blindStructure.length; i++) {
+                        blindStructure[i] = sess.blindStructure[i];
+                    }
+                }
+                if (sess.blindLevel !== undefined) {
+                    currentBlindLevel = sess.blindLevel;
+                    updateBlindDisplay();
+                }
+                // Session players
+                if (sess.sessionPlayers && sess.sessionPlayers.length > 0) {
+                    sessionPlayers = sess.sessionPlayers;
+                    renderSessionPlayers();
+                    hhSyncSeats();
+                }
+                // Session notes
+                if (sess.sessionNotes && sess.sessionNotes.length > 0) {
+                    sessionNotes = sess.sessionNotes;
+                    renderSessionNotes();
+                }
+                // Session timer state
+                if (sess.sessionActive && sess.sessionStartTime) {
+                    sessionActive = true;
+                    sessionStartTime = sess.sessionStartTime;
+                    sessionTimerInterval = setInterval(updateSessionClock, 1000);
+                    updateSessionClock();
+                    document.getElementById('session-start-btn').style.display = 'none';
+                    document.getElementById('session-stop-btn').style.display = 'flex';
+                    document.getElementById('session-clock').classList.add('active');
+                    document.getElementById('session-status-label').textContent = 'Session in progress';
+                    if (sessionNotes.length > 0) {
+                        document.getElementById('session-notes-section').style.display = 'block';
+                    }
+                }
+            } catch(e) { console.warn('Failed to restore session:', e); }
+            _isRestoring = false;
+        }
+        
+        function saveHandHistory() {
+            if (_isRestoring) return;
+            try {
+                localStorage.setItem('nitwiz_handHistory', JSON.stringify({
+                    hands: hhStoredHands,
+                    nextHandNumber: hhCurrentHandNumber
+                }));
+                var snap = getSessionSnapshot();
+                localStorage.setItem('nitwiz_sessionData', JSON.stringify(snap));
+            } catch(e) { console.warn('Failed to save hand history:', e); }
+        }
+        
+        // Auto-save session data when app goes to background (critical for mobile PWA)
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden && !_isRestoring) {
+                saveHandHistory();
+            }
+        });
+        
+        // Also save on beforeunload (desktop browser close)
+        window.addEventListener('beforeunload', function() {
+            if (!_isRestoring) saveHandHistory();
+        });
+        
+        // Periodic auto-save every 30 seconds
+        setInterval(function() {
+            if (!_isRestoring) saveHandHistory();
+        }, 30000);
+        
         const hhPositionHierarchy = ['SB', 'BB', 'UTG', 'MP', 'HJ', 'CO', 'BTN'];
         const hhPreflopSequence = ['UTG', 'MP', 'HJ', 'CO', 'BTN', 'SB', 'BB'];
         const hhPostflopSequence = ['SB', 'BB', 'UTG', 'MP', 'HJ', 'CO', 'BTN'];
@@ -10351,6 +11479,7 @@ Sudden aggression = premium hand"></textarea>
             
             // Increment hand number (keep counter going)
             hhCurrentHandNumber++;
+            saveHandHistory();
             hhViewingHandNumber = null; // Back to live mode
             hhUpdateHandNumberDisplay();
             
@@ -10405,6 +11534,7 @@ Sudden aggression = premium hand"></textarea>
             
             // Increment hand number
             hhCurrentHandNumber++;
+            saveHandHistory();
             hhViewingHandNumber = null; // Back to live mode
             hhUpdateHandNumberDisplay();
             
@@ -10568,6 +11698,11 @@ Sudden aggression = premium hand"></textarea>
                 // Add new
                 hhStoredHands.push(handData);
             }
+            
+            saveHandHistory();
+            
+            // Refresh player hand history if viewing a player
+            if (currentPlayerName) renderPlayerHandHistory(currentPlayerName);
         }
         
         function hhFinalizeCurrentHand() {
@@ -10581,6 +11716,11 @@ Sudden aggression = premium hand"></textarea>
             } else {
                 hhStoredHands.push(handData);
             }
+            
+            saveHandHistory();
+            
+            // Refresh player hand history if viewing a player
+            if (currentPlayerName) renderPlayerHandHistory(currentPlayerName);
         }
         
         function hhUpdateHandNumberDisplay() {
@@ -10815,6 +11955,7 @@ Sudden aggression = premium hand"></textarea>
                 display.classList.add('hidden');
                 input.classList.remove('hidden');
             }
+            saveHandHistory();
         }
 
         // Wire up blur and enter for all fields
@@ -10862,6 +12003,7 @@ Sudden aggression = premium hand"></textarea>
             if (!chip) return;
             this.querySelectorAll('.desc-chip').forEach(c => c.classList.remove('active'));
             chip.classList.add('active');
+            saveHandHistory();
         });
 
         // Initialize
@@ -10870,7 +12012,16 @@ Sudden aggression = premium hand"></textarea>
         // Initialize street states after a short delay to ensure DOM is ready
         setTimeout(function() {
             hhUpdateStreetStates();
-        }, 100);
+            // Restore saved session data
+            if (window._pendingSessionRestore) {
+                restoreSessionSnapshot(window._pendingSessionRestore);
+                delete window._pendingSessionRestore;
+                // Force an immediate save to verify round-trip
+                setTimeout(function() {
+                    saveHandHistory();
+                }, 50);
+            }
+        }, 150);
 
         // Slider label highlighting
         function initSlider(sliderId) {
@@ -10935,16 +12086,19 @@ Sudden aggression = premium hand"></textarea>
 
         // Initialize all sliders
         ['vpip', 'pfr-aggression', 'fold3bet', 'coldcall',
-         'postflop-aggression', 'foldcbet',
-         'table-talk', 'attention',
-         'stack-protection', 'skill-level'].forEach(initSlider);
+         'postflop-aggression', 'foldcbet'].forEach(initSlider);
 
-        // Initialize player sliders
-        ['player-vpip', 'player-pfr-aggression', 'player-fold3bet', 'player-coldcall',
-         'player-postflop-aggression', 'player-foldcbet',
+        // Initialize player sliders (legacy — now handled by chip system)
+        ['player-vpip', 'player-limp-behavior', 'player-coldcall', 'player-open-ep', 'player-open-lp',
+         'player-pfr-aggression', 'player-3bet-profile', 'player-fold3bet',
+         'player-flop-strategy', 'player-foldcbet', 'player-postflop-aggression',
+         'player-turn-behavior', 'player-river-behavior',
+         'player-short-stack', 'player-mid-stack', 'player-deep-stack',
          'player-table-talk', 'player-attention',
-         'player-style', 'player-cunning', 'player-thinking',
-         'player-stack-protection', 'player-skill-level'].forEach(initSlider);
+         'player-cunning', 'player-thinking', 'player-tilt-profile',
+         'player-after-loss', 'player-tanking', 'player-physical',
+         'player-stack-protection', 'player-bubble', 'player-final-table',
+         'player-pay-jump', 'player-skill-level'].forEach(initSlider);
 
         // Update inlay positions on window resize
         window.addEventListener('resize', () => {
@@ -10955,24 +12109,7 @@ Sudden aggression = premium hand"></textarea>
 
         // Function to update all player slider labels
         function updatePlayerSliders() {
-            ['player-vpip', 'player-pfr-aggression', 'player-fold3bet', 'player-coldcall',
-             'player-postflop-aggression', 'player-foldcbet',
-             'player-table-talk', 'player-attention',
-             'player-style', 'player-cunning', 'player-thinking',
-             'player-stack-protection', 'player-skill-level'].forEach(sliderId => {
-                const slider = document.getElementById(sliderId);
-                if (!slider) return;
-                const labels = document.querySelectorAll(`[data-slider="${sliderId}"]`);
-                labels.forEach(label => {
-                    if (parseInt(label.dataset.value) === parseInt(slider.value)) {
-                        label.classList.add('active');
-                    } else {
-                        label.classList.remove('active');
-                    }
-                });
-                // Update inlay position
-                updateSliderInlay(slider);
-            });
+            // Now handled by chip system — no range sliders to update
         }
     </script>
 </body>
