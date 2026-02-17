@@ -23,38 +23,37 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 
-    <!-- Firebase Init -->
+    <!-- Firebase Init — Passphrase Sync -->
     <script>
         // ⚠️ REPLACE with your own config from Firebase Console
         const firebaseConfig = {
- apiKey: "AIzaSyDuRndLhamDfvt4b4acZ3l_bmsgzVJAotE",
-  authDomain: "nitwiz-94482.firebaseapp.com",
-  projectId: "nitwiz-94482",
-  storageBucket: "nitwiz-94482.firebasestorage.app",
-  messagingSenderId: "212021722345",
-  appId: "1:212021722345:web:deaa3bb42a60e1cd8d4478"
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
 
         firebase.initializeApp(firebaseConfig);
         const fbDb = firebase.firestore();
-        const fbAuth = firebase.auth();
-        // Keep user signed in across app restarts
-        fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
-        let firebaseUser = null;
-        let unsubscribeSync = null;
         let _fbSaveTimer = null;
+        let _fbDocId = localStorage.getItem('nitwiz_syncId') || null;
 
-        function firebaseSignIn() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            return fbAuth.signInWithRedirect(provider);
+        // Hash passphrase into a document ID (simple but consistent across devices)
+        async function hashPassphrase(phrase) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(phrase.trim().toLowerCase());
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        function getUserDocRef() {
-            if (!firebaseUser) return null;
-            return fbDb.collection('users').doc(firebaseUser.uid);
+        function getDocRef() {
+            if (!_fbDocId) return null;
+            return fbDb.collection('vaults').doc(_fbDocId);
         }
 
         // Debounced save — waits 1s after last change before pushing to cloud
@@ -64,9 +63,9 @@
         }
 
         function _doFirebaseSave() {
-            const ref = getUserDocRef();
+            const ref = getDocRef();
             if (!ref) return;
-            const btn = document.getElementById('firebase-auth-btn');
+            const btn = document.getElementById('firebase-sync-btn');
 
             ref.set({
                 pokerDatabase: localStorage.getItem('pokerDatabase') || '{}',
@@ -76,16 +75,14 @@
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             }).then(() => {
                 if (btn) {
-                    btn.textContent = '☁️ Saved!';
-                    setTimeout(() => {
-                        btn.textContent = '☁️ ' + (firebaseUser.displayName || '').split(' ')[0];
-                    }, 1200);
+                    btn.textContent = '☁️ Synced!';
+                    setTimeout(() => { btn.textContent = '☁️ Cloud'; }, 1200);
                 }
             }).catch(err => console.warn('Firebase save failed:', err));
         }
 
         function loadFromFirebase() {
-            const ref = getUserDocRef();
+            const ref = getDocRef();
             if (!ref) return Promise.resolve(false);
 
             return ref.get().then(doc => {
@@ -101,12 +98,41 @@
             });
         }
 
-        function handleFirebaseAuth() {
-            if (firebaseUser) {
+        function handleSyncButton() {
+            if (_fbDocId) {
+                // Already linked — force save now
                 _doFirebaseSave();
             } else {
-                firebaseSignIn().catch(err => console.error('Sign-in failed:', err));
+                // Show passphrase prompt
+                showSyncPrompt();
             }
+        }
+
+        function showSyncPrompt() {
+            const phrase = prompt('Enter a sync passphrase.\nUse the same phrase on all your devices:');
+            if (!phrase || !phrase.trim()) return;
+
+            hashPassphrase(phrase).then(function(hash) {
+                _fbDocId = hash;
+                localStorage.setItem('nitwiz_syncId', hash);
+
+                var btn = document.getElementById('firebase-sync-btn');
+
+                // Check if cloud has existing data
+                loadFromFirebase().then(function(hadData) {
+                    if (hadData) {
+                        if (confirm('Found existing cloud data. Load it?\n\nOK = Load cloud data\nCancel = Overwrite cloud with this device')) {
+                            loadDatabase();
+                            btn.textContent = '☁️ Cloud';
+                        } else {
+                            _doFirebaseSave();
+                        }
+                    } else {
+                        _doFirebaseSave();
+                        btn.textContent = '☁️ Cloud';
+                    }
+                });
+            });
         }
     </script>
 
@@ -5960,11 +5986,11 @@
 
     <div class="container" id="main-container" style="display: none;">
         <!-- Firebase Cloud Sync Button -->
-        <button id="firebase-auth-btn" class="btn-metallic" onclick="handleFirebaseAuth()"
+        <button id="firebase-sync-btn" class="btn-metallic" onclick="handleSyncButton()"
                 style="position:fixed; top:0.5rem; right:0.5rem; z-index:999;
                        font-size:0.7rem; padding:0.4rem 0.8rem; min-width:auto;
                        width:auto; height:auto;">
-            ☁️ Sign In
+            ☁️ Sync
         </button>
 
         <!-- Dashboard Tab -->
@@ -12181,28 +12207,17 @@ Sudden aggression = premium hand"></textarea>
         // Initialize
         loadDatabase();
 
-        // Handle redirect result (for PWA standalone mode sign-in)
-        fbAuth.getRedirectResult().catch(function(err) {
-            console.warn('Redirect sign-in error:', err);
-        });
-
-        // Firebase auth state — pull cloud data on sign-in
-        fbAuth.onAuthStateChanged(function(user) {
-            firebaseUser = user;
-            var btn = document.getElementById('firebase-auth-btn');
-            if (user) {
-                btn.textContent = '☁️ ' + (user.displayName || 'Synced').split(' ')[0];
-                loadFromFirebase().then(function(hadData) {
-                    if (hadData) {
-                        loadDatabase(); // Reload UI with cloud data
-                    } else {
-                        _doFirebaseSave(); // First time: push local data up
-                    }
-                });
-            } else {
-                btn.textContent = '☁️ Sign In';
-            }
-        });
+        // Auto-connect to cloud if passphrase was previously set
+        if (_fbDocId) {
+            var btn = document.getElementById('firebase-sync-btn');
+            btn.textContent = '☁️ Cloud';
+            // Pull latest from cloud on load
+            loadFromFirebase().then(function(hadData) {
+                if (hadData) {
+                    loadDatabase();
+                }
+            });
+        }
         
         // Initialize street states after a short delay to ensure DOM is ready
         setTimeout(function() {
