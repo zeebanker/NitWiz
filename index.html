@@ -23,37 +23,33 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 
-    <!-- Firebase Init — Passphrase Sync -->
+    <!-- Firebase Init — Auth System -->
     <script>
         // ⚠️ REPLACE with your own config from Firebase Console
         const firebaseConfig = {
-             apiKey: "AIzaSyDuRndLhamDfvt4b4acZ3l_bmsgzVJAotE",
-  authDomain: "nitwiz-94482.firebaseapp.com",
-  projectId: "nitwiz-94482",
-  storageBucket: "nitwiz-94482.firebasestorage.app",
-  messagingSenderId: "212021722345",
-  appId: "1:212021722345:web:deaa3bb42a60e1cd8d4478"
+             	apiKey: "AIzaSyDuRndLhamDfvt4b4acZ3l_bmsgzVJAotE",
+  		authDomain: "nitwiz-94482.firebaseapp.com",
+  		projectId: "nitwiz-94482",
+  		storageBucket: "nitwiz-94482.firebasestorage.app",
+  		messagingSenderId: "212021722345",
+  		appId: "1:212021722345:web:deaa3bb42a60e1cd8d4478"
         };
+
+        // ⚠️ SET YOUR ADMIN EMAIL HERE
+        const ADMIN_EMAIL = "zeebanker@gmail.com";
 
         firebase.initializeApp(firebaseConfig);
         const fbDb = firebase.firestore();
+        const fbAuth = firebase.auth();
 
         let _fbSaveTimer = null;
-        let _fbDocId = localStorage.getItem('nitwiz_syncId') || null;
-
-        // Hash passphrase into a document ID (simple but consistent across devices)
-        async function hashPassphrase(phrase) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(phrase.trim().toLowerCase());
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
+        let _currentUser = null;
 
         function getDocRef() {
-            if (!_fbDocId) return null;
-            return fbDb.collection('vaults').doc(_fbDocId);
+            if (!_currentUser) return null;
+            return fbDb.collection('vaults').doc(_currentUser.uid);
         }
 
         // Debounced save — waits 1s after last change before pushing to cloud
@@ -68,6 +64,8 @@
             const btn = document.getElementById('firebase-sync-btn');
 
             ref.set({
+                email: _currentUser.email,
+                uid: _currentUser.uid,
                 pokerDatabase: localStorage.getItem('pokerDatabase') || '{}',
                 handHistory: localStorage.getItem('nitwiz_handHistory') || '{}',
                 sessionData: localStorage.getItem('nitwiz_sessionData') || '{}',
@@ -99,44 +97,607 @@
         }
 
         function handleSyncButton() {
-            if (_fbDocId) {
-                // Already linked — force save now
+            if (_currentUser) {
                 _doFirebaseSave();
-            } else {
-                // Show passphrase prompt
-                showSyncPrompt();
             }
         }
 
-        function showSyncPrompt() {
-            const phrase = prompt('Enter a sync passphrase.\nUse the same phrase on all your devices:');
-            if (!phrase || !phrase.trim()) return;
-
-            hashPassphrase(phrase).then(function(hash) {
-                _fbDocId = hash;
-                localStorage.setItem('nitwiz_syncId', hash);
-
-                var btn = document.getElementById('firebase-sync-btn');
-
-                // Check if cloud has existing data
-                loadFromFirebase().then(function(hadData) {
-                    if (hadData) {
-                        if (confirm('Found existing cloud data. Load it?\n\nOK = Load cloud data\nCancel = Overwrite cloud with this device')) {
-                            loadDatabase();
-                            btn.textContent = '☁️ Cloud';
-                        } else {
-                            _doFirebaseSave();
-                        }
-                    } else {
-                        _doFirebaseSave();
-                        btn.textContent = '☁️ Cloud';
-                    }
-                });
-            });
+        // === AUTH FUNCTIONS ===
+        function isAdmin() {
+            return _currentUser && _currentUser.email === ADMIN_EMAIL;
         }
+
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const errorEl = document.getElementById('login-error');
+            const btn = document.getElementById('login-btn');
+            errorEl.textContent = '';
+
+            if (!email || !password) {
+                errorEl.textContent = 'Please enter email and password.';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Signing in...';
+
+            try {
+                await fbAuth.signInWithEmailAndPassword(email, password);
+                // onAuthStateChanged handles the rest
+            } catch (err) {
+                btn.disabled = false;
+                btn.textContent = 'Sign In';
+                if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+                    errorEl.textContent = 'Invalid email or password.';
+                } else if (err.code === 'auth/too-many-requests') {
+                    errorEl.textContent = 'Too many attempts. Try again later.';
+                } else {
+                    errorEl.textContent = 'Login failed: ' + err.message;
+                }
+            }
+        }
+
+        async function handleRequestAccess() {
+            const email = document.getElementById('request-email').value.trim();
+            const name = document.getElementById('request-name').value.trim();
+            const errorEl = document.getElementById('request-error');
+            const successEl = document.getElementById('request-success');
+            const btn = document.getElementById('request-btn');
+            errorEl.textContent = '';
+            successEl.textContent = '';
+
+            if (!email) {
+                errorEl.textContent = 'Please enter your email.';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Submitting...';
+
+            try {
+                // Check if already requested
+                const existing = await fbDb.collection('accessRequests').doc(email.toLowerCase()).get();
+                if (existing.exists) {
+                    const status = existing.data().status;
+                    if (status === 'pending') {
+                        errorEl.textContent = 'You already have a pending request. Please wait for approval.';
+                    } else if (status === 'approved') {
+                        errorEl.textContent = 'You\'ve been approved! Go back to sign in.';
+                    } else if (status === 'denied') {
+                        errorEl.textContent = 'Your request was denied. Contact the admin.';
+                    }
+                    btn.disabled = false;
+                    btn.textContent = 'Request Access';
+                    return;
+                }
+
+                await fbDb.collection('accessRequests').doc(email.toLowerCase()).set({
+                    email: email.toLowerCase(),
+                    name: name || 'Not provided',
+                    status: 'pending',
+                    requestedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                successEl.textContent = 'Request submitted! You\'ll receive access once approved.';
+                document.getElementById('request-email').value = '';
+                document.getElementById('request-name').value = '';
+            } catch (err) {
+                errorEl.textContent = 'Failed to submit: ' + err.message;
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Request Access';
+        }
+
+        async function handleSignUp() {
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
+            const confirmPw = document.getElementById('signup-confirm').value;
+            const errorEl = document.getElementById('signup-error');
+            const btn = document.getElementById('signup-btn');
+            errorEl.textContent = '';
+
+            if (!email || !password) {
+                errorEl.textContent = 'Please fill in all fields.';
+                return;
+            }
+            if (password.length < 6) {
+                errorEl.textContent = 'Password must be at least 6 characters.';
+                return;
+            }
+            if (password !== confirmPw) {
+                errorEl.textContent = 'Passwords do not match.';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Creating account...';
+
+            try {
+                // Check if email is approved
+                const approved = await fbDb.collection('accessRequests').doc(email.toLowerCase()).get();
+                if (!approved.exists || approved.data().status !== 'approved') {
+                    // Also allow admin to sign up without approval
+                    if (email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+                        errorEl.textContent = 'Your email has not been approved yet. Request access first.';
+                        btn.disabled = false;
+                        btn.textContent = 'Create Account';
+                        return;
+                    }
+                }
+
+                await fbAuth.createUserWithEmailAndPassword(email, password);
+                // Mark as registered
+                if (approved.exists) {
+                    await fbDb.collection('accessRequests').doc(email.toLowerCase()).update({
+                        status: 'registered',
+                        registeredAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                // onAuthStateChanged handles the rest
+            } catch (err) {
+                btn.disabled = false;
+                btn.textContent = 'Create Account';
+                if (err.code === 'auth/email-already-in-use') {
+                    errorEl.textContent = 'An account with this email already exists. Go back to sign in.';
+                } else {
+                    errorEl.textContent = 'Sign up failed: ' + err.message;
+                }
+            }
+        }
+
+        function handleLogout() {
+            if (confirm('Sign out of NitWiz?')) {
+                fbAuth.signOut();
+            }
+        }
+
+        function showLoginScreen() {
+            document.getElementById('auth-screen').style.display = 'flex';
+            document.getElementById('main-container').style.display = 'none';
+            document.getElementById('splash-screen').style.display = 'none';
+            showAuthPanel('login');
+        }
+
+        function showAuthPanel(panel) {
+            document.querySelectorAll('.auth-panel').forEach(p => p.style.display = 'none');
+            document.getElementById('auth-' + panel).style.display = 'block';
+            // Clear errors
+            document.querySelectorAll('.auth-error, .auth-success').forEach(el => el.textContent = '');
+        }
+
+        // === ADMIN FUNCTIONS ===
+        async function loadAccessRequests() {
+            if (!isAdmin()) return;
+            const list = document.getElementById('admin-requests-list');
+            const statsEl = document.getElementById('admin-stats');
+            if (!list) return;
+            list.innerHTML = '<div style="text-align:center;color:#888;padding:1rem;">Loading...</div>';
+
+            try {
+                const snap = await fbDb.collection('accessRequests').orderBy('requestedAt', 'desc').get();
+
+                // Calculate stats
+                let pending = 0, approved = 0, registered = 0;
+                snap.forEach(doc => {
+                    const s = doc.data().status;
+                    if (s === 'pending') pending++;
+                    else if (s === 'approved') approved++;
+                    else if (s === 'registered') registered++;
+                });
+
+                if (statsEl) {
+                    statsEl.innerHTML = `
+                        <div class="admin-stat"><div class="admin-stat-number">${pending}</div><div class="admin-stat-label">Pending</div></div>
+                        <div class="admin-stat"><div class="admin-stat-number">${approved}</div><div class="admin-stat-label">Approved</div></div>
+                        <div class="admin-stat"><div class="admin-stat-number">${registered}</div><div class="admin-stat-label">Active</div></div>
+                    `;
+                }
+
+                if (snap.empty) {
+                    list.innerHTML = '<div style="text-align:center;color:#888;padding:1rem;">No access requests yet.</div>';
+                    return;
+                }
+
+                list.innerHTML = '';
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    const div = document.createElement('div');
+                    div.className = 'admin-request-card';
+                    div.setAttribute('data-status', d.status);
+
+                    const statusBadge = {
+                        'pending': '🟡 Pending',
+                        'approved': '🟢 Approved',
+                        'denied': '🔴 Denied',
+                        'registered': '✅ Registered'
+                    }[d.status] || d.status;
+
+                    const dateStr = d.requestedAt ? new Date(d.requestedAt.seconds * 1000).toLocaleDateString() : 'Unknown';
+
+                    div.innerHTML = `
+                        <div class="admin-request-info">
+                            <div class="admin-request-email">${d.email}</div>
+                            <div class="admin-request-name">${d.name || ''}</div>
+                            <div class="admin-request-meta">${dateStr} • ${statusBadge}</div>
+                        </div>
+                        <div class="admin-request-actions">
+                            ${d.status === 'pending' ? `
+                                <button class="btn-approve" onclick="approveRequest('${d.email}')">Approve</button>
+                                <button class="btn-deny" onclick="denyRequest('${d.email}')">Deny</button>
+                            ` : ''}
+                            ${d.status === 'approved' ? `
+                                <button class="btn-deny" onclick="denyRequest('${d.email}')">Revoke</button>
+                            ` : ''}
+                            ${d.status === 'denied' ? `
+                                <button class="btn-approve" onclick="approveRequest('${d.email}')">Approve</button>
+                            ` : ''}
+                            ${d.status === 'registered' ? `
+                                <button class="btn-deny" onclick="denyRequest('${d.email}')">Revoke</button>
+                            ` : ''}
+                        </div>
+                    `;
+                    list.appendChild(div);
+                });
+            } catch (err) {
+                list.innerHTML = '<div style="color:#ff6b6b;padding:1rem;">Error loading requests: ' + err.message + '</div>';
+            }
+        }
+
+        async function approveRequest(email) {
+            try {
+                await fbDb.collection('accessRequests').doc(email).update({
+                    status: 'approved',
+                    approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    approvedBy: _currentUser.email
+                });
+                loadAccessRequests();
+            } catch (err) {
+                alert('Failed to approve: ' + err.message);
+            }
+        }
+
+        async function denyRequest(email) {
+            if (!confirm('Deny/revoke access for ' + email + '?')) return;
+            try {
+                await fbDb.collection('accessRequests').doc(email).update({
+                    status: 'denied',
+                    deniedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                loadAccessRequests();
+            } catch (err) {
+                alert('Failed to deny: ' + err.message);
+            }
+        }
+
+        // === AUTH STATE LISTENER ===
+        // Enter key support for auth forms
+        document.addEventListener('keydown', function(e) {
+            if (e.key !== 'Enter') return;
+            const active = document.activeElement;
+            if (active && active.id === 'login-password') handleLogin();
+            if (active && active.id === 'signup-confirm') handleSignUp();
+            if (active && active.id === 'request-email') handleRequestAccess();
+        });
+
+        fbAuth.onAuthStateChanged(async function(user) {
+            if (user) {
+                _currentUser = user;
+
+                // Hide auth, show main
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('splash-screen').style.display = 'none';
+                const main = document.getElementById('main-container');
+                main.style.display = 'block';
+                main.style.opacity = '1';
+
+                // Update sync button to show logged in
+                const btn = document.getElementById('firebase-sync-btn');
+                if (btn) btn.textContent = '☁️ Cloud';
+
+                // Show/hide admin button
+                const adminBtn = document.getElementById('admin-dashboard-btn');
+                if (adminBtn) {
+                    adminBtn.style.display = isAdmin() ? 'flex' : 'none';
+                }
+
+                // Show logout button with user email
+                const logoutBtn = document.getElementById('logout-btn');
+                if (logoutBtn) {
+                    logoutBtn.title = 'Signed in as ' + user.email;
+                }
+
+                // Load from cloud then refresh views
+                const hadData = await loadFromFirebase();
+                loadDatabase();
+
+                switchTab('dashboard');
+            } else {
+                _currentUser = null;
+                showLoginScreen();
+            }
+        });
     </script>
 
     <style>
+        /* === AUTH SCREEN === */
+        #auth-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            background: 
+                linear-gradient(135deg, rgba(10, 14, 39, 0.7) 0%, rgba(26, 31, 58, 0.8) 50%, rgba(15, 22, 41, 0.7) 100%),
+                repeating-linear-gradient(0deg, #c0c5ce 0px, #d4d8de 1px, #e8eaed 2px, #d4d8de 3px, #c0c5ce 4px, #a8adb5 5px, #c0c5ce 6px);
+            padding: 1rem;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+        }
+
+        .auth-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #c0c5ce, #ffffff, #a8adb5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+            margin-bottom: 0.3rem;
+        }
+
+        .auth-subtitle {
+            font-size: 0.65rem;
+            letter-spacing: 0.4em;
+            color: #a855f7;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .auth-panel {
+            display: none;
+        }
+
+        .auth-card {
+            background: linear-gradient(145deg, rgba(26, 31, 58, 0.95), rgba(15, 20, 45, 0.98));
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .auth-card h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 10px;
+            background: rgba(10, 14, 39, 0.6);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .auth-input:focus {
+            border-color: #a855f7;
+        }
+
+        .auth-input::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 0.9rem;
+            margin-top: 0.5rem;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .auth-btn:hover { opacity: 0.9; }
+        .auth-btn:active { transform: scale(0.98); }
+        .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .auth-error {
+            color: #ff6b6b;
+            font-size: 0.8rem;
+            margin-top: 0.75rem;
+            min-height: 1.2em;
+        }
+
+        .auth-success {
+            color: #4ade80;
+            font-size: 0.8rem;
+            margin-top: 0.75rem;
+            min-height: 1.2em;
+        }
+
+        .auth-link {
+            color: #a855f7;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-link:hover {
+            text-decoration: underline;
+        }
+
+        .auth-footer {
+            margin-top: 1.2rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            margin: 1.2rem 0;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.75rem;
+        }
+
+        .auth-divider::before, .auth-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(168, 85, 247, 0.15);
+        }
+
+        .auth-divider span {
+            padding: 0 0.75rem;
+        }
+
+        /* === ADMIN PANEL === */
+        .admin-request-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.85rem 1rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(145deg, rgba(26, 31, 58, 0.7), rgba(15, 20, 45, 0.9));
+            border: 1px solid rgba(168, 85, 247, 0.15);
+            border-radius: 10px;
+        }
+
+        .admin-request-card[data-status="pending"] {
+            border-left: 3px solid #eab308;
+        }
+        .admin-request-card[data-status="approved"],
+        .admin-request-card[data-status="registered"] {
+            border-left: 3px solid #4ade80;
+        }
+        .admin-request-card[data-status="denied"] {
+            border-left: 3px solid #ff6b6b;
+        }
+
+        .admin-request-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .admin-request-email {
+            font-weight: 700;
+            color: #fff;
+            font-size: 0.85rem;
+            word-break: break-all;
+        }
+
+        .admin-request-name {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.75rem;
+        }
+
+        .admin-request-meta {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.7rem;
+            margin-top: 0.2rem;
+        }
+
+        .admin-request-actions {
+            display: flex;
+            gap: 0.4rem;
+            margin-left: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .btn-approve {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: #000;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-deny {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #ff6b6b, #ef4444);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-approve:active, .btn-deny:active {
+            transform: scale(0.95);
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .admin-stat {
+            text-align: center;
+            padding: 0.75rem;
+            background: linear-gradient(145deg, rgba(26, 31, 58, 0.7), rgba(15, 20, 45, 0.9));
+            border: 1px solid rgba(168, 85, 247, 0.15);
+            border-radius: 10px;
+        }
+
+        .admin-stat-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #a855f7;
+        }
+
+        .admin-stat-label {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Logout button */
+        #logout-btn {
+            position: fixed;
+            top: 0.5rem;
+            left: 0.5rem;
+            z-index: 999;
+            font-size: 0.7rem;
+            padding: 0.4rem 0.8rem;
+            min-width: auto;
+            width: auto;
+            height: auto;
+            background: linear-gradient(145deg, rgba(26, 31, 58, 0.9), rgba(15, 20, 45, 0.95));
+            border: 1px solid rgba(168, 85, 247, 0.25);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+        }
+
+        #logout-btn:active {
+            transform: scale(0.95);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -5984,7 +6545,66 @@
         </div>
     </div>
 
+    <!-- Auth Screen -->
+    <div id="auth-screen" style="display: none;">
+        <div class="auth-container">
+            <div class="auth-logo">NitWiz</div>
+            <div class="auth-subtitle">Poker Intelligence</div>
+
+            <!-- Login Panel -->
+            <div id="auth-login" class="auth-panel" style="display: block;">
+                <div class="auth-card">
+                    <h2>Sign In</h2>
+                    <input type="email" id="login-email" class="auth-input" placeholder="Email" autocomplete="email">
+                    <input type="password" id="login-password" class="auth-input" placeholder="Password" autocomplete="current-password">
+                    <button id="login-btn" class="auth-btn" onclick="handleLogin()">Sign In</button>
+                    <div id="login-error" class="auth-error"></div>
+                </div>
+                <div class="auth-footer">
+                    <span class="auth-link" onclick="showAuthPanel('signup')">Create account</span>
+                    <div class="auth-divider"><span>or</span></div>
+                    <span class="auth-link" onclick="showAuthPanel('request')">Request access</span>
+                </div>
+            </div>
+
+            <!-- Sign Up Panel -->
+            <div id="auth-signup" class="auth-panel">
+                <div class="auth-card">
+                    <h2>Create Account</h2>
+                    <p style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-bottom:1rem;">Your email must be approved before you can create an account.</p>
+                    <input type="email" id="signup-email" class="auth-input" placeholder="Approved email" autocomplete="email">
+                    <input type="password" id="signup-password" class="auth-input" placeholder="Create password (6+ chars)" autocomplete="new-password">
+                    <input type="password" id="signup-confirm" class="auth-input" placeholder="Confirm password" autocomplete="new-password">
+                    <button id="signup-btn" class="auth-btn" onclick="handleSignUp()">Create Account</button>
+                    <div id="signup-error" class="auth-error"></div>
+                </div>
+                <div class="auth-footer">
+                    <span class="auth-link" onclick="showAuthPanel('login')">← Back to sign in</span>
+                </div>
+            </div>
+
+            <!-- Request Access Panel -->
+            <div id="auth-request" class="auth-panel">
+                <div class="auth-card">
+                    <h2>Request Access</h2>
+                    <p style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-bottom:1rem;">Submit your email and the admin will review your request.</p>
+                    <input type="text" id="request-name" class="auth-input" placeholder="Your name (optional)">
+                    <input type="email" id="request-email" class="auth-input" placeholder="Email address">
+                    <button id="request-btn" class="auth-btn" onclick="handleRequestAccess()">Request Access</button>
+                    <div id="request-error" class="auth-error"></div>
+                    <div id="request-success" class="auth-success"></div>
+                </div>
+                <div class="auth-footer">
+                    <span class="auth-link" onclick="showAuthPanel('login')">← Back to sign in</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container" id="main-container" style="display: none;">
+        <!-- Logout Button (top-left) -->
+        <button id="logout-btn" onclick="handleLogout()">🔓 Sign Out</button>
+
         <!-- Firebase Cloud Sync Button -->
         <button id="firebase-sync-btn" class="btn-metallic" onclick="handleSyncButton()"
                 style="position:fixed; top:0.5rem; right:0.5rem; z-index:999;
@@ -6053,7 +6673,17 @@
             </div>
             
             <!-- Exit Button -->
-            <div style="display: flex; justify-content: center; margin-top: 3rem;">
+            <div style="display: flex; justify-content: center; margin-top: 3rem; gap: 1rem; flex-wrap: wrap;">
+                <!-- Admin Panel Button (only visible to admin) -->
+                <button id="admin-dashboard-btn" class="dashboard-btn" onclick="switchTab('admin'); loadAccessRequests();" style="display:none; max-width:120px;">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <span>Admin</span>
+                </button>
+            </div>
+
+            <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
                 <button class="exit-btn" onclick="exitApp()" title="Exit NitWiz" style="position: static; transform: none;">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -6622,6 +7252,36 @@ Sudden aggression = premium hand"></textarea>
                 <div class="form-subsection" id="session-notes-section" style="display:none;">
                     <h4 class="form-subsection-header">Session Notes</h4>
                     <div class="session-notes-feed" id="session-notes-feed"></div>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: center; margin: 2rem 0 1rem;">
+                <button type="button" class="btn-metallic btn-home" onclick="switchTab('dashboard')" title="Return to Dashboard">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Admin Panel Tab (only accessible by admin) -->
+        <div id="admin" class="tab-content">
+            <div class="section">
+                <div class="section-title">🛡️ Admin Panel</div>
+
+                <div class="admin-stats" id="admin-stats">
+                    <!-- Filled by JS -->
+                </div>
+
+                <div class="form-subsection">
+                    <h4 class="form-subsection-header">Access Requests</h4>
+                    <div id="admin-requests-list">
+                        <div style="text-align:center;color:#888;padding:1rem;">Loading...</div>
+                    </div>
+                </div>
+
+                <div style="margin-top:1.5rem;">
+                    <button class="btn-metallic" onclick="loadAccessRequests()" style="width:100%;">🔄 Refresh</button>
                 </div>
             </div>
             <div style="display: flex; justify-content: center; margin: 2rem 0 1rem;">
@@ -8952,18 +9612,22 @@ Sudden aggression = premium hand"></textarea>
 
         function hideSplash() {
             const splash = document.getElementById('splash-screen');
-            const main = document.getElementById('main-container');
             splash.classList.add('fade-out');
             setTimeout(() => {
                 splash.style.display = 'none';
-                main.style.display = 'block';
-                main.style.opacity = '0';
-                requestAnimationFrame(() => {
-                    main.style.transition = 'opacity 0.3s ease';
-                    main.style.opacity = '1';
-                });
-                // Make sure dashboard is active when entering from splash
-                switchTab('dashboard');
+                // If already authenticated, go to main; otherwise show login
+                if (_currentUser) {
+                    const main = document.getElementById('main-container');
+                    main.style.display = 'block';
+                    main.style.opacity = '0';
+                    requestAnimationFrame(() => {
+                        main.style.transition = 'opacity 0.3s ease';
+                        main.style.opacity = '1';
+                    });
+                    switchTab('dashboard');
+                } else {
+                    showLoginScreen();
+                }
             }, 350);
             haptic('light');
         }
@@ -12207,17 +12871,8 @@ Sudden aggression = premium hand"></textarea>
         // Initialize
         loadDatabase();
 
-        // Auto-connect to cloud if passphrase was previously set
-        if (_fbDocId) {
-            var btn = document.getElementById('firebase-sync-btn');
-            btn.textContent = '☁️ Cloud';
-            // Pull latest from cloud on load
-            loadFromFirebase().then(function(hadData) {
-                if (hadData) {
-                    loadDatabase();
-                }
-            });
-        }
+        // Auth state is handled by onAuthStateChanged in the Firebase init script above.
+        // Cloud data is loaded automatically when user signs in.
         
         // Initialize street states after a short delay to ensure DOM is ready
         setTimeout(function() {
