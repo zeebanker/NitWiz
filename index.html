@@ -29,12 +29,12 @@
     <script>
         // ⚠️ REPLACE with your own config from Firebase Console
         const firebaseConfig = {
-             	apiKey: "AIzaSyDuRndLhamDfvt4b4acZ3l_bmsgzVJAotE",
-  		authDomain: "nitwiz-94482.firebaseapp.com",
-  		projectId: "nitwiz-94482",
-  		storageBucket: "nitwiz-94482.firebasestorage.app",
-  		messagingSenderId: "212021722345",
-  		appId: "1:212021722345:web:deaa3bb42a60e1cd8d4478"
+            apiKey: "AIzaSyDuRndLhamDfvt4b4acZ3l_bmsgzVJAotE",
+            authDomain: "nitwiz-94482.firebaseapp.com",
+            projectId: "nitwiz-94482",
+            storageBucket: "nitwiz-94482.firebasestorage.app",
+            messagingSenderId: "212021722345",
+            appId: "1:212021722345:web:deaa3bb42a60e1cd8d4478"
         };
 
         // ⚠️ SET YOUR ADMIN EMAIL HERE
@@ -215,11 +215,11 @@
             btn.textContent = 'Creating account...';
 
             try {
-                // Check if email is approved
-                const approved = await fbDb.collection('accessRequests').doc(email.toLowerCase()).get();
-                if (!approved.exists || approved.data().status !== 'approved') {
-                    // Also allow admin to sign up without approval
-                    if (email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+                // Admin can sign up without approval — skip Firestore check entirely
+                if (email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+                    // Check if email is approved
+                    const approved = await fbDb.collection('accessRequests').doc(email.toLowerCase()).get();
+                    if (!approved.exists || approved.data().status !== 'approved') {
                         errorEl.textContent = 'Your email has not been approved yet. Request access first.';
                         btn.disabled = false;
                         btn.textContent = 'Create Account';
@@ -228,13 +228,18 @@
                 }
 
                 await fbAuth.createUserWithEmailAndPassword(email, password);
-                // Mark as registered
-                if (approved.exists) {
-                    await fbDb.collection('accessRequests').doc(email.toLowerCase()).update({
-                        status: 'registered',
-                        registeredAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
+
+                // Mark as registered if they had an access request
+                try {
+                    const reqDoc = await fbDb.collection('accessRequests').doc(email.toLowerCase()).get();
+                    if (reqDoc.exists) {
+                        await fbDb.collection('accessRequests').doc(email.toLowerCase()).update({
+                            status: 'registered',
+                            registeredAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                } catch(e) { /* ignore — admin may not have an access request doc */ }
+
                 // onAuthStateChanged handles the rest
             } catch (err) {
                 btn.disabled = false;
