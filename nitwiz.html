@@ -7721,9 +7721,14 @@ Sudden aggression = premium hand"></textarea>
             document.getElementById('player-form-section').style.display = 'none';
             currentPlayerName = null;
 
-            // Scroll to top of Players tab
+            // Scroll to top so the drum input is visible
             const playersTab = document.getElementById('players');
-            playersTab.scrollTo({ top: 0, behavior: 'smooth' });
+            const drumContainer = document.getElementById('drum-container');
+            if (drumContainer) {
+                drumContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
 
             // Don't start if already adding
             if (DRUM.cylinder.querySelector('.drum-new-input')) return;
@@ -7732,8 +7737,37 @@ Sudden aggression = premium hand"></textarea>
             cancelAnimationFrame(DRUM.animFrame);
             DRUM._addingNew = true;
 
+            // Hide the touch overlay so the input is tappable on mobile
+            const overlay = document.getElementById('drum-touch-overlay');
+            if (overlay) overlay.style.display = 'none';
+
             const centerY = DRUM.containerH / 2 - DRUM.ITEM_H / 2;
-            DRUM.cylinder.innerHTML = `<div class="apple-picker-item selected editing" style="position:absolute;top:0;left:0;width:100%;transform:translateY(${centerY}px)"><input type="text" class="drum-inline-edit drum-new-input" placeholder="Enter player name..." autocomplete="off" autocorrect="off" spellcheck="false" /></div>`;
+            DRUM.cylinder.innerHTML = `<div class="apple-picker-item selected editing" style="position:absolute;top:0;left:0;width:100%;transform:translateY(${centerY}px)">
+                <input type="text" class="drum-inline-edit drum-new-input" placeholder="Enter player name..." autocomplete="off" autocorrect="off" spellcheck="false" />
+            </div>`;
+
+            // Add confirm/cancel buttons below the drum for mobile usability
+            let actionBar = document.getElementById('drum-new-player-actions');
+            if (!actionBar) {
+                actionBar = document.createElement('div');
+                actionBar.id = 'drum-new-player-actions';
+                actionBar.style.cssText = 'display:flex; justify-content:center; gap:1rem; margin-top:1rem;';
+                DRUM.container.parentElement.insertBefore(actionBar, DRUM.container.nextSibling);
+            }
+            actionBar.innerHTML = `
+                <button type="button" class="btn-metallic btn-save" id="drum-new-confirm-btn" title="Confirm" style="width:48px;height:48px;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </button>
+                <button type="button" class="btn-metallic btn-delete" id="drum-new-cancel-btn" title="Cancel" style="width:48px;height:48px;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            `;
+            actionBar.style.display = 'flex';
 
             const input = DRUM.cylinder.querySelector('.drum-new-input');
             setTimeout(() => input.focus(), 150);
@@ -7741,6 +7775,13 @@ Sudden aggression = premium hand"></textarea>
             // Prevent drum drag while typing
             input.addEventListener('mousedown', (e) => e.stopPropagation());
             input.addEventListener('touchstart', (e) => e.stopPropagation());
+
+            function cleanup() {
+                // Restore the touch overlay
+                if (overlay) overlay.style.display = '';
+                // Hide action buttons
+                if (actionBar) actionBar.style.display = 'none';
+            }
 
             function commitNewPlayer() {
                 const name = input.value.trim();
@@ -7827,6 +7868,7 @@ Sudden aggression = premium hand"></textarea>
                 saveDatabase();
 
                 DRUM._addingNew = false;
+                cleanup();
 
                 // Rebuild and find the new player
                 const sorted = [...database.realPlayers].sort((a, b) => a.name.localeCompare(b.name));
@@ -7839,6 +7881,7 @@ Sudden aggression = premium hand"></textarea>
 
             function cancelNewPlayer() {
                 DRUM._addingNew = false;
+                cleanup();
                 // Restore the drum
                 renderDrumItems();
             }
@@ -7857,19 +7900,47 @@ Sudden aggression = premium hand"></textarea>
                 }
             });
 
+            // Blur commit — but skip if confirm/cancel buttons were tapped
             input.addEventListener('blur', () => {
                 setTimeout(() => {
                     if (!committed) {
+                        // Don't auto-commit on blur when action buttons are available
+                        // User might have tapped outside accidentally on mobile
+                        // Only auto-cancel if empty
                         const name = input.value.trim();
-                        if (name) {
-                            committed = true;
-                            commitNewPlayer();
-                        } else {
+                        if (!name) {
                             committed = true;
                             cancelNewPlayer();
                         }
                     }
-                }, 100);
+                }, 200);
+            });
+
+            // Wire up confirm/cancel buttons
+            document.getElementById('drum-new-confirm-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                committed = true;
+                commitNewPlayer();
+            });
+            document.getElementById('drum-new-cancel-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                committed = true;
+                cancelNewPlayer();
+            });
+            // Touch events for mobile (fire before blur)
+            document.getElementById('drum-new-confirm-btn').addEventListener('touchend', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                committed = true;
+                commitNewPlayer();
+            });
+            document.getElementById('drum-new-cancel-btn').addEventListener('touchend', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                committed = true;
+                cancelNewPlayer();
             });
         }
 
