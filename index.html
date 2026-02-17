@@ -29,16 +29,16 @@
     <script>
         // ⚠️ REPLACE with your own config from Firebase Console
         const firebaseConfig = {
-            apiKey: "AIzaSyDuRndLhamDfvt4b4acZ3l_bmsgzVJAotE",
-            authDomain: "nitwiz-94482.firebaseapp.com",
-            projectId: "nitwiz-94482",
-            storageBucket: "nitwiz-94482.firebasestorage.app",
-            messagingSenderId: "212021722345",
-            appId: "1:212021722345:web:deaa3bb42a60e1cd8d4478"
+		apiKey: "AIzaSyDuRndLhamDfvt4b4acZ3l_bmsgzVJAotE",
+  		authDomain: "nitwiz-94482.firebaseapp.com",
+  		projectId: "nitwiz-94482",
+  		storageBucket: "nitwiz-94482.firebasestorage.app",
+  		messagingSenderId: "212021722345",
+  		appId: "1:212021722345:web:deaa3bb42a60e1cd8d4478"
         };
 
         // ⚠️ SET YOUR ADMIN EMAIL HERE
-        const ADMIN_EMAIL = "zeebanker@gmail.com";
+        const ADMIN_EMAIL = "YOUR_ADMIN_EMAIL@example.com";
 
         firebase.initializeApp(firebaseConfig);
         const fbDb = firebase.firestore();
@@ -376,6 +376,147 @@
             }
         }
 
+        // === ADMIN USER DATA BROWSER ===
+        async function loadAllUserVaults() {
+            if (!isAdmin()) return;
+            const list = document.getElementById('admin-user-list');
+            list.innerHTML = '<div style="text-align:center;color:#888;padding:1rem;">Loading user data...</div>';
+
+            try {
+                const snap = await fbDb.collection('vaults').get();
+                if (snap.empty) {
+                    list.innerHTML = '<div style="text-align:center;color:#888;padding:1rem;">No user data found.</div>';
+                    return;
+                }
+
+                list.innerHTML = '';
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    let playerCount = 0;
+                    try {
+                        const db = JSON.parse(d.pokerDatabase || '{}');
+                        playerCount = (db.realPlayers || []).length;
+                    } catch(e) {}
+
+                    const email = d.email || 'Unknown';
+                    const updated = d.updatedAt ? new Date(d.updatedAt.seconds * 1000).toLocaleDateString() : 'Unknown';
+                    const isSelf = _currentUser && doc.id === _currentUser.uid;
+
+                    const div = document.createElement('div');
+                    div.className = 'admin-user-card';
+                    div.onclick = function() { viewUserVault(doc.id, email); };
+                    div.innerHTML = `
+                        <div>
+                            <div class="admin-user-email">${email}${isSelf ? ' (you)' : ''}</div>
+                            <div class="admin-user-meta">${playerCount} players • Updated ${updated}</div>
+                        </div>
+                        <div class="admin-user-arrow">›</div>
+                    `;
+                    list.appendChild(div);
+                });
+            } catch (err) {
+                list.innerHTML = '<div style="color:#ff6b6b;padding:1rem;">Error: ' + err.message + '</div>';
+            }
+        }
+
+        async function viewUserVault(uid, email) {
+            if (!isAdmin()) return;
+            const viewer = document.getElementById('admin-user-viewer');
+            const title = document.getElementById('admin-viewer-title');
+            const stats = document.getElementById('admin-viewer-stats');
+            const playerList = document.getElementById('admin-user-players-list');
+
+            title.textContent = '📂 ' + email;
+            stats.innerHTML = '';
+            playerList.innerHTML = '<div style="text-align:center;color:#888;padding:1rem;">Loading...</div>';
+            viewer.style.display = 'block';
+
+            // Scroll to viewer
+            viewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            try {
+                const doc = await fbDb.collection('vaults').doc(uid).get();
+                if (!doc.exists) {
+                    playerList.innerHTML = '<div style="color:#ff6b6b;padding:1rem;">Vault not found.</div>';
+                    return;
+                }
+
+                const data = doc.data();
+                let db = {};
+                try { db = JSON.parse(data.pokerDatabase || '{}'); } catch(e) {}
+
+                const players = db.realPlayers || [];
+                const archetypes = db.archetypes || [];
+
+                // Show stats
+                const playersWithObs = players.filter(p => p.observations || (p.observationsList && p.observationsList.length) || (p.weaknesses && p.weaknesses.length)).length;
+                const playersWithArchetype = players.filter(p => p.archetype).length;
+
+                stats.innerHTML = `
+                    <div class="admin-stat"><div class="admin-stat-number">${players.length}</div><div class="admin-stat-label">Players</div></div>
+                    <div class="admin-stat"><div class="admin-stat-number">${playersWithObs}</div><div class="admin-stat-label">With Notes</div></div>
+                    <div class="admin-stat"><div class="admin-stat-number">${archetypes.length}</div><div class="admin-stat-label">Archetypes</div></div>
+                `;
+
+                if (players.length === 0) {
+                    playerList.innerHTML = '<div style="text-align:center;color:#888;padding:1rem;">No players tracked.</div>';
+                    return;
+                }
+
+                // Sort players: ones with data first
+                const sorted = [...players].sort((a, b) => {
+                    const aScore = (a.observations ? 1 : 0) + (a.archetype ? 1 : 0) + ((a.observationsList || []).length > 0 ? 1 : 0);
+                    const bScore = (b.observations ? 1 : 0) + (b.archetype ? 1 : 0) + ((b.observationsList || []).length > 0 ? 1 : 0);
+                    if (bScore !== aScore) return bScore - aScore;
+                    return a.name.localeCompare(b.name);
+                });
+
+                playerList.innerHTML = '';
+                sorted.forEach(player => {
+                    const div = document.createElement('div');
+                    div.className = 'admin-player-card';
+
+                    let details = [];
+                    if (player.archetype) details.push('<span>Archetype:</span> ' + player.archetype);
+                    if (player.skillLevel) details.push('<span>Skill:</span> ' + player.skillLevel + '/4');
+                    if (player.vpip) details.push('<span>VPIP:</span> ' + player.vpip + '/4');
+                    if (player.pfrAggression) details.push('<span>PFR Agg:</span> ' + player.pfrAggression + '/4');
+                    if (player.postflopAggression) details.push('<span>Post Agg:</span> ' + player.postflopAggression + '/4');
+
+                    let obsHtml = '';
+                    if (player.observations) {
+                        obsHtml = '<div class="admin-player-obs">' + escapeHtml(player.observations) + '</div>';
+                    }
+                    if (player.observationsList && player.observationsList.length) {
+                        obsHtml += player.observationsList.map(o =>
+                            '<div class="admin-player-obs">' + escapeHtml(o) + '</div>'
+                        ).join('');
+                    }
+                    if (player.weaknesses && player.weaknesses.length) {
+                        obsHtml += '<div class="admin-player-obs" style="border-left:2px solid #a855f7;margin-left:0;padding-left:0.6rem;">⚡ ' + player.weaknesses.map(w => escapeHtml(w)).join(' • ') + '</div>';
+                    }
+
+                    div.innerHTML = `
+                        <div class="admin-player-name">${escapeHtml(player.name)}</div>
+                        ${details.length ? '<div class="admin-player-detail">' + details.join(' &nbsp;•&nbsp; ') + '</div>' : ''}
+                        ${obsHtml}
+                    `;
+                    playerList.appendChild(div);
+                });
+            } catch (err) {
+                playerList.innerHTML = '<div style="color:#ff6b6b;padding:1rem;">Error loading data: ' + err.message + '</div>';
+            }
+        }
+
+        function closeUserViewer() {
+            document.getElementById('admin-user-viewer').style.display = 'none';
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
         // === AUTH STATE LISTENER ===
         // Enter key support for auth forms
         document.addEventListener('keydown', function(e) {
@@ -699,8 +840,81 @@
             letter-spacing: 0.05em;
         }
 
+        /* Admin user browser */
+        .admin-user-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(145deg, rgba(26, 31, 58, 0.7), rgba(15, 20, 45, 0.9));
+            border: 1px solid rgba(168, 85, 247, 0.15);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .admin-user-card:active {
+            border-color: #a855f7;
+            transform: scale(0.98);
+        }
+
+        .admin-user-email {
+            font-weight: 600;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+
+        .admin-user-meta {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.7rem;
+        }
+
+        .admin-user-arrow {
+            color: #a855f7;
+            font-size: 1.2rem;
+        }
+
+        .admin-player-card {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.4rem;
+            background: linear-gradient(145deg, rgba(26, 31, 58, 0.5), rgba(15, 20, 45, 0.7));
+            border: 1px solid rgba(168, 85, 247, 0.1);
+            border-radius: 8px;
+        }
+
+        .admin-player-name {
+            font-weight: 700;
+            color: #fff;
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .admin-player-detail {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.72rem;
+            line-height: 1.4;
+        }
+
+        .admin-player-detail span {
+            color: #a855f7;
+            font-weight: 600;
+        }
+
+        .admin-player-obs {
+            margin-top: 0.4rem;
+            padding: 0.5rem 0.7rem;
+            background: rgba(10, 14, 39, 0.5);
+            border-radius: 6px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.72rem;
+            font-style: italic;
+            white-space: pre-wrap;
+        }
+
         /* Logout button */
         #logout-btn {
+
             position: fixed;
             top: 0.5rem;
             left: 0.5rem;
@@ -7305,6 +7519,28 @@ Sudden aggression = premium hand"></textarea>
 
                 <div style="margin-top:1.5rem;">
                     <button class="btn-metallic" onclick="loadAccessRequests()" style="width:100%;">🔄 Refresh</button>
+                </div>
+
+                <!-- User Data Browser -->
+                <div class="form-subsection" style="margin-top:1.5rem;">
+                    <h4 class="form-subsection-header">User Data Browser</h4>
+                    <div id="admin-user-list">
+                        <div style="text-align:center;color:#888;padding:1rem;">
+                            <button class="btn-metallic" onclick="loadAllUserVaults()" style="width:100%;">👥 Load User Data</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Data Viewer (hidden until a user is selected) -->
+                <div id="admin-user-viewer" style="display:none;">
+                    <div class="form-subsection" style="margin-top:1rem;">
+                        <h4 class="form-subsection-header">
+                            <span id="admin-viewer-title">Player Data</span>
+                            <button class="btn-deny" onclick="closeUserViewer()" style="float:right;font-size:0.7rem;padding:0.3rem 0.6rem;">✕ Close</button>
+                        </h4>
+                        <div id="admin-viewer-stats" class="admin-stats" style="margin-bottom:0.75rem;"></div>
+                        <div id="admin-user-players-list"></div>
+                    </div>
                 </div>
             </div>
             <div style="display: flex; justify-content: center; margin: 2rem 0 1rem;">
