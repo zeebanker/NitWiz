@@ -29,13 +29,13 @@
     <script>
         // ⚠️ REPLACE with your own config from Firebase Console
         const firebaseConfig = {
-            apiKey: "AIzaSyDuRndLhamDfvt4b4acZ3l_bmsgzVJAotE",
-            authDomain: "nitwiz-94482.firebaseapp.com",
-            projectId: "nitwiz-94482",
-            storageBucket: "nitwiz-94482.firebasestorage.app",
-            messagingSenderId: "212021722345",
-            appId: "1:212021722345:web:deaa3bb42a60e1cd8d4478"
-         };
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
 
         firebase.initializeApp(firebaseConfig);
         const fbDb = firebase.firestore();
@@ -47,7 +47,7 @@
 
         function firebaseSignIn() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            return fbAuth.signInWithPopup(provider);
+            return fbAuth.signInWithRedirect(provider);
         }
 
         function getUserDocRef() {
@@ -12178,6 +12178,11 @@ Sudden aggression = premium hand"></textarea>
 
         // Initialize
         loadDatabase();
+
+        // Handle redirect result (for PWA standalone mode sign-in)
+        fbAuth.getRedirectResult().catch(function(err) {
+            console.warn('Redirect sign-in error:', err);
+        });
 
         // Firebase auth state — pull cloud data on sign-in
         fbAuth.onAuthStateChanged(function(user) {
