@@ -19,6 +19,95 @@
     <meta name="format-detection" content="telephone=no">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@700&family=Allura&display=swap" rel="stylesheet">
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+    <!-- Firebase Init -->
+    <script>
+        // ⚠️ REPLACE with your own config from Firebase Console
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const fbDb = firebase.firestore();
+        const fbAuth = firebase.auth();
+
+        let firebaseUser = null;
+        let unsubscribeSync = null;
+        let _fbSaveTimer = null;
+
+        function firebaseSignIn() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            return fbAuth.signInWithPopup(provider);
+        }
+
+        function getUserDocRef() {
+            if (!firebaseUser) return null;
+            return fbDb.collection('users').doc(firebaseUser.uid);
+        }
+
+        // Debounced save — waits 1s after last change before pushing to cloud
+        function saveToFirebase() {
+            if (_fbSaveTimer) clearTimeout(_fbSaveTimer);
+            _fbSaveTimer = setTimeout(_doFirebaseSave, 1000);
+        }
+
+        function _doFirebaseSave() {
+            const ref = getUserDocRef();
+            if (!ref) return;
+            const btn = document.getElementById('firebase-auth-btn');
+
+            ref.set({
+                pokerDatabase: localStorage.getItem('pokerDatabase') || '{}',
+                handHistory: localStorage.getItem('nitwiz_handHistory') || '{}',
+                sessionData: localStorage.getItem('nitwiz_sessionData') || '{}',
+                lastPlayer: localStorage.getItem('nitwiz_lastPlayer') || '',
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                if (btn) {
+                    btn.textContent = '☁️ Saved!';
+                    setTimeout(() => {
+                        btn.textContent = '☁️ ' + (firebaseUser.displayName || '').split(' ')[0];
+                    }, 1200);
+                }
+            }).catch(err => console.warn('Firebase save failed:', err));
+        }
+
+        function loadFromFirebase() {
+            const ref = getUserDocRef();
+            if (!ref) return Promise.resolve(false);
+
+            return ref.get().then(doc => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data.pokerDatabase) localStorage.setItem('pokerDatabase', data.pokerDatabase);
+                    if (data.handHistory) localStorage.setItem('nitwiz_handHistory', data.handHistory);
+                    if (data.sessionData) localStorage.setItem('nitwiz_sessionData', data.sessionData);
+                    if (data.lastPlayer) localStorage.setItem('nitwiz_lastPlayer', data.lastPlayer);
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        function handleFirebaseAuth() {
+            if (firebaseUser) {
+                _doFirebaseSave();
+            } else {
+                firebaseSignIn().catch(err => console.error('Sign-in failed:', err));
+            }
+        }
+    </script>
+
     <style>
         * {
             margin: 0;
@@ -5868,6 +5957,14 @@
     </div>
 
     <div class="container" id="main-container" style="display: none;">
+        <!-- Firebase Cloud Sync Button -->
+        <button id="firebase-auth-btn" class="btn-metallic" onclick="handleFirebaseAuth()"
+                style="position:fixed; top:0.5rem; right:0.5rem; z-index:999;
+                       font-size:0.7rem; padding:0.4rem 0.8rem; min-width:auto;
+                       width:auto; height:auto;">
+            ☁️ Sign In
+        </button>
+
         <!-- Dashboard Tab -->
         <div id="dashboard" class="tab-content active">
             <div class="dashboard-grid">
@@ -6580,6 +6677,7 @@ Sudden aggression = premium hand"></textarea>
             database.realPlayers.sort((a, b) => a.name.localeCompare(b.name));
             localStorage.setItem('pokerDatabase', JSON.stringify(database));
             updateAllViews();
+            saveToFirebase();
         }
 
         // Toggle switch status updates
@@ -10722,6 +10820,7 @@ Sudden aggression = premium hand"></textarea>
                 }));
                 var snap = getSessionSnapshot();
                 localStorage.setItem('nitwiz_sessionData', JSON.stringify(snap));
+                saveToFirebase();
             } catch(e) { console.warn('Failed to save hand history:', e); }
         }
         
@@ -12079,6 +12178,24 @@ Sudden aggression = premium hand"></textarea>
 
         // Initialize
         loadDatabase();
+
+        // Firebase auth state — pull cloud data on sign-in
+        fbAuth.onAuthStateChanged(function(user) {
+            firebaseUser = user;
+            var btn = document.getElementById('firebase-auth-btn');
+            if (user) {
+                btn.textContent = '☁️ ' + (user.displayName || 'Synced').split(' ')[0];
+                loadFromFirebase().then(function(hadData) {
+                    if (hadData) {
+                        loadDatabase(); // Reload UI with cloud data
+                    } else {
+                        _doFirebaseSave(); // First time: push local data up
+                    }
+                });
+            } else {
+                btn.textContent = '☁️ Sign In';
+            }
+        });
         
         // Initialize street states after a short delay to ensure DOM is ready
         setTimeout(function() {
