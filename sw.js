@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nitwiz-v2';
+const CACHE_NAME = 'nitwiz';
 const ASSETS_TO_CACHE = [
   'index.html',
   'manifest.json',
