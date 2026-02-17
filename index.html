@@ -382,15 +382,24 @@
         });
 
         fbAuth.onAuthStateChanged(async function(user) {
+            // Wait for DOM to be ready before manipulating elements
+            if (document.readyState === 'loading') {
+                await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve));
+            }
+
             if (user) {
                 _currentUser = user;
 
                 // Hide auth, show main
-                document.getElementById('auth-screen').style.display = 'none';
-                document.getElementById('splash-screen').style.display = 'none';
+                const authScreen = document.getElementById('auth-screen');
+                const splash = document.getElementById('splash-screen');
                 const main = document.getElementById('main-container');
-                main.style.display = 'block';
-                main.style.opacity = '1';
+                if (authScreen) authScreen.style.display = 'none';
+                if (splash) splash.style.display = 'none';
+                if (main) {
+                    main.style.display = 'block';
+                    main.style.opacity = '1';
+                }
 
                 // Update sync button to show logged in
                 const btn = document.getElementById('firebase-sync-btn');
@@ -413,9 +422,18 @@
                 loadDatabase();
 
                 switchTab('dashboard');
+
+                // Initialize street states now that main is visible
+                setTimeout(function() {
+                    try { hhUpdateStreetStates(); } catch(e) {}
+                }, 200);
             } else {
                 _currentUser = null;
-                showLoginScreen();
+                // Only show login if DOM is ready
+                const authScreen = document.getElementById('auth-screen');
+                if (authScreen) {
+                    showLoginScreen();
+                }
             }
         });
     </script>
@@ -12876,15 +12894,18 @@ Sudden aggression = premium hand"></textarea>
         
         // Initialize street states after a short delay to ensure DOM is ready
         setTimeout(function() {
-            hhUpdateStreetStates();
-            // Restore saved session data
-            if (window._pendingSessionRestore) {
-                restoreSessionSnapshot(window._pendingSessionRestore);
-                delete window._pendingSessionRestore;
-                // Force an immediate save to verify round-trip
-                setTimeout(function() {
-                    saveHandHistory();
-                }, 50);
+            // Only initialize if main container is visible (user is logged in)
+            if (document.getElementById('main-container').style.display !== 'none') {
+                hhUpdateStreetStates();
+                // Restore saved session data
+                if (window._pendingSessionRestore) {
+                    restoreSessionSnapshot(window._pendingSessionRestore);
+                    delete window._pendingSessionRestore;
+                    // Force an immediate save to verify round-trip
+                    setTimeout(function() {
+                        saveHandHistory();
+                    }, 50);
+                }
             }
         }, 150);
 
