@@ -132,6 +132,39 @@ const firebaseConfig = {
                 _currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
         }
 
+        function toggleLoginPassword(btn) {
+            var input = document.getElementById('login-password');
+            var isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+            // Swap icon: open eye vs eye-off
+            btn.querySelector('svg').innerHTML = isHidden
+                ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path><line x1="1" y1="1" x2="23" y2="23"></line>'
+                : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+            btn.style.color = isHidden ? '#ff8c38' : 'rgba(255,255,255,0.4)';
+        }
+
+        async function handleForgotPassword() {
+            var email = document.getElementById('login-email').value.trim();
+            var errorEl = document.getElementById('login-error');
+            if (!email) {
+                errorEl.textContent = 'Enter your email above first.';
+                errorEl.style.color = '#ff8c38';
+                return;
+            }
+            try {
+                await fbAuth.sendPasswordResetEmail(email);
+                errorEl.textContent = 'Reset email sent — check your inbox.';
+                errorEl.style.color = '#4ade80';
+            } catch(err) {
+                if (err.code === 'auth/user-not-found') {
+                    errorEl.textContent = 'No account found for that email.';
+                } else {
+                    errorEl.textContent = 'Error: ' + err.message;
+                }
+                errorEl.style.color = '#ff6b6b';
+            }
+        }
+
         async function handleLogin() {
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
@@ -711,6 +744,45 @@ const firebaseConfig = {
         }
 
         .auth-btn:hover { opacity: 0.9; }
+
+        .auth-pw-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .auth-pw-wrapper .auth-input {
+            width: 100%;
+            padding-right: 2.8rem;
+            box-sizing: border-box;
+        }
+        .auth-pw-toggle {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-65%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: rgba(255,255,255,0.4);
+            padding: 0;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .auth-pw-toggle:hover { color: #ff8c38; }
+        .auth-forgot {
+            text-align: right;
+            margin-top: -0.35rem;
+            margin-bottom: 0.75rem;
+        }
+        .auth-forgot span {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.78rem;
+            color: rgba(255,140,56,0.7);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .auth-forgot span:hover { color: #ff8c38; }
         .auth-btn:active { transform: scale(0.98); }
         .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -6629,7 +6701,16 @@ const firebaseConfig = {
                 <div class="auth-card">
                     <h2>Sign In</h2>
                     <input type="email" id="login-email" class="auth-input" placeholder="Email" autocomplete="email">
-                    <input type="password" id="login-password" class="auth-input" placeholder="Password" autocomplete="current-password">
+                    <div class="auth-pw-wrapper">
+                        <input type="password" id="login-password" class="auth-input" placeholder="Password" autocomplete="current-password">
+                        <button type="button" class="auth-pw-toggle" onclick="toggleLoginPassword(this)" title="Show/hide password">
+                            <svg id="login-pw-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="auth-forgot"><span onclick="handleForgotPassword()">Forgot password?</span></div>
                     <button id="login-btn" class="auth-btn" onclick="handleLogin()">Sign In</button>
                     <div id="login-error" class="auth-error"></div>
                 </div>
