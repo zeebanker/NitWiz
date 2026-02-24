@@ -52,41 +52,30 @@ const firebaseConfig = {
             return fbDb.collection('vaults').doc(_currentUser.uid);
         }
 
-        // Debounced save — waits 1s after last change before pushing to cloud
-        function _setSyncDot(state) {
-            var dot = document.getElementById('sync-dot');
-            if (!dot) return;
-            dot.className = 'sync-dot' + (state ? ' ' + state : '');
-            // Only show the button when there's a problem (pending=orange, offline=red)
+        function syncShowError() {
             var btn = document.getElementById('firebase-sync-btn');
-            if (btn) {
-                btn.style.opacity = (state === 'synced' || state === '') ? '0' : '1';
-                btn.style.pointerEvents = (state === 'synced' || state === '') ? 'none' : 'auto';
-            }
+            if (btn) btn.style.display = 'block';
         }
 
-        // Listen for online/offline
-        window.addEventListener('online', function() { _setSyncDot(_lastSyncState || ''); });
-        window.addEventListener('offline', function() { _setSyncDot('offline'); });
-        var _lastSyncState = '';
+        function syncClear() {
+            var btn = document.getElementById('firebase-sync-btn');
+            if (btn) btn.style.display = 'none';
+        }
+
+        window.addEventListener('offline', syncShowError);
+        window.addEventListener('online', function() {
+            if (_currentUser) saveToFirebase();
+        });
 
         function saveToFirebase() {
             if (_fbSaveTimer) clearTimeout(_fbSaveTimer);
-            _setSyncDot(navigator.onLine ? 'pending' : 'offline');
             _fbSaveTimer = setTimeout(_doFirebaseSave, 1000);
         }
 
         function _doFirebaseSave() {
             const ref = getDocRef();
             if (!ref) return;
-            const btn = document.getElementById('firebase-sync-btn');
-
-            if (!navigator.onLine) {
-                _lastSyncState = 'offline';
-                _setSyncDot('offline');
-                return;
-            }
-
+            if (!navigator.onLine) { syncShowError(); return; }
             ref.set({
                 email: _currentUser.email,
                 uid: _currentUser.uid,
@@ -96,23 +85,16 @@ const firebaseConfig = {
                 lastPlayer: localStorage.getItem('nitwiz_lastPlayer') || '',
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             }).then(() => {
-                _lastSyncState = 'synced';
-                _setSyncDot('synced');
-                if (btn) {
-                    btn.innerHTML = '<span class="sync-dot synced" id="sync-dot"></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>Synced!';
-                    setTimeout(() => { btn.innerHTML = '<span class="sync-dot synced" id="sync-dot"></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>Cloud'; }, 1200);
-                }
+                syncClear();
             }).catch(err => {
                 console.warn('Firebase save failed:', err);
-                _lastSyncState = 'offline';
-                _setSyncDot('offline');
+                syncShowError();
             });
         }
 
         function loadFromFirebase() {
             const ref = getDocRef();
             if (!ref) return Promise.resolve(false);
-
             return ref.get().then(doc => {
                 if (doc.exists) {
                     const data = doc.data();
@@ -127,9 +109,7 @@ const firebaseConfig = {
         }
 
         function handleSyncButton() {
-            if (_currentUser) {
-                _doFirebaseSave();
-            }
+            if (_currentUser) _doFirebaseSave();
         }
 
         // === AUTH FUNCTIONS ===
@@ -636,8 +616,7 @@ const firebaseConfig = {
             if (main) { main.style.display = 'block'; main.style.opacity = '1'; }
             if (bNav) bNav.classList.add('visible');
 
-            const btn = document.getElementById('firebase-sync-btn');
-            if (btn) btn.innerHTML = '<span class="sync-dot synced" id="sync-dot"></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>Cloud';
+            syncClear();
 
             const adminBtn = document.getElementById('admin-dashboard-btn');
             if (adminBtn) adminBtn.style.display = isAdmin() ? 'flex' : 'none';
@@ -1130,6 +1109,8 @@ const firebaseConfig = {
             justify-content: center;
             z-index: 10000;
             cursor: pointer;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         .splash-metal-sheet {
@@ -1397,32 +1378,7 @@ const firebaseConfig = {
             line-height: 1.2;
         }
 
-        /* SYNC STATUS DOT */
-        .sync-dot {
-            display: inline-block;
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            margin-right: 4px;
-            vertical-align: middle;
-            background: #666;
-            transition: background 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .sync-dot.synced {
-            background: #4ade80;
-            box-shadow: 0 0 4px rgba(74, 222, 128, 0.5);
-        }
-
-        .sync-dot.pending {
-            background: #facc15;
-            box-shadow: 0 0 4px rgba(250, 204, 21, 0.5);
-        }
-
-        .sync-dot.offline {
-            background: #ef4444;
-            box-shadow: 0 0 4px rgba(239, 68, 68, 0.5);
-        }
+        /* sync-dot CSS removed */
 
         /* CUSTOM MODAL SYSTEM */
         .nw-modal-overlay {
@@ -2736,6 +2692,7 @@ const firebaseConfig = {
             /* Body & Container */
             body {
                 padding: 0.5rem;
+                padding-top: max(0.5rem, env(safe-area-inset-top));
                 padding-left: max(0.5rem, env(safe-area-inset-left));
                 padding-right: max(0.5rem, env(safe-area-inset-right));
                 padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
@@ -6455,7 +6412,7 @@ const firebaseConfig = {
             transition: opacity 0.25s ease, transform 0.25s ease;
             pointer-events: none;
             will-change: opacity, transform;
-            padding-top: max(2.8rem, calc(env(safe-area-inset-top) + 2.2rem));
+            padding-top: 0.5rem;
         }
 
         .tab-content.active {
@@ -6859,12 +6816,12 @@ const firebaseConfig = {
 
     <div class="container" id="main-container" style="display: none;">
         <!-- Firebase Cloud Sync Button -->
-        <button id="firebase-sync-btn" class="btn-metallic" onclick="handleSyncButton()"
-                style="position:fixed; top:max(0.5rem, calc(env(safe-area-inset-top) + 0.3rem)); right:max(0.5rem, env(safe-area-inset-right)); z-index:999; opacity:0; pointer-events:none; transition: opacity 0.3s ease;
-                       font-size:0.7rem; padding:0.4rem 0.8rem; min-width:auto;
-                       width:auto; height:auto;">
-            <span class="sync-dot" id="sync-dot"></span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>Sync
+        <button id="firebase-sync-btn" onclick="handleSyncButton()"
+                style="display:none; position:fixed; top:max(0.5rem, calc(env(safe-area-inset-top) + 0.3rem)); right:max(0.5rem, env(safe-area-inset-right)); z-index:999;
+                       font-family:'Outfit',sans-serif; font-size:0.7rem; font-weight:700;
+                       padding:0.4rem 0.8rem; border-radius:8px; border:none; cursor:pointer;
+                       background:#ef4444; color:#fff;">
+            ⚠ Sync Error
         </button>
 
         <!-- Dashboard Tab -->
