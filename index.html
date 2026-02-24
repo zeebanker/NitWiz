@@ -7839,6 +7839,8 @@ If they check-raise - nuts or very strong"></textarea>
             updatePlayerArchetypeDropdown();
             updateBriefPlayerSelection();
             updateJsonDisplay();
+            if (typeof qoDrumPopulate === 'function') qoDrumPopulate();
+            if (typeof hhPopulatePlayerDropdown === 'function') hhPopulatePlayerDropdown();
         }
 
         // Dashboard — Stats Strip (#1)
