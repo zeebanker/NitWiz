@@ -45,6 +45,8 @@ const firebaseConfig = {
         const fbAuth = firebase.auth();
 
         let _fbSaveTimer = null;
+        let _appReady = false; // guard: don't save to Firebase until cloud data is loaded
+        let _userInitiated = false; // guard: don't auto-save until user actually changes something
         let _currentUser = null;
 
         function getDocRef() {
@@ -68,6 +70,8 @@ const firebaseConfig = {
         });
 
         function saveToFirebase() {
+            if (!_appReady) return; // don't overwrite cloud before we've loaded from it
+            if (!_userInitiated) return; // don't save until user actually changes something
             if (_fbSaveTimer) clearTimeout(_fbSaveTimer);
             _fbSaveTimer = setTimeout(_doFirebaseSave, 1000);
         }
@@ -625,8 +629,23 @@ const firebaseConfig = {
             if (logoutBtn) logoutBtn.title = 'Signed in as ' + user.email;
 
             await loadFromFirebase();
+            _appReady = true; // safe to save to Firebase now
             loadDatabase();
+            // Re-load hand history now that Firebase data is in localStorage
+            try {
+                const saved = localStorage.getItem('nitwiz_handHistory');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    hhStoredHands = parsed.hands || [];
+                    hhCurrentHandNumber = parsed.nextHandNumber || (hhStoredHands.length + 1);
+                }
+                const savedSession = localStorage.getItem('nitwiz_sessionData');
+                if (savedSession) {
+                    window._pendingSessionRestore = JSON.parse(savedSession);
+                }
+            } catch(e) { console.warn('Failed to reload hand history after Firebase load:', e); }
             switchTab('dashboard');
+            _userInitiated = true; // any saves from here on are user-driven
             setTimeout(function() { try { hhUpdateStreetStates(); } catch(e) {} }, 200);
         }
     </script>
@@ -7764,7 +7783,7 @@ If they check-raise - nuts or very strong"></textarea>
         // Tab switching
         function switchTab(tabName) {
             // Save session state before switching
-            if (!_isRestoring) saveHandHistory();
+            if (!_isRestoring && _userInitiated) saveHandHistory();
             
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -8333,11 +8352,14 @@ If they check-raise - nuts or very strong"></textarea>
                     database.archetypes.push(JSON.parse(JSON.stringify(p)));
                     changed = true;
                 } else {
-                    // Always sync persona data from built-in definitions
-                    // (preserves any user-added archetypes, but keeps personas current)
-                    existing.persona = JSON.parse(JSON.stringify(p.persona));
-                    existing.description = p.description;
-                    changed = true;
+                    // Only sync if persona data actually differs
+                    const existingJson = JSON.stringify(existing.persona) + existing.description;
+                    const builtinJson = JSON.stringify(p.persona) + p.description;
+                    if (existingJson !== builtinJson) {
+                        existing.persona = JSON.parse(JSON.stringify(p.persona));
+                        existing.description = p.description;
+                        changed = true;
+                    }
                 }
             });
             if (changed) saveDatabase();
