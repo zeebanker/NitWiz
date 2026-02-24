@@ -1956,14 +1956,33 @@ const firebaseConfig = {
         }
 
         @keyframes chipPop {
-            0%   { transform: scale(1); }
-            40%  { transform: scale(1.35); }
-            70%  { transform: scale(0.92); }
-            100% { transform: scale(1); }
+            0%   { transform: scale(1);    filter: invert(0); }
+            30%  { transform: scale(1.6);  filter: invert(1); }
+            65%  { transform: scale(0.9);  filter: invert(0); }
+            85%  { transform: scale(1.08); filter: invert(0); }
+            100% { transform: scale(1);    filter: invert(0); }
         }
 
         .chip-pop {
-            animation: chipPop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: chipPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            z-index: 10;
+            position: relative;
+        }
+
+        /* Hover / touch-hold invert for all tappable chips and buttons */
+        .persona-dim-chip:hover,
+        .player-dim-chip:hover,
+        .player-toggle-chip:hover,
+        .qo-seat-chip:hover,
+        .qo-action-btn:hover,
+        .desc-chip:hover,
+        .hh-pos-chip:hover,
+        #qo-add-player-btn:hover,
+        #players-add-player-btn:hover,
+        #arch-add-btn:hover,
+        #qo-next-hand-btn:hover {
+            filter: invert(1);
+            transition: filter 0.15s ease;
         }
 
         .section {
@@ -6564,6 +6583,16 @@ const firebaseConfig = {
         }
         #bottom-nav.visible {
             display: flex;
+            transform: translateY(0);
+            opacity: 1;
+        }
+        #bottom-nav.nav-hidden {
+            transform: translateY(110%);
+            opacity: 0;
+            pointer-events: none;
+        }
+        #bottom-nav {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
         }
         .bnav-btn {
             flex: 1;
@@ -6839,7 +6868,7 @@ const firebaseConfig = {
     <div class="container" id="main-container" style="display: none;">
         <!-- Firebase Cloud Sync Button -->
         <button id="firebase-sync-btn" class="btn-metallic" onclick="handleSyncButton()"
-                style="position:fixed; top:0.5rem; right:0.5rem; z-index:999;
+                style="position:fixed; top:max(0.5rem, calc(env(safe-area-inset-top) + 0.3rem)); right:max(0.5rem, env(safe-area-inset-right)); z-index:999;
                        font-size:0.7rem; padding:0.4rem 0.8rem; min-width:auto;
                        width:auto; height:auto;">
             <span class="sync-dot" id="sync-dot"></span>
@@ -6948,10 +6977,9 @@ const firebaseConfig = {
             <div class="section">
                 <div class="section-title">Archetypes</div>
                 <div class="list-container" id="archetype-list"></div>
-            </div>
-
-            <div id="arch-add-player-actions" style="display: flex; justify-content: center; margin-bottom: 0.6rem;">
-                <button id="arch-add-btn" onclick="showArchetypeForm()">+ New Archetype</button>
+                <div style="display: flex; justify-content: center; margin-top: 0.75rem;">
+                    <button id="arch-add-btn" onclick="showArchetypeForm()">+ New Archetype</button>
+                </div>
             </div>
 
             <div class="section" id="archetype-form-section" style="display: none;">
@@ -10304,6 +10332,65 @@ If they check-raise - nuts or very strong"></textarea>
             }, 350);
             haptic('light');
         }
+
+        // === BOTTOM NAV AUTO-HIDE ===
+        (function() {
+            var navHideTimer = null;
+            var nav = null;
+
+            function getNav() {
+                if (!nav) nav = document.getElementById('bottom-nav');
+                return nav;
+            }
+
+            function hideNav() {
+                var n = getNav();
+                if (n && n.classList.contains('visible')) {
+                    n.classList.add('nav-hidden');
+                }
+            }
+
+            function showNav() {
+                var n = getNav();
+                if (!n || !n.classList.contains('visible')) return;
+                n.classList.remove('nav-hidden');
+            }
+
+            function onActivity() {
+                hideNav();
+                clearTimeout(navHideTimer);
+                navHideTimer = setTimeout(showNav, 750);
+            }
+
+            // Hide on scroll
+            window.addEventListener('scroll', onActivity, { passive: true });
+            document.addEventListener('scroll', onActivity, { passive: true });
+
+            // Hide on any touch/pointer interaction (but not on the nav itself)
+            document.addEventListener('touchstart', function(e) {
+                if (e.target.closest('#bottom-nav')) return;
+                onActivity();
+            }, { passive: true });
+
+            document.addEventListener('pointerdown', function(e) {
+                if (e.target.closest('#bottom-nav')) return;
+                onActivity();
+            }, { passive: true });
+
+            // Hide while typing in any input/textarea
+            document.addEventListener('focusin', function(e) {
+                if (e.target.matches('input, textarea, select')) {
+                    hideNav();
+                    clearTimeout(navHideTimer);
+                }
+            });
+            document.addEventListener('focusout', function(e) {
+                if (e.target.matches('input, textarea, select')) {
+                    clearTimeout(navHideTimer);
+                    navHideTimer = setTimeout(showNav, 750);
+                }
+            });
+        })();
 
         // === CHIP POP ANIMATION ===
         // Single delegated listener — fires chipPop on any chip/button tap app-wide
