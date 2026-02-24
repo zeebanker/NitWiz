@@ -57,6 +57,12 @@ const firebaseConfig = {
             var dot = document.getElementById('sync-dot');
             if (!dot) return;
             dot.className = 'sync-dot' + (state ? ' ' + state : '');
+            // Only show the button when there's a problem (pending=orange, offline=red)
+            var btn = document.getElementById('firebase-sync-btn');
+            if (btn) {
+                btn.style.opacity = (state === 'synced' || state === '') ? '0' : '1';
+                btn.style.pointerEvents = (state === 'synced' || state === '') ? 'none' : 'auto';
+            }
         }
 
         // Listen for online/offline
@@ -602,63 +608,48 @@ const firebaseConfig = {
         });
 
         fbAuth.onAuthStateChanged(async function(user) {
-            // Wait for DOM to be ready before manipulating elements
             if (document.readyState === 'loading') {
                 await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve));
             }
 
             if (user) {
                 _currentUser = user;
-
-                // Hide auth, show main
-                const authScreen = document.getElementById('auth-screen');
+                // Don't touch the splash here — hideSplash() drives navigation.
+                // If the splash is already gone (post-login flow), load the app now.
                 const splash = document.getElementById('splash-screen');
-                const main = document.getElementById('main-container');
-                if (authScreen) authScreen.style.display = 'none';
-                if (splash) splash.style.display = 'none';
-                if (main) {
-                    main.style.display = 'block';
-                    main.style.opacity = '1';
+                const splashVisible = splash && splash.style.display !== 'none';
+                if (!splashVisible) {
+                    await _loadApp(user);
                 }
-                // Show bottom nav
-                const bNav = document.getElementById('bottom-nav');
-                if (bNav) bNav.classList.add('visible');
-
-                // Update sync button to show logged in
-                const btn = document.getElementById('firebase-sync-btn');
-                if (btn) btn.innerHTML = '<span class="sync-dot synced" id="sync-dot"></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>Cloud';
-
-                // Show/hide admin button
-                const adminBtn = document.getElementById('admin-dashboard-btn');
-                if (adminBtn) {
-                    adminBtn.style.display = isAdmin() ? 'flex' : 'none';
-                }
-
-                // Show logout button with user email
-                const logoutBtn = document.getElementById('logout-btn');
-                if (logoutBtn) {
-                    logoutBtn.title = 'Signed in as ' + user.email;
-                }
-
-                // Load from cloud then refresh views
-                const hadData = await loadFromFirebase();
-                loadDatabase();
-
-                switchTab('dashboard');
-
-                // Initialize street states now that main is visible
-                setTimeout(function() {
-                    try { hhUpdateStreetStates(); } catch(e) {}
-                }, 200);
+                // If splash IS visible, hideSplash() will call _loadApp() when tapped.
             } else {
                 _currentUser = null;
-                // On logout (or not logged in), go back to splash screen
-                const splash = document.getElementById('splash-screen');
-                if (splash) {
-                    showSplashScreen();
-                }
+                showSplashScreen();
             }
         });
+
+        async function _loadApp(user) {
+            const authScreen = document.getElementById('auth-screen');
+            const main = document.getElementById('main-container');
+            const bNav = document.getElementById('bottom-nav');
+            if (authScreen) authScreen.style.display = 'none';
+            if (main) { main.style.display = 'block'; main.style.opacity = '1'; }
+            if (bNav) bNav.classList.add('visible');
+
+            const btn = document.getElementById('firebase-sync-btn');
+            if (btn) btn.innerHTML = '<span class="sync-dot synced" id="sync-dot"></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>Cloud';
+
+            const adminBtn = document.getElementById('admin-dashboard-btn');
+            if (adminBtn) adminBtn.style.display = isAdmin() ? 'flex' : 'none';
+
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) logoutBtn.title = 'Signed in as ' + user.email;
+
+            await loadFromFirebase();
+            loadDatabase();
+            switchTab('dashboard');
+            setTimeout(function() { try { hhUpdateStreetStates(); } catch(e) {} }, 200);
+        }
     </script>
 
     <style>
@@ -1956,11 +1947,11 @@ const firebaseConfig = {
         }
 
         @keyframes chipPop {
-            0%   { transform: scale(1);    filter: invert(0); }
-            30%  { transform: scale(1.6);  filter: invert(1); }
-            65%  { transform: scale(0.9);  filter: invert(0); }
-            85%  { transform: scale(1.08); filter: invert(0); }
-            100% { transform: scale(1);    filter: invert(0); }
+            0%   { transform: scale(1); }
+            30%  { transform: scale(1.6); }
+            65%  { transform: scale(0.9); }
+            85%  { transform: scale(1.08); }
+            100% { transform: scale(1); }
         }
 
         .chip-pop {
@@ -1969,7 +1960,7 @@ const firebaseConfig = {
             position: relative;
         }
 
-        /* Hover / touch-hold invert for all tappable chips and buttons */
+        /* Hover / touch-hold brightness boost for all tappable chips and buttons */
         .persona-dim-chip:hover,
         .player-dim-chip:hover,
         .player-toggle-chip:hover,
@@ -1981,7 +1972,7 @@ const firebaseConfig = {
         #players-add-player-btn:hover,
         #arch-add-btn:hover,
         #qo-next-hand-btn:hover {
-            filter: invert(1);
+            filter: brightness(1.4);
             transition: filter 0.15s ease;
         }
 
@@ -6464,6 +6455,7 @@ const firebaseConfig = {
             transition: opacity 0.25s ease, transform 0.25s ease;
             pointer-events: none;
             will-change: opacity, transform;
+            padding-top: max(2.8rem, calc(env(safe-area-inset-top) + 2.2rem));
         }
 
         .tab-content.active {
@@ -6689,7 +6681,7 @@ const firebaseConfig = {
 </head>
 <body>
     <!-- Splash Screen -->
-    <div id="splash-screen" onclick="hideSplash()">
+    <div id="splash-screen">
         <div class="splash-metal-sheet">
             <div class="splash-logo">NitWiz</div>
             <div class="splash-subtitle">LIVE MTT TRAINER</div>
@@ -6868,7 +6860,7 @@ const firebaseConfig = {
     <div class="container" id="main-container" style="display: none;">
         <!-- Firebase Cloud Sync Button -->
         <button id="firebase-sync-btn" class="btn-metallic" onclick="handleSyncButton()"
-                style="position:fixed; top:max(0.5rem, calc(env(safe-area-inset-top) + 0.3rem)); right:max(0.5rem, env(safe-area-inset-right)); z-index:999;
+                style="position:fixed; top:max(0.5rem, calc(env(safe-area-inset-top) + 0.3rem)); right:max(0.5rem, env(safe-area-inset-right)); z-index:999; opacity:0; pointer-events:none; transition: opacity 0.3s ease;
                        font-size:0.7rem; padding:0.4rem 0.8rem; min-width:auto;
                        width:auto; height:auto;">
             <span class="sync-dot" id="sync-dot"></span>
@@ -10313,25 +10305,38 @@ If they check-raise - nuts or very strong"></textarea>
 
         function hideSplash() {
             const splash = document.getElementById('splash-screen');
+            if (!splash || splash.classList.contains('fade-out')) return;
             splash.classList.add('fade-out');
+            haptic('light');
             setTimeout(() => {
                 splash.style.display = 'none';
-                // If already authenticated, go to main; otherwise show login
                 if (_currentUser) {
-                    const main = document.getElementById('main-container');
-                    main.style.display = 'block';
-                    main.style.opacity = '0';
-                    requestAnimationFrame(() => {
-                        main.style.transition = 'opacity 0.3s ease';
-                        main.style.opacity = '1';
-                    });
-                    switchTab('dashboard');
+                    // Auth already resolved — load the app now
+                    _loadApp(_currentUser);
                 } else {
+                    // Auth not yet resolved or not logged in — show login
                     showLoginScreen();
                 }
             }, 350);
-            haptic('light');
         }
+
+        // Attach splash tap handler — use both touchend and click,
+        // touchend fires immediately on mobile without waiting for 300ms click delay
+        (function() {
+            var splashEl = document.getElementById('splash-screen');
+            if (!splashEl) return;
+            var _touched = false;
+            splashEl.addEventListener('touchend', function(e) {
+                e.preventDefault(); // prevent ghost click
+                _touched = true;
+                hideSplash();
+                setTimeout(function() { _touched = false; }, 600);
+            }, { passive: false });
+            splashEl.addEventListener('click', function() {
+                if (_touched) return; // already handled by touchend
+                hideSplash();
+            });
+        })();
 
         // === BOTTOM NAV AUTO-HIDE ===
         (function() {
