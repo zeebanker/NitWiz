@@ -62,7 +62,37 @@ const firebaseConfig = {
         function syncClear() {
             var btn = document.getElementById('firebase-sync-btn');
             if (btn) btn.style.display = 'none';
+            // Stamp last synced time
+            var el = document.getElementById('last-sync-label');
+            if (el) {
+                var now = new Date();
+                var mm = String(now.getMonth() + 1).padStart(2, '0');
+                var dd = String(now.getDate()).padStart(2, '0');
+                var yy = String(now.getFullYear()).slice(-2);
+                var hh = String(now.getHours()).padStart(2, '0');
+                var min = String(now.getMinutes()).padStart(2, '0');
+                var ss = String(now.getSeconds()).padStart(2, '0');
+                el.textContent = 'Last sync\'d ' + mm + '/' + dd + '/' + yy + ' ' + hh + ':' + min + ':' + ss;
+                el.style.color = 'rgba(255,255,255,0.22)';
+            }
         }
+
+        // Periodic heartbeat — push to Firebase every 3 minutes
+        setInterval(function() {
+            if (_currentUser && _appReady && _userInitiated) _doFirebaseSave();
+        }, 3 * 60 * 1000);
+
+        // Push when tab loses focus or is hidden
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden' && _currentUser && _appReady && _userInitiated) {
+                _doFirebaseSave();
+            }
+        });
+
+        // Push before page unload
+        window.addEventListener('beforeunload', function() {
+            if (_currentUser && _appReady && _userInitiated) _doFirebaseSave();
+        });
 
         window.addEventListener('offline', syncShowError);
         window.addEventListener('online', function() {
@@ -118,6 +148,26 @@ const firebaseConfig = {
 
         function handleSyncButton() {
             if (_currentUser) _doFirebaseSave();
+        }
+
+        function manualSyncWithFeedback() {
+            handleSyncButton();
+            var btn = document.getElementById('manual-sync-btn');
+            var icon = document.getElementById('manual-sync-icon');
+            var label = document.getElementById('manual-sync-label');
+            if (!btn) return;
+            // Flash to green checkmark
+            btn.style.borderColor = 'rgba(74,222,128,0.5)';
+            btn.style.color = 'rgba(74,222,128,0.9)';
+            if (icon) icon.innerHTML = '<polyline points="20 6 9 17 4 12"></polyline>';
+            if (label) label.textContent = 'Synced!';
+            // Restore after 1.5s
+            setTimeout(function() {
+                btn.style.borderColor = 'rgba(141,196,240,0.3)';
+                btn.style.color = 'rgba(141,196,240,0.6)';
+                if (icon) icon.innerHTML = '<polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>';
+                if (label) label.textContent = 'Sync Now';
+            }, 1500);
         }
 
         // === AUTH FUNCTIONS ===
@@ -331,6 +381,8 @@ const firebaseConfig = {
                 splash.classList.remove('fade-out');
                 splash.style.display = 'flex';
             }
+            var vEl = document.getElementById('splash-version');
+            if (vEl && typeof APP_VERSION !== 'undefined') vEl.textContent = 'v' + APP_VERSION;
         }
 
         function showAuthPanel(panel) {
@@ -1913,6 +1965,20 @@ const firebaseConfig = {
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes qoHandNumPulse {
+            0%   { color: #ff8c38; }
+            10%  { color: #ffffff; }
+            23%  { color: #ff8c38; }
+            36%  { color: #ffffff; }
+            49%  { color: #ff8c38; }
+            62%  { color: #ffffff; }
+            100% { color: #ff8c38; }
+        }
+
+        .qo-hand-num-pulse {
+            animation: qoHandNumPulse 1s ease-in-out forwards;
+        }
+
         @keyframes chipPop {
             0%   { transform: scale(1); }
             30%  { transform: scale(1.6); }
@@ -1938,9 +2004,19 @@ const firebaseConfig = {
         #qo-add-player-btn:hover,
         #players-add-player-btn:hover,
         #arch-add-btn:hover,
-        #qo-next-hand-btn:hover {
+        #qo-next-hand-btn:hover,
+        #manual-sync-btn:hover {
             filter: brightness(1.4);
             transition: filter 0.15s ease;
+        }
+
+        #manual-sync-btn:active {
+            transform: translateY(1px);
+            filter: brightness(0.9);
+        }
+
+        #manual-sync-btn {
+            transition: filter 0.15s ease, border-color 0.15s ease, color 0.15s ease;
         }
 
         .section {
@@ -6715,6 +6791,7 @@ const firebaseConfig = {
             </div>
             <div class="splash-suits-metal">♠ ♥ ♦ ♣</div>
             <div class="splash-copyright">© 2026 NitWiz. All rights reserved.</div>
+            <div id="splash-version" style="font-family: 'Outfit', sans-serif; font-size: 0.65rem; color: rgba(200,200,200,0.35); letter-spacing: 0.5px; margin-top: 0.3rem;"></div>
             <div style="font-family:'Outfit',sans-serif;font-size:0.7rem;font-weight:600;color:rgba(255,255,255,0.25);letter-spacing:3px;margin-top:1.5rem;text-transform:uppercase;">Tap anywhere to continue</div>
         </div>
     </div>
@@ -6930,6 +7007,13 @@ const firebaseConfig = {
                     </svg>
                 </button>
             </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; margin-top: 0.75rem;">
+                <button onclick="manualSyncWithFeedback()" id="manual-sync-btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 0.35rem 1rem; background: transparent; border: 1px solid rgba(141,196,240,0.3); border-radius: 20px; font-family: 'Outfit', sans-serif; font-size: 0.72rem; font-weight: 700; color: rgba(141,196,240,0.6); cursor: pointer; letter-spacing: 0.04em;">
+                    <svg id="manual-sync-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                    <span id="manual-sync-label">Sync Now</span>
+                </button>
+                <span id="last-sync-label" style="font-family: 'Outfit', sans-serif; font-size: 0.68rem; color: rgba(255,255,255,0.22); letter-spacing: 0.03em;">Not yet synced</span>
+            </div>
             </div>
         </div>
 
@@ -7138,6 +7222,14 @@ If they check-raise - nuts or very strong"></textarea>
                         <button id="qo-add-player-btn" onclick="qoAddNewPlayer()">+ New Player</button>
                     </div>
                 </div>
+                
+                <!-- Collapsed player name (shown after selection) -->
+                <div id="qo-player-collapsed" style="display: none; text-align: center; margin-bottom: 0.5rem;">
+                    <span id="qo-player-collapsed-name" onclick="qoExpandDrum()" style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 900; color: #ff8c38; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                        <span id="qo-player-collapsed-text"></span>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: rgba(255,255,255,0.3);"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </span>
+                </div>
                 <!-- Hidden select kept for JS compat -->
                 <select id="qo-player-select" style="display:none;" onchange="qoOnPlayerSelect()">
                     <option value="">Choose player...</option>
@@ -7200,7 +7292,7 @@ If they check-raise - nuts or very strong"></textarea>
                     
                     <!-- Navigation -->
                     <div style="display: flex; flex-direction: column; gap: 6px; align-items: center;">
-                        <button id="qo-next-hand-btn" onclick="qoNextHand()" style="padding: 0.6rem 1.5rem; background: linear-gradient(135deg, #8dc4f0 0%, #5a9fd4 100%); border: 2px solid #4a8abf; border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 700; color: #ffffff; cursor: pointer; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);">+ New</button>
+                        <button id="qo-next-hand-btn" onclick="qoNextHand()" style="padding: 0.65rem 1.6rem; display: inline-flex; align-items: center; gap: 7px; background: linear-gradient(135deg, #8dc4f0 0%, #5a9fd4 100%); border: 2px solid #4a8abf; border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 700; color: #ffffff; cursor: pointer; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);">New <svg width="17" height="18" viewBox="0 0 20 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="4" y2="4"/><line x1="9" y1="12" x2="9" y2="1"/><line x1="14" y1="12" x2="14" y2="1"/><line x1="19" y1="12" x2="19" y2="4"/><path d="M4 12 Q2 20 10 21 Q18 21 19 12"/></svg></button>
                         <div id="qo-last-hand-link" style="text-align: center; display: none;">
                             <span onclick="qoPreviousHand()" style="font-family: 'Outfit', sans-serif; font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.4); cursor: pointer; display:inline-flex; align-items:center; gap:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>Last Hand</span>
                         </div>
@@ -9724,6 +9816,9 @@ If they check-raise - nuts or very strong"></textarea>
             });
         });
 
+        // === APP VERSION ===
+        var APP_VERSION = '1.0.0';
+
         // === PLAYER CHIP DIMENSION DEFINITIONS ===
         var PLAYER_DIM_DEFS = {
             sections: [
@@ -10719,13 +10814,13 @@ If they check-raise - nuts or very strong"></textarea>
         
         // Initial action sets by position (preflop, first action)
         var qoPreflopInitial = {
-            SB: ['Fold', 'Complete', 'Raise', 'All-in'],
+            SB: ['Fold', 'Complete', 'Cold Call', 'Raise', 'All-in'],
             BB: ['Check', 'Fold', 'Call', 'Raise', 'All-in'],
-            UTG: ['Fold', 'Limp', 'Raise', 'All-in'],
-            MP: ['Fold', 'Limp', 'Raise', 'All-in'],
-            LP: ['Fold', 'Limp', 'Raise', 'All-in'],
-            D:  ['Fold', 'Limp', 'Raise', 'All-in'],
-            X:  ['Fold', 'Limp', 'Call', 'Raise', 'All-in']
+            UTG: ['Fold', 'Limp', 'Call', 'Raise', 'All-in'],
+            MP: ['Fold', 'Limp', 'Cold Call', 'Raise', 'All-in'],
+            LP: ['Fold', 'Limp', 'Cold Call', 'Raise', 'All-in'],
+            D:  ['Fold', 'Limp', 'Cold Call', 'Raise', 'All-in'],
+            X:  ['Fold', 'Limp', 'Cold Call', 'Raise', 'All-in']
         };
         // When facing action back (re-raised, etc.) — same for all positions & streets
         var qoFacingActionButtons = ['Fold', 'Call', 'Re-Raise', 'All-in'];
@@ -10737,7 +10832,7 @@ If they check-raise - nuts or very strong"></textarea>
         // Actions that end the hand
         var qoHandEndActions = ['Fold', 'All-in'];
         // Actions that end the street (move to next)
-        var qoStreetEndActions = ['Call', 'Complete', 'Limp'];
+        var qoStreetEndActions = []; // nothing auto-advances except IP Check/Call/Cold Call (handled explicitly)
         // Actions that keep the street open (opponent may act back)
         var qoOpenActions = ['Raise', 'Re-Raise', 'Bet', 'Check'];
         
@@ -10991,10 +11086,11 @@ If they check-raise - nuts or very strong"></textarea>
                 qoDrumInit();
                 qoDrumRenderItems();
 
-                // Auto-load player at center
+                // Auto-load player at center — but only if no hand is in progress or completed
                 if (QO_DRUM.items.length > 0) {
                     var player = QO_DRUM.items[idx];
-                    if (player && select) {
+                    var handInProgress = qoHandDone || qoStreetOrder.some(function(s) { return qoStreetActions[s].length > 0; });
+                    if (player && select && !handInProgress) {
                         select.value = player.name;
                         if (!qoCurrentPlayerName || qoCurrentPlayerName === player.name) {
                             qoOnPlayerSelect();
@@ -11007,6 +11103,16 @@ If they check-raise - nuts or very strong"></textarea>
         function qoPopulateDropdown() {
             // Delegates to drum-based picker
             qoDrumPopulate();
+        }
+        
+        function qoExpandDrum() {
+            document.getElementById('qo-drum-wrapper').style.display = 'block';
+            document.getElementById('qo-player-collapsed').style.display = 'none';
+            // Re-init after display:block so container dimensions are available
+            setTimeout(function() {
+                qoDrumInit();
+                qoDrumRenderItems();
+            }, 20);
         }
         
         async function qoOnPlayerSelect() {
@@ -11037,6 +11143,8 @@ If they check-raise - nuts or very strong"></textarea>
             
             if (!name) {
                 tracker.style.display = 'none';
+                document.getElementById('qo-drum-wrapper').style.display = 'block';
+                document.getElementById('qo-player-collapsed').style.display = 'none';
                 qoCurrentPlayer = null;
                 qoCurrentPlayerName = '';
                 return;
@@ -11047,7 +11155,6 @@ If they check-raise - nuts or very strong"></textarea>
             
             qoCurrentPlayerName = name;
             try { localStorage.setItem('nitwiz_lastQoPlayer', name); } catch(e) {}
-            
             // Load stored hands for this player
             if (!qoCurrentPlayer.quickObs) qoCurrentPlayer.quickObs = [];
             qoStoredHands = qoCurrentPlayer.quickObs;
@@ -11088,6 +11195,14 @@ If they check-raise - nuts or very strong"></textarea>
         }
         
         function qoSelectPosition(pos, el) {
+            // Collapse drum and show player name now that user is entering hand data
+            var drumWrapper = document.getElementById('qo-drum-wrapper');
+            if (drumWrapper.style.display !== 'none' && qoCurrentPlayerName) {
+                drumWrapper.style.display = 'none';
+                document.getElementById('qo-player-collapsed-text').textContent = qoCurrentPlayerName;
+                document.getElementById('qo-player-collapsed').style.display = 'block';
+            }
+            
             // Clear all seat chips
             el.parentElement.querySelectorAll('.qo-seat-chip').forEach(function(c) {
                 c.classList.remove('active');
@@ -11189,6 +11304,19 @@ If they check-raise - nuts or very strong"></textarea>
             
             var html = '';
             
+            // Fold PF quick button — shown only on fresh preflop hands (no actions yet)
+            if (qoCurrentStreet === 'preflop' && currentActions.length === 0 && !qoAwaitingResponse) {
+                html += '<button class="qo-action-btn" onclick="qoFoldPreflop()" style="'
+                    + 'width: 100%; padding: 0.55rem 0.4rem; margin-bottom: 4px;'
+                    + 'background: linear-gradient(145deg, rgba(22, 34, 62, 0.85), rgba(18, 28, 52, 0.95));'
+                    + 'border: 1px solid rgba(239, 68, 68, 0.4);'
+                    + 'border-radius: 6px; font-family: \'Outfit\', sans-serif;'
+                    + 'font-size: 0.75rem; font-weight: 700; color: rgba(239, 68, 68, 0.75);'
+                    + 'cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2);'
+                    + 'letter-spacing: 0.04em;'
+                    + '">Fold PF (no data)</button>';
+            }
+            
             // Render action buttons
             actions.forEach(function(action) {
                 html += qoBuildActionButton(action);
@@ -11196,14 +11324,22 @@ If they check-raise - nuts or very strong"></textarea>
             
             // Add advance button when awaiting response (no action came back)
             if (qoAwaitingResponse) {
-                html += '<button onclick="qoAdvanceStreet()" style="';
+                var onRiver = (qoCurrentStreet === 'river');
+                var borderColor = onRiver ? 'rgba(255, 140, 56, 0.5)' : 'rgba(141, 196, 240, 0.5)';
+                var textColor  = onRiver ? '#ff8c38' : '#8dc4f0';
+                var btnIcon    = onRiver
+                    ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg>'
+                    : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+                var btnText    = onRiver ? 'End Hand' : 'Next Street';
+                var btnAction  = onRiver ? 'qoEndHand()' : 'qoAdvanceStreet()';
+                html += '<button onclick="' + btnAction + '" style="';
                 html += 'flex: 1 1 auto; min-width: 80px; padding: 0.7rem 0.5rem;';
                 html += 'background: transparent;';
-                html += 'border: 2px solid rgba(141, 196, 240, 0.5);';
+                html += 'border: 2px solid ' + borderColor + ';';
                 html += 'border-radius: 6px; font-family: \'Outfit\', sans-serif;';
-                html += 'font-size: 0.75rem; font-weight: 700; color: #8dc4f0;';
+                html += 'font-size: 0.75rem; font-weight: 700; color: ' + textColor + ';';
                 html += 'cursor: pointer;';
-                html += '"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><polyline points="9 18 15 12 9 6"></polyline></svg>Next Street</button>';
+                html += '">' + btnIcon + btnText + '</button>';
             }
             
             // #1 — Undo link if any actions recorded
@@ -11227,6 +11363,8 @@ If they check-raise - nuts or very strong"></textarea>
                 textColor = 'rgba(239, 68, 68, 0.9)';
             }
             
+
+            
             var html = '<button class="qo-action-btn" onclick="qoTapAction(\'' + action + '\')" style="';
             html += 'flex: 1 1 auto; min-width: 55px; padding: 0.7rem 0.4rem;';
             html += 'background: ' + bgColor + ';';
@@ -11244,20 +11382,38 @@ If they check-raise - nuts or very strong"></textarea>
             // Record action on current street
             qoStreetActions[qoCurrentStreet].push(action);
             
+            var isIP = (qoIpOop === 'IP');
+            
             // Determine next state
             if (qoHandEndActions.indexOf(action) >= 0) {
-                // Fold or All-in — hand over
+                // Fold or All-in — hand over regardless of position
                 qoHandDone = true;
                 qoAwaitingResponse = false;
-            } else if (qoStreetEndActions.indexOf(action) >= 0) {
-                // Call/Complete/Limp — street ends, advance
+                qoSaveCurrentHand();
+            } else if (isIP && (action === 'Check' || action === 'Call' || action === 'Cold Call')) {
+                // IP acting last — Check, Call, or Cold Call closes the street
                 qoAwaitingResponse = false;
                 qoAdvanceStreetInternal();
-            } else if (qoOpenActions.indexOf(action) >= 0) {
-                // Raise/Re-Raise/Bet/Check — could face action back
+                if (qoHandDone) qoSaveCurrentHand(); // river just ended
+            } else if (qoStreetEndActions.indexOf(action) >= 0) {
+                // Preflop-only closers (Limp, Complete, Cold Call OOP) — always close street
+                qoAwaitingResponse = false;
+                qoAdvanceStreetInternal();
+                if (qoHandDone) qoSaveCurrentHand();
+            } else {
+                // Raise/Re-Raise/Bet, OOP Check, OOP Call — could face action back
                 qoAwaitingResponse = true;
             }
             
+            qoRenderStreet();
+            qoRenderActionLog();
+        }
+        
+        function qoEndHand() {
+            // Explicitly end the hand on the river — save and mark complete, stay on this hand
+            qoAwaitingResponse = false;
+            qoHandDone = true;
+            qoSaveCurrentHand();
             qoRenderStreet();
             qoRenderActionLog();
         }
@@ -11266,6 +11422,7 @@ If they check-raise - nuts or very strong"></textarea>
             // User tapped "→" — no action came back, advance to next street
             qoAwaitingResponse = false;
             qoAdvanceStreetInternal();
+            if (qoHandDone) qoSaveCurrentHand(); // river just ended via advance
             qoRenderStreet();
             qoRenderActionLog();
         }
@@ -11288,17 +11445,24 @@ If they check-raise - nuts or very strong"></textarea>
                 qoHandDone = false;
             }
             
+            var isIP = (qoIpOop === 'IP');
+            
+            // Helper: given the last recorded action, should we be awaiting a response?
+            function _deriveAwaiting(lastAction) {
+                if (!lastAction) return false;
+                if (qoHandEndActions.indexOf(lastAction) >= 0) return false;
+                if (isIP && (lastAction === 'Check' || lastAction === 'Call' || lastAction === 'Cold Call')) return false;
+                if (qoStreetEndActions.indexOf(lastAction) >= 0) return false;
+                // Raise/Bet/Re-Raise, OOP Check, OOP Call — awaiting response
+                return true;
+            }
+            
             // Pop last action from current street
             var currentActions = qoStreetActions[qoCurrentStreet];
             if (currentActions.length > 0) {
                 currentActions.pop();
-                // Re-derive state: is the street still awaiting response?
-                if (currentActions.length > 0) {
-                    var lastAction = currentActions[currentActions.length - 1];
-                    qoAwaitingResponse = qoOpenActions.indexOf(lastAction) >= 0;
-                } else {
-                    qoAwaitingResponse = false;
-                }
+                var lastAction = currentActions.length > 0 ? currentActions[currentActions.length - 1] : null;
+                qoAwaitingResponse = _deriveAwaiting(lastAction);
             } else {
                 // Current street is empty — go back to previous street
                 var idx = qoStreetOrder.indexOf(qoCurrentStreet);
@@ -11307,12 +11471,8 @@ If they check-raise - nuts or very strong"></textarea>
                     var prevActions = qoStreetActions[qoCurrentStreet];
                     if (prevActions.length > 0) {
                         prevActions.pop();
-                        if (prevActions.length > 0) {
-                            var lastAction = prevActions[prevActions.length - 1];
-                            qoAwaitingResponse = qoOpenActions.indexOf(lastAction) >= 0;
-                        } else {
-                            qoAwaitingResponse = false;
-                        }
+                        var lastAction = prevActions.length > 0 ? prevActions[prevActions.length - 1] : null;
+                        qoAwaitingResponse = _deriveAwaiting(lastAction);
                     }
                 }
             }
@@ -11346,7 +11506,7 @@ If they check-raise - nuts or very strong"></textarea>
                 
                 var pf = h.streets && h.streets.preflop;
                 var firstPf = Array.isArray(pf) ? pf[0] : pf;
-                if (firstPf === 'Fold') foldPfCount++;
+                if (firstPf === 'Fold' || h.pfFold) foldPfCount++;
                 
                 // FAR: did they raise/bet on any street, then fold on a later action or street?
                 var didRaise = false;
@@ -11416,12 +11576,23 @@ If they check-raise - nuts or very strong"></textarea>
             if (qoViewingHand !== null) {
                 el.textContent = 'Hand #' + qoViewingHand.hand + ' (viewing)';
                 el.style.color = 'rgba(255, 167, 38, 0.7)';
-                if (btn) btn.textContent = 'Return to Live';
+                if (btn) btn.innerHTML = 'Return to Live';
                 if (lastLink) lastLink.style.display = 'none';
+            } else if (qoHandDone) {
+                // Hand complete but user hasn't tapped New yet — don't advance the display
+                return;
             } else {
-                el.textContent = 'Hand #' + qoHandNumber;
+                var newLabel = 'Hand #' + qoHandNumber;
+                var changed = el.textContent !== newLabel;
+                el.textContent = newLabel;
                 el.style.color = '#ff8c38';
-                if (btn) btn.textContent = '+ New';
+                if (changed) {
+                    el.classList.remove('qo-hand-num-pulse');
+                    void el.offsetWidth; // force reflow to restart animation
+                    el.classList.add('qo-hand-num-pulse');
+                    setTimeout(function() { el.classList.remove('qo-hand-num-pulse'); }, 1000);
+                }
+                if (btn) btn.innerHTML = 'New <svg width="17" height="18" viewBox="0 0 20 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="4" y2="4"/><line x1="9" y1="12" x2="9" y2="1"/><line x1="14" y1="12" x2="14" y2="1"/><line x1="19" y1="12" x2="19" y2="4"/><path d="M4 12 Q2 20 10 21 Q18 21 19 12"/></svg>';
                 if (lastLink) lastLink.style.display = (qoStoredHands && qoStoredHands.length > 0) ? 'block' : 'none';
             }
         }
@@ -11481,7 +11652,35 @@ If they check-raise - nuts or very strong"></textarea>
                 return;
             }
             
+            // Re-save to capture any notes entered after auto-save on completion
             qoSaveCurrentHand();
+            qoHandNumber++;
+            qoResetHand();
+        }
+        
+        function qoFoldPreflop() {
+            if (qoHandDone || qoViewingHand !== null) return;
+            // Save a minimal hand record: dealt, folded preflop, no voluntary action
+            var handData = {
+                hand: qoHandNumber,
+                position: qoPosition || 'X',
+                ipOop: qoIpOop || 'X',
+                streets: { preflop: ['Fold'], flop: [], turn: [], river: [] },
+                notes: '',
+                timestamp: Date.now(),
+                vpip: false,
+                pfr: false,
+                pfFold: true
+            };
+            if (!qoCurrentPlayer.quickObs) qoCurrentPlayer.quickObs = [];
+            var existIdx = qoCurrentPlayer.quickObs.findIndex(function(h) { return h.hand === qoHandNumber; });
+            if (existIdx >= 0) {
+                qoCurrentPlayer.quickObs[existIdx] = handData;
+            } else {
+                qoCurrentPlayer.quickObs.push(handData);
+            }
+            qoStoredHands = qoCurrentPlayer.quickObs;
+            saveDatabase();
             qoHandNumber++;
             qoResetHand();
         }
