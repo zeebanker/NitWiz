@@ -3948,6 +3948,100 @@ const firebaseConfig = {
             background: rgba(255, 140, 56, 0.04) !important;
         }
 
+        /* External pencil button — sits to the right of the drum, outside overlay */
+        .drum-ext-pencil {
+            flex-shrink: 0;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255,140,56,0.08);
+            border: 1px solid rgba(255,140,56,0.2);
+            cursor: pointer;
+            color: rgba(255,255,255,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.15s, background 0.15s, border-color 0.15s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            padding: 0;
+        }
+        .drum-ext-pencil:hover {
+            color: #ff8c38;
+            background: rgba(255,140,56,0.18);
+            border-color: rgba(255,140,56,0.5);
+        }
+        .drum-ext-pencil:active {
+            color: #ffb870;
+            transform: scale(0.92);
+        }
+
+        /* Pencil btn next to hero/villain selects */
+        .hh-select-pencil-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+        }
+        .hh-select-pencil-wrap .hh-select {
+            flex: 1;
+        }
+        .hh-pencil-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: rgba(255,255,255,0.25);
+            padding: 0;
+            transition: color 0.15s, background 0.15s;
+            flex-shrink: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .hh-pencil-btn:hover {
+            color: rgba(255,140,56,0.8);
+            background: rgba(255,140,56,0.1);
+        }
+        .hh-pencil-btn.visible {
+            color: rgba(255,255,255,0.35);
+        }
+        .hh-pencil-btn.hidden-pencil {
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Floating inline rename input for hero/villain */
+        .hh-rename-wrap {
+            display: none;
+            position: relative;
+            flex: 1;
+        }
+        .hh-rename-wrap.active {
+            display: block;
+        }
+        .hh-rename-input {
+            width: 100%;
+            box-sizing: border-box;
+            background: rgba(22,34,62,0.9);
+            border: none;
+            border-bottom: 2px solid rgba(255,140,56,0.7);
+            color: #ffc068;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding: 4px 8px;
+            border-radius: 3px 3px 0 0;
+            outline: none;
+        }
+        .hh-rename-input:focus {
+            border-bottom-color: #ff8c38;
+        }
+
         /* ============================================
            DESCRIPTOR CHIPS — Tap to Select (text only)
            ============================================ */
@@ -4144,32 +4238,49 @@ const firebaseConfig = {
 
         .notecard-edit-btn,
         .notecard-add-btn {
-            background: none;
-            border: none;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 50%;
             cursor: pointer;
-            padding: 0.3rem;
-            opacity: 0.7;
-            transition: all 0.2s ease;
+            padding: 5px;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.4);
+            transition: color 0.15s, background 0.15s, border-color 0.15s;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .notecard-edit-btn svg,
         .notecard-add-btn svg {
-            stroke: #ff8c38;
-            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+            stroke: currentColor;
+            filter: none;
         }
 
         .notecard-edit-btn:hover,
         .notecard-add-btn:hover {
-            opacity: 1;
+            color: #ff8c38;
+            background: rgba(255,140,56,0.18);
+            border-color: rgba(255,140,56,0.5);
+        }
+
+        .notecard-edit-btn:active,
+        .notecard-add-btn:active {
+            color: #ffb870;
+            transform: scale(0.92);
         }
 
         .notecard-edit-btn.active {
-            opacity: 0.9;
+            color: #ff8c38;
+            background: rgba(255,140,56,0.12);
+            border-color: rgba(255,140,56,0.35);
         }
 
         .notecard-edit-btn.active svg {
-            stroke: #ff8c38;
-            filter: drop-shadow(0 0 4px rgba(255, 140, 56, 0.4));
+            stroke: currentColor;
+            filter: none;
         }
 
         .notecard-add-btn {
@@ -6976,14 +7087,14 @@ const firebaseConfig = {
                     <span>Archetypes</span>
                 </button>
                 
-                <button class="dashboard-btn" onclick="switchTab('under-construction')" style="opacity:0.35; filter: grayscale(1); color: rgba(255,255,255,0.45);">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <button class="dashboard-btn" onclick="switchTab('under-construction')" style="opacity:0.32; filter:grayscale(1); min-height:56px; padding:0.6rem 0.5rem; pointer-events:auto;">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px;">
                         <path d="M2 20h20"></path>
                         <path d="M5 20V8l7-5 7 5v12"></path>
                         <path d="M10 20v-4h4v4"></path>
                         <line x1="3" y1="3" x2="21" y2="21"></line>
                     </svg>
-                    <span>Under Construction</span>
+                    <span style="font-size:0.65rem;">Under Construction</span>
                 </button>
             </div>
             
@@ -7097,20 +7208,25 @@ If they check-raise - nuts or very strong"></textarea>
         <!-- Players Tab -->
         <div id="players" class="tab-content">
             <!-- Combination Lock Player Picker -->
-            <div class="combo-lock-frame">
-                <div class="apple-picker-container" id="drum-container">
-                    <div class="apple-picker-selection-bar"></div>
-                    <div class="apple-picker-scroll">
-                        <div class="drum-cylinder" id="player-picker">
-                            <!-- Players will be populated here -->
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="combo-lock-frame" style="flex:1;">
+                    <div class="apple-picker-container" id="drum-container">
+                        <div class="apple-picker-selection-bar"></div>
+                        <div class="apple-picker-scroll">
+                            <div class="drum-cylinder" id="player-picker">
+                                <!-- Players will be populated here -->
+                            </div>
                         </div>
+                        <!-- Drum side ridges (grip texture) -->
+                        <div class="drum-ridge drum-ridge-left"></div>
+                        <div class="drum-ridge drum-ridge-right"></div>
+                        <!-- Touch capture overlay — sits on top, captures all touches -->
+                        <div class="drum-touch-overlay" id="drum-touch-overlay"></div>
                     </div>
-                    <!-- Drum side ridges (grip texture) -->
-                    <div class="drum-ridge drum-ridge-left"></div>
-                    <div class="drum-ridge drum-ridge-right"></div>
-                    <!-- Touch capture overlay — sits on top, captures all touches -->
-                    <div class="drum-touch-overlay" id="drum-touch-overlay"></div>
                 </div>
+                <button id="players-drum-pencil" class="drum-ext-pencil" onclick="startDrumInlineEdit(null, DRUM.selectedIndex)" title="Rename player" style="display:none;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                </button>
             </div>
 
             <div id="players-add-player-actions" style="display: flex; justify-content: center; margin-top: 0.6rem; margin-bottom: 0.5rem;">
@@ -7207,16 +7323,21 @@ If they check-raise - nuts or very strong"></textarea>
                 
                 <!-- Player Selection — Drum Roller -->
                 <div id="qo-drum-wrapper">
-                    <div class="combo-lock-frame">
-                        <div class="apple-picker-container" id="qo-drum-container">
-                            <div class="apple-picker-selection-bar"></div>
-                            <div class="apple-picker-scroll">
-                                <div class="drum-cylinder" id="qo-player-drum"></div>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div class="combo-lock-frame" style="flex:1;">
+                            <div class="apple-picker-container" id="qo-drum-container">
+                                <div class="apple-picker-selection-bar"></div>
+                                <div class="apple-picker-scroll">
+                                    <div class="drum-cylinder" id="qo-player-drum"></div>
+                                </div>
+                                <div class="drum-ridge drum-ridge-left"></div>
+                                <div class="drum-ridge drum-ridge-right"></div>
+                                <div class="drum-touch-overlay" id="qo-drum-touch-overlay"></div>
                             </div>
-                            <div class="drum-ridge drum-ridge-left"></div>
-                            <div class="drum-ridge drum-ridge-right"></div>
-                            <div class="drum-touch-overlay" id="qo-drum-touch-overlay"></div>
                         </div>
+                        <button id="qo-drum-pencil" class="drum-ext-pencil" onclick="qoStartDrumInlineEditCurrent()" title="Rename player" style="display:none;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                        </button>
                     </div>
                     <div id="qo-drum-actions">
                         <button id="qo-add-player-btn" onclick="qoAddNewPlayer()">+ New Player</button>
@@ -7481,10 +7602,13 @@ If they check-raise - nuts or very strong"></textarea>
                             <!-- Hero -->
                             <div class="form-group slider-layout" id="hh-hero-select-row" style="align-items: center;">
                                 <label style="color: #8dc4f0; padding-top: 0;">Hero</label>
-                                <div style="flex: 1;">
+                                <div class="hh-select-pencil-wrap">
                                     <select class="hh-select" id="hh-hero-select" onchange="hhOnHeroSelect()" style="width: 100%;">
                                         <option value="">Choose player...</option>
                                     </select>
+                                    <button type="button" class="hh-pencil-btn hidden-pencil" id="hh-hero-pencil" onclick="hhStartRename('hero')" title="Rename player">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    </button>
                                 </div>
                             </div>
 
@@ -7508,10 +7632,13 @@ If they check-raise - nuts or very strong"></textarea>
                             <!-- Villain -->
                             <div class="form-group slider-layout" id="hh-villain-select-row" style="align-items: center;">
                                 <label style="color: #ffa726; padding-top: 0;">Villain</label>
-                                <div style="flex: 1;">
+                                <div class="hh-select-pencil-wrap">
                                     <select class="hh-select" id="hh-villain-select" onchange="hhOnVillainSelect()" style="width: 100%;">
                                         <option value="">-- Generic --</option>
                                     </select>
+                                    <button type="button" class="hh-pencil-btn hidden-pencil" id="hh-villain-pencil" onclick="hhStartRename('villain')" title="Rename player">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    </button>
                                 </div>
                             </div>
 
@@ -8952,6 +9079,10 @@ If they check-raise - nuts or very strong"></textarea>
             }
 
             DRUM.cylinder.innerHTML = html;
+
+            // Show external pencil when there are players
+            const extPencil = document.getElementById('players-drum-pencil');
+            if (extPencil) extPencil.style.display = (n > 0) ? 'flex' : 'none';
         }
 
         function getSnappedOffset(logicalIndex) {
@@ -9087,19 +9218,28 @@ If they check-raise - nuts or very strong"></textarea>
             overlay.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 onDown(e.touches[0].clientY);
+                // Long-press to edit
+                DRUM._longPressTimer = setTimeout(() => {
+                    if (!DRUM.dragStarted && !DRUM._editing) {
+                        const centerItem = DRUM.cylinder.querySelector('.apple-picker-item.selected');
+                        if (centerItem) startDrumInlineEdit(centerItem, DRUM.selectedIndex);
+                    }
+                }, 600);
             }, { passive: false });
 
             overlay.addEventListener('touchmove', (e) => {
                 e.preventDefault();
                 onMove(e.touches[0].clientY);
+                clearTimeout(DRUM._longPressTimer);
             }, { passive: false });
 
             overlay.addEventListener('touchend', (e) => {
                 e.preventDefault();
+                clearTimeout(DRUM._longPressTimer);
                 onUp();
             }, { passive: false });
 
-            overlay.addEventListener('touchcancel', onUp);
+            overlay.addEventListener('touchcancel', () => { clearTimeout(DRUM._longPressTimer); onUp(); });
 
             // Mouse — down on overlay, move/up on window
             overlay.addEventListener('mousedown', (e) => { e.preventDefault(); onDown(e.clientY); });
@@ -9122,8 +9262,13 @@ If they check-raise - nuts or very strong"></textarea>
             if (DRUM._editing) return;
             DRUM._editing = true;
 
+            // If called from external pencil, item is null — find the selected DOM item
+            if (!item) {
+                item = DRUM.cylinder.querySelector('.apple-picker-item.selected');
+            }
+
             const player = DRUM.items[index];
-            if (!player) { DRUM._editing = false; return; }
+            if (!player || !item) { DRUM._editing = false; return; }
             const oldName = player.name;
 
             // Create input that replaces the item text
@@ -9155,38 +9300,39 @@ If they check-raise - nuts or very strong"></textarea>
                 committed = true;
 
                 const newName = input.value.trim();
-                if (!newName || newName === oldName) {
+
+                // Empty name — show message, revert
+                if (!newName) {
+                    nwAlert('To remove a player from the database, click on the delete player icon in the Players menu.');
                     cancelEdit();
                     return;
                 }
 
-                // Check for duplicate names
-                const duplicate = database.realPlayers.find(p => p.name === newName && p.name !== oldName);
-                if (duplicate) {
-                    committed = false; // allow retry
-                    nwAlert('A player with that name already exists.').then(function() { input.focus(); input.select(); });
+                if (newName === oldName) {
+                    cancelEdit();
                     return;
                 }
 
-                // Update in database
-                const dbPlayer = database.realPlayers.find(p => p.name === oldName);
-                if (dbPlayer) {
-                    dbPlayer.name = newName;
-                    if (currentPlayerName === oldName) {
-                        currentPlayerName = newName;
-                        document.getElementById('player-form-title').textContent = newName;
-                        document.getElementById('player-name').value = newName;
-                    }
-                    saveDatabase();
-                }
-
-                // Rebuild drum with new sorted order
                 DRUM._editing = false;
-                // Find the new index position
-                const sorted = [...database.realPlayers].sort((a, b) => a.name.localeCompare(b.name));
-                const newIdx = sorted.findIndex(p => p.name === newName);
-                DRUM._savedOffset = -(newIdx >= 0 ? newIdx : 0) * DRUM.ITEM_H;
-                updatePlayerList();
+                renamePlayerEverywhere(oldName, newName).then(success => {
+                    if (!success) {
+                        // Duplicate alert shown inside renamePlayerEverywhere, reopen edit
+                        DRUM._editing = true;
+                        committed = false;
+                        renderDrumItems();
+                        // Re-trigger edit on the new center item
+                        setTimeout(() => {
+                            const centerItem = DRUM.cylinder.querySelector('.apple-picker-item.selected');
+                            if (centerItem) startDrumInlineEdit(centerItem, DRUM.selectedIndex);
+                        }, 50);
+                        return;
+                    }
+                    // Find new sorted position and snap to it
+                    const sorted = [...database.realPlayers].sort((a, b) => a.name.localeCompare(b.name));
+                    const newIdx = sorted.findIndex(p => p.name === newName);
+                    DRUM._savedOffset = -(newIdx >= 0 ? newIdx : 0) * DRUM.ITEM_H;
+                    updatePlayerList();
+                });
             }
 
             function cancelEdit() {
@@ -9652,6 +9798,11 @@ If they check-raise - nuts or very strong"></textarea>
             }
 
             container.classList.toggle('editing', isEditing);
+
+            // Show pencil only when there's content to edit
+            const editBtnId = type === 'weakness' ? 'weakness-edit-btn' : 'observation-edit-btn';
+            const editBtn = document.getElementById(editBtnId);
+            if (editBtn) editBtn.style.display = data.length > 0 ? 'inline-flex' : 'none';
 
             // In edit mode, make entries clickable to edit text
             if (isEditing) {
@@ -10187,6 +10338,65 @@ If they check-raise - nuts or very strong"></textarea>
 
         function getDescChipValue(field) {
             return getPlayerChipValue(field);
+        }
+
+        // =====================================================
+        // RENAME PLAYER — updates name across entire database
+        // =====================================================
+        async function renamePlayerEverywhere(oldName, newName) {
+            if (!newName || newName === oldName) return false;
+            newName = newName.trim();
+            if (!newName) return false;
+
+            // Check for duplicate
+            const dup = database.realPlayers.find(p => p.name.toLowerCase() === newName.toLowerCase() && p.name !== oldName);
+            if (dup) {
+                await nwAlert('A player named "' + newName + '" already exists.');
+                return false;
+            }
+
+            // Update realPlayers entry
+            const dbPlayer = database.realPlayers.find(p => p.name === oldName);
+            if (dbPlayer) dbPlayer.name = newName;
+
+            // Update QO observations
+            if (database.observations) {
+                database.observations.forEach(obs => {
+                    if (obs.playerName === oldName) obs.playerName = newName;
+                });
+            }
+
+            // Update hand history
+            if (database.handHistory) {
+                database.handHistory.forEach(hand => {
+                    if (hand.hero === oldName) hand.hero = newName;
+                    if (hand.villain === oldName) hand.villain = newName;
+                });
+            }
+
+            // Update current player context if open
+            if (typeof currentPlayerName !== 'undefined' && currentPlayerName === oldName) {
+                currentPlayerName = newName;
+                const titleEl = document.getElementById('player-form-title');
+                const nameEl = document.getElementById('player-name');
+                if (titleEl) titleEl.textContent = newName;
+                if (nameEl) nameEl.value = newName;
+            }
+
+            saveDatabase();
+            updateAllViews();
+
+            // Update hero/villain selects if they had this player selected
+            ['hh-hero-select','hh-villain-select'].forEach(id => {
+                const sel = document.getElementById(id);
+                if (sel && sel.value === oldName) {
+                    const opt = sel.querySelector('option[value="' + CSS.escape(oldName) + '"]');
+                    if (opt) { opt.value = newName; opt.textContent = newName; }
+                    sel.value = newName;
+                }
+            });
+
+            return true;
         }
 
         async function deletePlayer() {
@@ -10886,6 +11096,10 @@ If they check-raise - nuts or very strong"></textarea>
                 html += `<div class="apple-picker-item${isSel}" data-name="${player.name}" style="position:absolute;top:0;left:0;width:100%;transform:translateY(${itemY}px)">${player.name}</div>`;
             }
             QO_DRUM.cylinder.innerHTML = html;
+
+            // Show external pencil when there are players
+            const qoExtPencil = document.getElementById('qo-drum-pencil');
+            if (qoExtPencil) qoExtPencil.style.display = (n > 0) ? 'flex' : 'none';
         }
 
         function qoDrumSnap() {
@@ -10920,6 +11134,81 @@ If they check-raise - nuts or very strong"></textarea>
             QO_DRUM.rafId = requestAnimationFrame(qoDrumMomentum);
         }
 
+        // Called from external pencil button — finds current center item
+        function qoStartDrumInlineEditCurrent() {
+            const centerItem = QO_DRUM.cylinder.querySelector('.apple-picker-item.selected');
+            if (!centerItem) return;
+            const name = centerItem.getAttribute('data-name');
+            if (name) qoStartDrumInlineEdit(centerItem, name);
+        }
+
+        // === QO DRUM INLINE NAME EDITING ===
+        function qoStartDrumInlineEdit(item, oldName) {
+            if (QO_DRUM._editing) return;
+            QO_DRUM._editing = true;
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = oldName;
+            input.className = 'drum-inline-edit';
+            input.setAttribute('autocomplete', 'off');
+            input.setAttribute('autocorrect', 'off');
+            input.setAttribute('spellcheck', 'false');
+
+            item.textContent = '';
+            item.appendChild(input);
+            item.classList.add('editing');
+
+            input.addEventListener('mousedown', e => e.stopPropagation());
+            input.addEventListener('touchstart', e => e.stopPropagation());
+
+            // Hide the overlay so the input is reachable on mobile
+            const overlay = document.getElementById('qo-drum-touch-overlay');
+            if (overlay) overlay.style.pointerEvents = 'none';
+
+            input.focus();
+            input.select();
+
+            let committed = false;
+
+            function commitEdit() {
+                if (committed) return;
+                committed = true;
+                if (overlay) overlay.style.pointerEvents = '';
+                QO_DRUM._editing = false;
+
+                const newName = input.value.trim();
+                if (!newName) {
+                    nwAlert('To remove a player from the database, click on the delete player icon in the Players menu.');
+                    qoDrumRenderItems();
+                    return;
+                }
+                if (newName === oldName) {
+                    qoDrumRenderItems();
+                    return;
+                }
+
+                renamePlayerEverywhere(oldName, newName).then(success => {
+                    // updateAllViews inside renamePlayerEverywhere repopulates the QO drum
+                });
+            }
+
+            function cancelEdit() {
+                if (overlay) overlay.style.pointerEvents = '';
+                QO_DRUM._editing = false;
+                qoDrumRenderItems();
+            }
+
+            input.addEventListener('keydown', e => {
+                if (e.key === 'Enter') { e.preventDefault(); commitEdit(); }
+                else if (e.key === 'Escape') { e.preventDefault(); cancelEdit(); }
+            });
+
+            input.addEventListener('blur', () => {
+                setTimeout(() => { if (!committed) commitEdit(); }, 80);
+            });
+        }
+
         function qoDrumInit() {
             QO_DRUM.cylinder = document.getElementById('qo-player-drum');
             QO_DRUM.container = document.getElementById('qo-drum-container');
@@ -10938,17 +11227,30 @@ If they check-raise - nuts or very strong"></textarea>
             QO_DRUM.overlay.addEventListener('touchstart', function(e) {
                 if (QO_DRUM.rafId) { cancelAnimationFrame(QO_DRUM.rafId); QO_DRUM.rafId = null; }
                 QO_DRUM.isDragging = true;
+                QO_DRUM.dragStarted = false;
                 QO_DRUM.startY = e.touches[0].clientY;
                 QO_DRUM.lastY = QO_DRUM.startY;
                 QO_DRUM.velocity = 0;
                 QO_DRUM.lastTime = Date.now();
                 e.preventDefault();
+                // Long-press to edit
+                QO_DRUM._longPressTimer = setTimeout(function() {
+                    if (!QO_DRUM.dragStarted && !QO_DRUM._editing) {
+                        const centerItem = QO_DRUM.cylinder.querySelector('.apple-picker-item.selected');
+                        if (centerItem) {
+                            const name = centerItem.getAttribute('data-name');
+                            if (name) qoStartDrumInlineEdit(centerItem, name);
+                        }
+                    }
+                }, 600);
             }, { passive: false });
 
             QO_DRUM.overlay.addEventListener('touchmove', function(e) {
                 if (!QO_DRUM.isDragging) return;
+                clearTimeout(QO_DRUM._longPressTimer);
                 const y = e.touches[0].clientY;
                 const dy = y - QO_DRUM.lastY;
+                if (Math.abs(dy) > 3) QO_DRUM.dragStarted = true;
                 const now = Date.now();
                 const dt = now - QO_DRUM.lastTime || 16;
                 QO_DRUM.velocity = dy / dt * 16;
@@ -10960,6 +11262,7 @@ If they check-raise - nuts or very strong"></textarea>
             }, { passive: false });
 
             QO_DRUM.overlay.addEventListener('touchend', function(e) {
+                clearTimeout(QO_DRUM._longPressTimer);
                 QO_DRUM.isDragging = false;
                 QO_DRUM.rafId = requestAnimationFrame(qoDrumMomentum);
             });
@@ -13058,6 +13361,16 @@ If they check-raise - nuts or very strong"></textarea>
             }
             
             hhTrackerHero = select.value;
+
+            // Show/hide pencil
+            const pencil = document.getElementById('hh-hero-pencil');
+            if (pencil) {
+                if (hhTrackerHero && hhTrackerHero !== '__add_new__') {
+                    pencil.classList.remove('hidden-pencil');
+                } else {
+                    pencil.classList.add('hidden-pencil');
+                }
+            }
             
             // Extract first name
             if (hhTrackerHero) {
@@ -13108,6 +13421,16 @@ If they check-raise - nuts or very strong"></textarea>
             }
             
             const selectedVillain = select.value;
+
+            // Show/hide pencil
+            const pencil = document.getElementById('hh-villain-pencil');
+            if (pencil) {
+                if (selectedVillain && selectedVillain !== '__add_new__') {
+                    pencil.classList.remove('hidden-pencil');
+                } else {
+                    pencil.classList.add('hidden-pencil');
+                }
+            }
             
             // Extract first name for villain if a player was selected
             if (selectedVillain) {
@@ -13177,6 +13500,65 @@ If they check-raise - nuts or very strong"></textarea>
             hhTryFinalize();
         }
         
+        // Inline rename for hero/villain selects
+        function hhStartRename(role) {
+            const selectId = role === 'hero' ? 'hh-hero-select' : 'hh-villain-select';
+            const pencilId = role === 'hero' ? 'hh-hero-pencil' : 'hh-villain-pencil';
+            const select = document.getElementById(selectId);
+            const pencilBtn = document.getElementById(pencilId);
+            if (!select || !select.value) return;
+            const oldName = select.value;
+
+            // Hide select and pencil, show input in their place
+            const wrap = select.parentElement; // .hh-select-pencil-wrap
+            select.style.display = 'none';
+            if (pencilBtn) pencilBtn.style.display = 'none';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = oldName;
+            input.className = 'hh-rename-input';
+            input.setAttribute('autocomplete', 'off');
+            input.setAttribute('autocorrect', 'off');
+            input.setAttribute('spellcheck', 'false');
+            wrap.insertBefore(input, pencilBtn || null);
+
+            input.focus();
+            input.select();
+
+            let committed = false;
+
+            function restore() {
+                input.remove();
+                select.style.display = '';
+                if (pencilBtn) pencilBtn.style.display = '';
+            }
+
+            function commitRename() {
+                if (committed) return;
+                committed = true;
+                const newName = input.value.trim();
+
+                if (!newName) {
+                    nwAlert('To remove a player from the database, click on the delete player icon in the Players menu.');
+                    restore();
+                    return;
+                }
+                if (newName === oldName) { restore(); return; }
+
+                restore();
+                renamePlayerEverywhere(oldName, newName);
+            }
+
+            input.addEventListener('keydown', e => {
+                if (e.key === 'Enter') { e.preventDefault(); commitRename(); }
+                else if (e.key === 'Escape') { committed = true; restore(); }
+            });
+            input.addEventListener('blur', () => {
+                setTimeout(() => { if (!committed) commitRename(); }, 80);
+            });
+        }
+
         function hhTryFinalize() {
             // Only finalize when hero, hero position, and villain position are all set
             if (!hhTrackerHero || !hhTrackerHeroPosition || !hhTrackerVillainPosition) return;
