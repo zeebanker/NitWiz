@@ -8,6 +8,10 @@ Versioning follows [Semantic Versioning](https://semver.org/): `MAJOR.MINOR.PATC
 - **PATCH** — bug fixes, polish, and small tweaks
 
 ---
+## v1.1.1 — 2026-03-01
+
+### Fixed
+- **FAR (folds after raise) logic fixed** — previously didn't reset raise flag between streets, so a villain raise in a prior street and hero folding in a later street was counted as FAR.
 
 ## v1.1.0 — 2026-02-26
 
