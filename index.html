@@ -11811,7 +11811,8 @@ If they check-raise - nuts or very strong"></textarea>
                 var firstPf = Array.isArray(pf) ? pf[0] : pf;
                 if (firstPf === 'Fold' || h.pfFold) foldPfCount++;
                 
-                // FAR: did they raise/bet on any street, then fold on a later action or street?
+                // FAR: did they raise/bet on a street, then fold on that SAME street?
+                // streetRaised resets each street — cross-street folds do not count.
                 var didRaise = false;
                 var foldedAfter = false;
                 var streets = h.streets || {};
@@ -11819,9 +11820,10 @@ If they check-raise - nuts or very strong"></textarea>
                     var acts = streets[s];
                     if (!acts) return;
                     var actArr = Array.isArray(acts) ? acts : [acts];
+                    var streetRaised = false;
                     actArr.forEach(function(a) {
-                        if (raiseActions.indexOf(a) >= 0) didRaise = true;
-                        if (a === 'Fold' && didRaise) foldedAfter = true;
+                        if (raiseActions.indexOf(a) >= 0) { streetRaised = true; didRaise = true; }
+                        if (a === 'Fold' && streetRaised) foldedAfter = true;
                     });
                 });
                 
